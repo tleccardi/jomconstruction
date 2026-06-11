@@ -1,0 +1,12 @@
+{
+  // Deploy de assets ESTÁTICOS en Cloudflare Workers.
+  // `astro build` genera la landing estática en ./dist (con las imágenes ya
+  // optimizadas a .webp en /_astro). Sin `main` no hay Worker/SSR: el Worker
+  // solo sirve esos archivos, así `npx wrangler deploy` publica el sitio
+  // estático y NO el endpoint /_image (que en Cloudflare da 404).
+  "name": "jomconstruction",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./dist"
+  }
+}
