@@ -2,6 +2,8 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
+import cloudflare from '@astrojs/cloudflare';
+
 // [REEMPLAZAR: dominio real del sitio cuando esté definido]
 const SITE_URL = 'https://jomconstruction.com.ar';
 
@@ -9,14 +11,17 @@ export default defineConfig({
   site: SITE_URL,
   trailingSlash: 'never',
   integrations: [sitemap()],
+
   build: {
     // El CSS de una landing es chico: inline total elimina el request render-blocking
     inlineStylesheets: 'always',
   },
+
   image: {
     responsiveStyles: true,
     layout: 'constrained',
   },
+
   fonts: [
     {
       // Serif romana inscripcional, coherente con el wordmark del logo
@@ -41,4 +46,6 @@ export default defineConfig({
       fallbacks: ['system-ui', 'sans-serif'],
     },
   ],
+
+  adapter: cloudflare(),
 });
