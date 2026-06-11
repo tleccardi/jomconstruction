@@ -1,0 +1,120 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import { SITE, CONTACT } from '../config';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  // ≤60 caracteres: Google trunca alrededor de esa marca en la SERP
+  title = `${SITE.name} | Constructora — obra nueva y refacciones`,
+  description = SITE.description,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og-cover.jpg', Astro.site);
+
+// Datos estructurados: constructora local (schema.org/GeneralContractor)
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'GeneralContractor',
+  name: SITE.name,
+  description: SITE.description,
+  url: SITE.url,
+  image: ogImage.href,
+  logo: new URL('/icon-512.png', Astro.site).href,
+  email: CONTACT.email,
+  telephone: CONTACT.whatsappDisplay,
+  address: {
+    '@type': 'PostalAddress',
+    addressCountry: 'AR',
+    addressLocality: CONTACT.address,
+  },
+  areaServed: 'Argentina',
+  knowsAbout: [
+    'construcción de obra nueva',
+    'desarrollos residenciales',
+    'refacciones y ampliaciones',
+    'dirección de obra',
+    'obra civil para empresas',
+  ],
+};
+---
+
+<!doctype html>
+<html lang="es-AR" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#0328b9" />
+
+    <link rel="icon" type="image/png" href="/favicon.png" sizes="48x48" />
+    <link rel="icon" type="image/png" href="/icon-192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Fuentes auto-hospedadas vía Fonts API: preload solo de la serif del H1 (LCP) -->
+    <Font cssVariable="--font-marcellus" preload />
+    <Font cssVariable="--font-figtree" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+    <!-- Marca JS disponible lo antes posible (las animaciones .reveal dependen de esto) -->
+    <script is:inline>
+      document.documentElement.classList.remove('no-js');
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <slot />
+
+    <script>
+      // Animación de entrada progresiva: visible por defecto sin JS / reduced-motion
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const targets = document.querySelectorAll<HTMLElement>('.reveal');
+
+      if (reduced || !('IntersectionObserver' in window)) {
+        targets.forEach((el) => el.classList.add('is-visible'));
+      } else {
+        // respaldo: si un .reveal aún oculto recibe foco (Tab), se muestra al instante
+        targets.forEach((el) => {
+          el.addEventListener('focusin', () => el.classList.add('is-visible'), { once: true });
+        });
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.1 }
+        );
+        targets.forEach((el) => io.observe(el));
+      }
+    </script>
+  </body>
+</html>

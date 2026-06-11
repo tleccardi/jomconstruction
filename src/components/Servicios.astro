@@ -1,0 +1,291 @@
+---
+import { waLink } from '../config';
+
+interface Servicio {
+  titulo: string;
+  descripcion: string;
+  consulta: string;
+  icono: string; // path data del ícono (stroke)
+}
+
+const SERVICIOS: Servicio[] = [
+  {
+    titulo: 'Obra nueva',
+    descripcion:
+      'Construcción integral desde los cimientos: viviendas, edificios y locales. Del plano a la entrega, con un solo responsable.',
+    consulta: 'Hola JOM Construction, quiero pedir presupuesto para una obra nueva.',
+    icono:
+      'M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4M9 12h.01M12 12h.01M15 12h.01M9 9h.01M12 9h.01M15 9h.01',
+  },
+  {
+    titulo: 'Desarrollos residenciales',
+    descripcion:
+      'Ejecución de edificios y conjuntos de vivienda para desarrolladores e inversores, con avances certificados etapa por etapa.',
+    consulta: 'Hola JOM Construction, quiero hablar sobre la ejecución de un desarrollo residencial.',
+    icono:
+      'M3 21h18M6 21V9h5v12M11 21V4h7v17M14 8h.01M14 12h.01M14 16h.01M8 12h.01M8 16h.01',
+  },
+  {
+    titulo: 'Refacciones y ampliaciones',
+    descripcion:
+      'Remodelamos y ampliamos casas, departamentos y locales en uso, con obra prolija, tiempos acordados y mínimas molestias.',
+    consulta: 'Hola JOM Construction, quiero pedir presupuesto para una refacción o ampliación.',
+    icono:
+      'M14.7 6.3a4 4 0 0 0-5.06 5.06L3 18v3h3l6.64-6.64a4 4 0 0 0 5.06-5.06l-2.85 2.85-2.12-2.12 2.97-2.73Z',
+  },
+  {
+    titulo: 'Obra para empresas',
+    descripcion:
+      'Plantas, depósitos, oficinas y locales comerciales. Normativa, seguridad e higiene y coordinación con tu operación diaria.',
+    consulta: 'Hola JOM Construction, quiero pedir presupuesto para una obra para mi empresa.',
+    icono: 'M3 21h18M5 21V8l5 3V8l5 3V5h4v16M16 9h.01M16 13h.01M16 17h.01M8 16h.01M8 19h.01',
+  },
+  {
+    titulo: 'Dirección y gestión de obra',
+    descripcion:
+      'Dirección técnica, cómputo y presupuesto, y coordinación de gremios para que tu proyecto avance con números claros.',
+    consulta: 'Hola JOM Construction, necesito dirección o gestión para una obra.',
+    icono:
+      'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M9 5v2h6V5M9 12h6M9 16h4',
+  },
+];
+---
+
+<section id="servicios" class="section servicios">
+  <div class="container">
+    <header class="section-head">
+      <p class="kicker">Servicios</p>
+      <h2 class="section-title">Qué construimos</h2>
+      <p class="section-lede">
+        Ejecutamos obra para terceros: empresas, desarrolladores y particulares. Estos son los
+        frentes donde más valor aportamos.
+      </p>
+    </header>
+
+    <ul class="servicios-grid" role="list">
+      {
+        SERVICIOS.map((servicio, i) => (
+          <li
+            class="servicio-card reveal"
+            style={`--reveal-delay: calc(var(--stagger-step) * ${i})`}
+          >
+            <div class="servicio-card-inner">
+              <span class="servicio-icono" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d={servicio.icono} />
+                </svg>
+              </span>
+              <h3>{servicio.titulo}</h3>
+              <p>{servicio.descripcion}</p>
+              <a
+                href={waLink(servicio.consulta)}
+                target="_blank"
+                rel="noopener"
+                class="servicio-link"
+              >
+                <span class="servicio-link-label">Consultar por este servicio</span>
+                <span class="servicio-flecha" aria-hidden="true">→</span>
+              </a>
+            </div>
+          </li>
+        ))
+      }
+
+      <li
+        class="servicio-card servicio-card--cta reveal"
+        style={`--reveal-delay: calc(var(--stagger-step) * ${SERVICIOS.length})`}
+      >
+        <div class="servicio-card-inner">
+          <p>¿No sabés exactamente qué necesita tu proyecto? Contanos y te orientamos.</p>
+          <a href="#contacto" class="btn btn--gold">Pedí tu presupuesto sin cargo</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .servicios {
+    background: var(--color-white);
+  }
+
+  .servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: var(--space-lg);
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Desktop: exactamente 3 columnas (5 servicios + 1 card destacada = 3×2).
+     Mobile/tablet conserva el auto-fit original; lo afinamos en su pasada. */
+  @media (min-width: 64em) {
+    .servicios-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* La <li> solo posiciona y revela: .reveal (global.css) aporta opacity +
+     translateY de entrada, escalonado por --reveal-delay. Todo el hover vive en
+     .servicio-card-inner para no pelear con el transform ni heredar el
+     transition-delay del reveal — mismo patrón que MetricsBar (.metric / -inner). */
+  .servicio-card {
+    display: flex;
+  }
+
+  .servicio-card-inner {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-xl);
+    background: var(--color-cream);
+    border: 1px solid var(--color-line);
+    border-top: 2px solid var(--color-sand); /* terminación superior dorada (igual que la ficha de obra) */
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); /* profundidad en reposo: deja de verse plana */
+    transition:
+      transform var(--speed-base) var(--ease-interactive),
+      box-shadow var(--speed-base) var(--ease-interactive),
+      border-color var(--speed-base) var(--ease-interactive);
+  }
+
+  .servicio-card:hover .servicio-card-inner,
+  .servicio-card:focus-within .servicio-card-inner {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    /* sin recolorear el borde a cobalto: la card solo se eleva, la corona dorada queda */
+  }
+
+  /* Ícono: par cobalto + dorado. Gradiente para profundidad + anillo dorado
+     sutil; en hover escala y gana glow dorado (--shadow-gold-hover). */
+  .servicio-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-bottom: var(--space-md);
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--color-cobalt), var(--color-cobalt-deep));
+    color: var(--color-sand-light);
+    box-shadow: inset 0 0 0 1px rgb(228 220 176 / 0.25);
+    transition:
+      transform var(--speed-base) var(--ease-interactive),
+      box-shadow var(--speed-base) var(--ease-interactive);
+  }
+
+  .servicio-icono svg {
+    width: 1.625rem;
+    height: 1.625rem;
+  }
+
+  .servicio-card:hover .servicio-icono,
+  .servicio-card:focus-within .servicio-icono {
+    transform: scale(1.06);
+    box-shadow:
+      inset 0 0 0 1px rgb(228 220 176 / 0.4),
+      var(--shadow-gold-hover);
+  }
+
+  .servicio-card h3 {
+    font-size: var(--text-lg);
+    line-height: var(--leading-snug);
+    color: var(--color-ink);
+  }
+
+  .servicio-card p {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    flex-grow: 1;
+  }
+
+  .servicio-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-top: var(--space-xs);
+    min-height: 2.75rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-cobalt);
+    text-decoration: none;
+  }
+
+  /* Subrayado que se "dibuja" con scaleX (sin layout shift) */
+  .servicio-link-label {
+    position: relative;
+  }
+
+  .servicio-link-label::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--speed-base) var(--ease-interactive);
+  }
+
+  /* La flecha avanza en X */
+  .servicio-flecha {
+    transition: transform var(--speed-base) var(--ease-interactive);
+  }
+
+  .servicio-card:hover .servicio-link-label::after,
+  .servicio-card:focus-within .servicio-link-label::after {
+    transform: scaleX(1);
+  }
+
+  .servicio-card:hover .servicio-flecha,
+  .servicio-card:focus-within .servicio-flecha {
+    transform: translateX(6px);
+  }
+
+  /* ---- Card destacada (cobalto): clímax de la grilla, absorbe el viejo CTA ---- */
+  .servicio-card--cta .servicio-card-inner {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: var(--space-lg);
+    /* mismo cobalto profundo que el header scrolleado (rgb 2 24 110 ≈ --color-cobalt-deep):
+       la card lee como un plano más hondo, no como el cobalto brillante de los iconitos */
+    background: var(--color-cobalt-deep);
+    border-color: transparent;
+    border-top-color: var(--color-red); /* terminación superior roja (el otro color de marca) */
+    color: var(--color-white);
+    box-shadow: var(--shadow-cta);
+  }
+
+  .servicio-card--cta:hover .servicio-card-inner,
+  .servicio-card--cta:focus-within .servicio-card-inner {
+    box-shadow: var(--shadow-cta-hover);
+    border-color: transparent;
+    border-top-color: var(--color-red); /* la terminación roja se mantiene en hover */
+  }
+
+  .servicio-card--cta p {
+    max-width: 22rem;
+    font-size: var(--text-md);
+    font-weight: 600;
+    color: var(--color-white);
+    flex-grow: 0;
+  }
+
+  /* prefers-reduced-motion: global.css ya neutraliza .reveal y lleva las
+     transiciones a ~0ms, así el hover salta al estado final sin animar. Nada
+     queda oculto detrás del movimiento (flecha, subrayado y acento parten de un
+     estado legible), por eso no se necesita nada extra acá. */
+</style>

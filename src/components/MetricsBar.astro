@@ -1,0 +1,225 @@
+---
+import { METRICS } from '../config';
+---
+
+<section class="metrics on-dark" aria-label="Cifras de trayectoria">
+  <div class="container">
+    <dl class="metrics-grid">
+      {
+        METRICS.map((metric, i) => (
+          <div class="metric reveal" style={`--reveal-delay: calc(var(--stagger-step) * ${i})`}>
+            <div class="metric-inner">
+              <dt>{metric.label}</dt>
+              <dd>
+                {/* el count-up solo reescribe .metric-num; el sufijo queda estático.
+                    data-count-to: target numérico derivado del value formateado (es-AR) */}
+                <span
+                  class="metric-num"
+                  data-count-to={Number(metric.value.replace(/\./g, ''))}
+                >
+                  {metric.value}
+                </span>
+                {metric.suffix && <span class="metric-suffix">{metric.suffix}</span>}
+              </dd>
+            </div>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .metrics {
+    position: relative;
+    isolation: isolate;
+    /* fondo en capas: luz cobalto arriba-centro + acento dorado tenue abajo-derecha,
+       sobre la base "noche". Estático → se pinta una sola vez, cero costo en runtime. */
+    background:
+      radial-gradient(120% 80% at 50% 0%, rgb(255 255 255 / 0.06), transparent 55%),
+      radial-gradient(90% 120% at 100% 100%, rgb(227 220 176 / 0.05), transparent 60%),
+      var(--color-cobalt-night);
+    border-top: 1px solid rgb(255 255 255 / 0.08);
+    padding-block: clamp(2.5rem, 2rem + 3vw, 4rem);
+    overflow: hidden;
+  }
+
+  /* textura "plano técnico": grilla dorada apenas perceptible, desvanecida en los
+     bordes con una máscara radial para que no se lea como una tabla. On-brand. */
+  .metrics::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(rgb(227 220 176 / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(227 220 176 / 0.04) 1px, transparent 1px);
+    background-size: 2.5rem 2.5rem;
+    -webkit-mask-image: radial-gradient(120% 100% at 50% 50%, #000 25%, transparent 78%);
+    mask-image: radial-gradient(120% 100% at 50% 50%, #000 25%, transparent 78%);
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xl) var(--space-lg);
+    margin: 0;
+  }
+
+  .metric {
+    position: relative;
+    padding-inline: var(--space-lg);
+  }
+
+  /* separador vertical: gradiente dorado que se desvanece arriba y abajo (no toca
+     los bordes) y "crece" con scaleY al revelar, escalonado por --reveal-delay.
+     Mismo gesto que el dibujo del acento del hero, pero en vertical. */
+  .metric::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 1px;
+    height: 62%;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(227 220 176 / 0.45),
+      transparent
+    );
+    transform: translateY(-50%) scaleY(0);
+    transform-origin: center;
+    transition: transform var(--speed-slow) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .metric:first-child::before {
+    display: none;
+  }
+
+  .metric.is-visible::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+
+  /* capa interna: aísla el hover (translateY) del transform que usa .reveal en la
+     entrada, así no se pelean por la misma propiedad. */
+  .metric-inner {
+    display: flex;
+    flex-direction: column-reverse; /* la cifra (dd) arriba, la etiqueta (dt) abajo */
+    gap: var(--space-sm);
+    text-align: center;
+    transition: transform var(--speed-base) var(--ease-interactive);
+  }
+
+  .metric.is-visible:hover .metric-inner {
+    transform: translateY(-4px);
+  }
+
+  .metric dd {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.04em;
+  }
+
+  .metric-num {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    line-height: var(--leading-tight);
+    font-variant-numeric: tabular-nums; /* ancho de dígito fijo: sin jitter durante el count-up */
+    color: var(--color-sand-light); /* fallback sólido si no hay background-clip: text */
+    transition: filter var(--speed-base) var(--ease-interactive);
+  }
+
+  /* dorado "metálico" (token compartido con el acento del hero). */
+  @supports ((background-clip: text) or (-webkit-background-clip: text)) {
+    .metric-num {
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .metric.is-visible:hover .metric-num {
+    filter: brightness(1.12) drop-shadow(0 4px 16px rgb(227 220 176 / 0.25));
+  }
+
+  .metric-suffix {
+    font-family: var(--font-display);
+    font-size: var(--text-xl); /* más chico que la cifra: acento, no protagonista */
+    line-height: 1;
+    color: var(--color-sand);
+  }
+
+  .metric dt {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-fog);
+  }
+
+  @media (min-width: 48em) {
+    .metrics-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (max-width: 47.99em) {
+    /* en 2 columnas, la de la izquierda no lleva separador */
+    .metric:nth-child(odd)::before {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Count-up de las métricas: al entrar en viewport, cada cifra sube de 0 a su
+  // target con easing de salida y stagger izq→der. Solo muta textContent → cero
+  // reflow. Degrada a la cifra final con no-JS o prefers-reduced-motion.
+  const grid = document.querySelector<HTMLElement>('.metrics-grid');
+
+  if (grid) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const nums = Array.from(grid.querySelectorAll<HTMLElement>('.metric-num'));
+
+    if (!reduced && 'IntersectionObserver' in window && nums.length) {
+      const fmt = new Intl.NumberFormat('es-AR');
+      const root = getComputedStyle(document.documentElement);
+      // timings desde tokens: única fuente de verdad
+      const DUR = parseFloat(root.getPropertyValue('--count-up-dur')) || 1600;
+      const STEP = parseFloat(root.getPropertyValue('--stagger-step')) || 80;
+
+      const countUp = (el: HTMLElement, target: number, delay: number) => {
+        el.textContent = fmt.format(0); // inmediato: nada de flash del valor final
+        const start = performance.now() + delay;
+        const tick = (now: number) => {
+          const p = (now - start) / DUR;
+          if (p <= 0) return requestAnimationFrame(tick); // esperando el delay (ya muestra 0)
+          if (p >= 1) {
+            el.textContent = fmt.format(target); // frame final exacto
+            return;
+          }
+          const eased = 1 - Math.pow(2, -10 * p); // easeOutExpo: aterriza en el valor
+          el.textContent = fmt.format(Math.round(target * eased));
+          requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+
+      const io = new IntersectionObserver(
+        ([entry], obs) => {
+          if (!entry.isIntersecting) return;
+          obs.disconnect();
+          nums.forEach((el, i) => {
+            const target = Number(el.dataset.countTo);
+            if (Number.isFinite(target)) countUp(el, target, i * STEP);
+          });
+        },
+        { threshold: 0.4, rootMargin: '0px 0px -8% 0px' }
+      );
+      io.observe(grid);
+    }
+  }
+</script>

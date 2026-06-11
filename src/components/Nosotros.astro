@@ -1,0 +1,420 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo-jom.png';
+
+// 2008 es la ÚNICA fuente del dato de trayectoria: se muestra tal cual en el
+// <dl> y los "años de oficio" se derivan de ahí (queda en línea con la métrica
+// "18+ años construyendo" del config). Si el cliente cambia el año, todo sigue.
+const TRAYECTORIA_DESDE = 2008;
+const aniosDeOficio = new Date().getFullYear() - TRAYECTORIA_DESDE;
+---
+
+<section id="nosotros" class="section nosotros">
+  <div class="container nosotros-grid">
+    <div class="nosotros-logo reveal" aria-hidden="true">
+      <!-- Logo en PNG sin fondo: el edificio dorado + wordmark blanco apoyan directo
+           sobre el cobalto del panel (#0328B9), sin la costura del recuadro azul.
+           La grilla y el sheen quedan atenuados en el centro para no competir con el logo. -->
+      <div class="nosotros-logo-card">
+        <Image src={logo} alt="" layout="constrained" width={520} quality={85} sizes="(min-width: 64em) 440px, 80vw" />
+      </div>
+    </div>
+
+    <div class="nosotros-texto">
+      <header class="section-head nosotros-head reveal" style="--reveal-delay: 120ms">
+        <p class="kicker">Nosotros</p>
+        <h2 class="section-title">Una constructora de servicios, hecha de obras cumplidas</h2>
+      </header>
+      <p class="reveal" style="--reveal-delay: 200ms">
+        JOM Construction es una empresa constructora dedicada a ejecutar obra para terceros:
+        empresas, desarrolladores y particulares.
+        [REEMPLAZAR: breve historia real — año de inicio, fundadores, trayectoria en 2 o 3 oraciones]
+      </p>
+      <p class="reveal" style="--reveal-delay: 280ms">
+        Creemos que una obra bien hecha se demuestra cumpliendo lo pactado: plazos, presupuesto y
+        calidad. Por eso trabajamos con equipo propio, dirección técnica presente en obra y una
+        comunicación sin vueltas, desde la primera visita hasta la entrega.
+      </p>
+
+      <div class="nosotros-datos-wrap reveal" style="--reveal-delay: 360ms">
+        <p class="nosotros-trayectoria">
+          {/* count-up 0→N; degrada a la cifra final con no-JS o prefers-reduced-motion */}
+          <span class="nosotros-anios" data-count-to={aniosDeOficio}>{aniosDeOficio}</span>
+          <span class="nosotros-anios-label">años<br />de oficio</span>
+        </p>
+        <dl class="nosotros-datos">
+          <div>
+            <dt>Zona de trabajo</dt>
+            <dd>Buenos Aires</dd>
+          </div>
+          <div>
+            <dt>En el rubro desde</dt>
+            <dd>{TRAYECTORIA_DESDE}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* sección Nosotros: panel de marca + relato — entrada escalonada y datos */
+  .nosotros {
+    background: var(--color-cream);
+  }
+
+  .nosotros-grid {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: stretch; /* el panel se estira a la altura del relato: "slab" deliberado, no un cuadro flotando */
+  }
+
+  /* ---------- Panel del logo ---------- */
+  /* Capa externa: solo contexto de posición. Lleva el .reveal (entra desde la
+     izquierda) y la "accent shape" que asoma por detrás (broken grid). */
+  .nosotros-logo {
+    position: relative;
+    isolation: isolate;
+    display: grid; /* la card ocupa la celda y se estira con el panel */
+  }
+
+  /* accent shape: bloque dorado offset que asoma en la esquina inferior-izquierda */
+  .nosotros-logo::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: calc(-1 * var(--space-md));
+    bottom: calc(-1 * var(--space-md));
+    width: 58%;
+    height: 42%;
+    background: var(--color-sand);
+    opacity: 0.55;
+    border-radius: var(--radius-lg);
+  }
+
+  /* La card cobalto: acá viven el color de marca, la grilla "plano técnico" y el sheen. */
+  .nosotros-logo-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden; /* recorta el sheen y la grilla al radio de la card */
+    display: grid;
+    place-items: center;
+    height: 100%;
+    padding: clamp(2rem, 5vw, 3.5rem);
+    border-radius: var(--radius-lg);
+    /* luz ambiente desde el borde superior, en cobalto MÁS CLARO (no blanco: el blanco
+       desatura el azul y queda como mancha gris). Simétrica y contenida → lee como un
+       slab iluminado desde arriba; el centro/base es el cobalto profundo de marca
+       (--color-cobalt-deep), mismo azul que la card CTA y los botones primarios. */
+    background:
+      radial-gradient(135% 75% at 50% -12%, rgb(96 128 246 / 0.40), transparent 58%),
+      var(--color-cobalt-deep);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* grilla dorada tenue (mismo gesto que MetricsBar): visible hacia los bordes,
+     desvanecida en el centro por la máscara radial para no cruzar el logo */
+  .nosotros-logo-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgb(227 220 176 / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(227 220 176 / 0.07) 1px, transparent 1px);
+    background-size: 2.5rem 2.5rem;
+    -webkit-mask-image: radial-gradient(120% 100% at 50% 50%, transparent 32%, #000 78%);
+    mask-image: radial-gradient(120% 100% at 50% 50%, transparent 32%, #000 78%);
+  }
+
+  /* sheen metálico: banda de luz que cruza el panel y descansa (animado abajo) */
+  .nosotros-logo-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2; /* por encima del logo: la luz barre toda la superficie */
+    pointer-events: none;
+    background: linear-gradient(
+      100deg,
+      transparent 38%,
+      rgb(255 255 255 / 0.10) 50%,
+      rgb(228 220 176 / 0.08) 56%,
+      transparent 66%
+    );
+    transform: translateX(-130%);
+    opacity: 0;
+  }
+
+  .nosotros-logo-card :global(img) {
+    position: relative;
+    z-index: 1; /* sobre la grilla, debajo del sheen */
+    max-width: min(27.5rem, 100%);
+  }
+
+  /* movimiento del panel: SOLO si el usuario no pidió reducir movimiento.
+     Bajo reduced-motion no se declara ninguna animación → panel estático. */
+  @media (prefers-reduced-motion: no-preference) {
+    .nosotros-logo-card {
+      animation: nosotros-float var(--float-dur) ease-in-out infinite;
+    }
+
+    .nosotros-logo-card::after {
+      animation: nosotros-sheen var(--sheen-dur) var(--ease-out) infinite;
+    }
+
+    /* parallax sutil del accent shape al pasar por el viewport (degrada a nada
+       donde no hay scroll timelines) */
+    @supports (animation-timeline: view()) {
+      .nosotros-logo::before {
+        animation: nosotros-accent-drift linear both;
+        animation-timeline: view();
+        animation-range: cover;
+      }
+    }
+  }
+
+  @keyframes nosotros-float {
+    0%,
+    100% {
+      transform: translateY(-5px);
+    }
+    50% {
+      transform: translateY(5px);
+    }
+  }
+
+  @keyframes nosotros-sheen {
+    0% {
+      transform: translateX(-130%);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    45% {
+      transform: translateX(130%);
+      opacity: 1;
+    }
+    46%,
+    100% {
+      transform: translateX(130%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes nosotros-accent-drift {
+    from {
+      transform: translateY(-12px);
+    }
+    to {
+      transform: translateY(12px);
+    }
+  }
+
+  /* El panel entra desde la izquierda (en vez del translateY del .reveal global).
+     Reutiliza la transición y el --reveal-delay de .reveal: solo cambia el offset inicial. */
+  .nosotros-logo.reveal {
+    transform: translateX(-32px);
+  }
+
+  .nosotros-logo.reveal.is-visible {
+    transform: none;
+  }
+
+  /* sin JS la card no recibe .is-visible: la dejamos asentada */
+  :global(html.no-js) .nosotros-logo.reveal {
+    transform: none;
+  }
+
+  /* ---------- Texto ---------- */
+  .nosotros-head {
+    margin-bottom: var(--space-lg);
+  }
+
+  /* título un punto por debajo de --text-2xl: entra en 2 renglones en la columna 6fr
+     (text-wrap: balance, heredado, los equilibra) sin perder presencia */
+  .nosotros-head .section-title {
+    font-size: clamp(1.85rem, 1.4rem + 1.7vw, 2.4rem);
+    max-width: 22ch;
+  }
+
+  /* línea del kicker: se "dibuja" al revelar la cabecera (mismo gesto que el Hero) */
+  :global(html:not(.no-js)) .nosotros-head .kicker::before {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  :global(html:not(.no-js)) .nosotros-head.is-visible .kicker::before {
+    animation: nosotros-draw-line var(--speed-cinematic) var(--ease-out) 350ms forwards;
+  }
+
+  @keyframes nosotros-draw-line {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .nosotros-texto > p {
+    margin-bottom: var(--space-md);
+    color: var(--color-text-muted);
+    max-width: 56ch;
+  }
+
+  /* ---------- Datos / trayectoria ---------- */
+  .nosotros-datos-wrap {
+    position: relative;
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  /* línea superior que se traza (scaleX) al revelar, en vez de un border-top quieto */
+  .nosotros-datos-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--color-line);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--speed-slow) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .nosotros-datos-wrap.is-visible::before {
+    transform: scaleX(1);
+  }
+
+  /* sin JS la línea no recibe .is-visible: la dejamos trazada */
+  :global(html.no-js) .nosotros-datos-wrap::before {
+    transform: scaleX(1);
+  }
+
+  .nosotros-trayectoria {
+    display: flex;
+    align-items: center; /* la etiqueta de 2 líneas se centra contra la cifra: bloque prolijo */
+    gap: var(--space-sm);
+    margin: 0;
+  }
+
+  .nosotros-anios {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1;
+    /* la cifra abraza su contenido: el gap con la etiqueta queda en --space-sm.
+       (Marcellus no trae figuras tabulares, así que 'ch' sobreestima y reservar
+       2ch dejaba un hueco enorme.) El count-up reescribe textContent; el leve
+       reacomodo de ancho dura el ascenso y aterriza en la posición final. */
+    font-variant-numeric: tabular-nums;
+    color: var(--color-sand-deep); /* fallback sólido si no hay background-clip: text */
+  }
+
+  /* dorado metálico para fondos CLAROS (token pensado justo para cifras sobre crema) */
+  @supports ((background-clip: text) or (-webkit-background-clip: text)) {
+    .nosotros-anios {
+      background: var(--gradient-gold-on-light);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .nosotros-anios-label {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-sand-text);
+  }
+
+  .nosotros-datos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: var(--space-lg);
+    margin: 0;
+  }
+
+  .nosotros-datos dt {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-sand-text);
+  }
+
+  .nosotros-datos dd {
+    margin: var(--space-2xs) 0 0;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  @media (min-width: 64em) {
+    .nosotros-grid {
+      grid-template-columns: 5fr 6fr;
+      gap: var(--space-3xl);
+    }
+
+    /* en desktop la trayectoria (cifra) va a la izquierda y el dl a la derecha,
+       separados por un filete vertical */
+    .nosotros-datos-wrap {
+      grid-template-columns: auto 1fr;
+      gap: var(--space-2xl);
+      align-items: center;
+    }
+
+    .nosotros-datos {
+      padding-left: var(--space-2xl);
+      border-left: 1px solid var(--color-line);
+    }
+  }
+</style>
+
+<script>
+  // Count-up de "años de oficio": al entrar en viewport sube de 0 a su target con
+  // easeOutExpo. Solo muta textContent → cero reflow (la cifra ya reserva 2ch).
+  // Degrada a la cifra final con no-JS o prefers-reduced-motion. Espeja la lógica
+  // de MetricsBar; se deja inline por consistencia con el resto de los componentes.
+  const el = document.querySelector<HTMLElement>('.nosotros-anios');
+
+  if (el) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const target = Number(el.dataset.countTo);
+
+    if (!reduced && 'IntersectionObserver' in window && Number.isFinite(target)) {
+      const fmt = new Intl.NumberFormat('es-AR');
+      const root = getComputedStyle(document.documentElement);
+      const DUR = parseFloat(root.getPropertyValue('--count-up-dur')) || 1600; // token: única fuente de verdad
+
+      const countUp = () => {
+        el.textContent = fmt.format(0); // inmediato: nada de flash del valor final
+        const start = performance.now();
+        const tick = (now: number) => {
+          const p = (now - start) / DUR;
+          if (p >= 1) {
+            el.textContent = fmt.format(target); // frame final exacto
+            return;
+          }
+          const eased = 1 - Math.pow(2, -10 * p); // easeOutExpo: aterriza en el valor
+          el.textContent = fmt.format(Math.round(target * eased));
+          requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+
+      const io = new IntersectionObserver(
+        ([entry], obs) => {
+          if (!entry.isIntersecting) return;
+          obs.disconnect();
+          countUp();
+        },
+        { threshold: 0.4, rootMargin: '0px 0px -8% 0px' }
+      );
+      io.observe(el);
+    }
+  }
+</script>

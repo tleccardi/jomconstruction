@@ -1,0 +1,157 @@
+/* ============================================================
+   JOM CONSTRUCTION — DESIGN TOKENS
+   Paleta extraída por muestreo de píxeles del logo oficial:
+   - Azul cobalto (fondo del logo):  #0328B9
+   - Dorado/arena (edificios):      #C3B88A → #E4DCB0
+   - Rojo (acento del logo):        #FF4635
+   ============================================================ */
+
+:root {
+  /* ---------- Color: marca ---------- */
+  --color-cobalt: #0328b9; /* primario — fondos oscuros, links, marca */
+  --color-cobalt-deep: #021d85; /* hover / secciones profundas */
+  --color-cobalt-night: #051341; /* fondo "noche" para secciones oscuras */
+  --color-cobalt-abyss: #030d2e; /* un escalón por debajo de "night": plano del footer, separa el cierre del pie */
+  --color-cobalt-soft: #e8ecfb; /* tinte azul para fondos sutiles */
+
+  --color-sand: #d9cfa3; /* dorado medio del logo — acentos sobre oscuro */
+  --color-sand-light: #e4dcb0; /* dorado claro — highlights sobre oscuro */
+  --color-sand-deep: #8a7b4d; /* dorado oscurecido — íconos/bordes sobre claro (AA en tamaños grandes) */
+  --color-sand-text: #6f6238; /* dorado para TEXTO pequeño sobre blanco (≥4.5:1) */
+
+  /* dorado "metálico": recorte sobre texto display grande (cifras de métricas + acento del hero).
+     Fuente única para que ambos no se desincronicen. Requiere background-clip: text. */
+  --gradient-gold: linear-gradient(
+    180deg,
+    var(--color-sand-light) 0%,
+    var(--color-sand) 55%,
+    var(--color-sand-deep) 100%
+  );
+
+  /* dorado metálico para fondos CLAROS: el --gradient-gold arranca en el dorado
+     claro (pensado para fondos oscuros) y se lava sobre blanco. Este invierte el
+     peso —medio → oscuro → texto— para conservar el brillo metálico legible sobre
+     claro. Recorte sobre texto display grande (números del proceso sobre blanco). */
+  --gradient-gold-on-light: linear-gradient(
+    180deg,
+    var(--color-sand) 0%,
+    var(--color-sand-deep) 60%,
+    var(--color-sand-text) 100%
+  );
+
+  /* "perla": mismo efecto metálico que el dorado, pero en blanco frío.
+     Para la línea blanca del h1: conserva legibilidad y el contraste blanco+dorado. */
+  --gradient-pearl: linear-gradient(
+    180deg,
+    var(--color-white) 0%,
+    #eef1f9 50%,
+    #cdd6ea 100%
+  );
+
+  /* dorado SUAVE: sheen sutil para rellenos sólidos (botones).
+     No baja a sand-deep — en un botón chico ese tramo oscuro ensucia el CTA. */
+  --gradient-gold-soft: linear-gradient(
+    180deg,
+    var(--color-sand-light) 0%,
+    var(--color-sand) 100%
+  );
+
+  --color-red: #e23b2e; /* acento puntual — kickers, detalles. No para texto chico */
+  --color-red-bright: #ff4635; /* rojo original del logo — solo decorativo */
+
+  /* ---------- Color: neutros ---------- */
+  --color-white: #ffffff;
+  --color-cream: #faf8f2; /* fondo claro cálido, armoniza con el dorado */
+  --color-mist: #f1f3f9; /* fondo claro frío, armoniza con el cobalto */
+  --color-line: #e3e1d8; /* bordes sutiles sobre claro */
+  --color-ink: #10142b; /* texto principal (azul casi negro) */
+  --color-slate: #474d68; /* texto secundario sobre claro (≥7:1) */
+  --color-fog: #b8c0e4; /* texto secundario sobre cobalto/noche */
+
+  /* ---------- Color: semánticos ---------- */
+  --color-bg: var(--color-white);
+  --color-text: var(--color-ink);
+  --color-text-muted: var(--color-slate);
+  --color-focus: var(--color-cobalt);
+  --color-whatsapp: #0e8040; /* verde WhatsApp oscurecido: 5.0:1 con texto blanco (AA) */
+  --color-whatsapp-deep: #0a6a35; /* hover */
+
+  /* ---------- Tipografía ---------- */
+  /* Las familias las define la Fonts API de Astro (astro.config.mjs) */
+  --font-display: var(--font-marcellus, 'Georgia', serif);
+  --font-body: var(--font-figtree, system-ui, sans-serif);
+
+  /* Escala fluida (mobile-first → desktop) */
+  --text-xs: 0.8125rem; /* 13px */
+  --text-sm: 0.9375rem; /* 15px */
+  --text-base: 1.0625rem; /* 17px */
+  --text-md: clamp(1.125rem, 1rem + 0.5vw, 1.3125rem);
+  --text-lg: clamp(1.3125rem, 1.15rem + 0.8vw, 1.625rem);
+  --text-xl: clamp(1.625rem, 1.35rem + 1.2vw, 2.125rem);
+  --text-2xl: clamp(2rem, 1.6rem + 1.8vw, 2.875rem);
+  --text-3xl: clamp(2.5rem, 1.9rem + 2.8vw, 4rem);
+
+  --leading-tight: 1.12;
+  --leading-snug: 1.3;
+  --leading-body: 1.65;
+
+  --tracking-wide: 0.08em;
+  --tracking-caps: 0.16em; /* para kickers/etiquetas en mayúsculas */
+
+  /* ---------- Espaciado ---------- */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --section-pad: clamp(4.5rem, 4rem + 6vw, 8rem); /* padding vertical de secciones */
+
+  /* ---------- Layout ---------- */
+  --container-max: 80rem; /* 1280px */
+  --container-pad: clamp(1.25rem, 4vw, 2.5rem);
+  --header-h: 4.5rem;
+  --header-h-scrolled: 3.75rem; /* header compactado tras hacer scroll */
+
+  /* ---------- Radios ---------- */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-full: 999px;
+
+  /* ---------- Sombras ---------- */
+  --shadow-sm: 0 1px 2px rgb(5 19 65 / 0.06), 0 2px 8px rgb(5 19 65 / 0.06);
+  --shadow-md: 0 2px 6px rgb(5 19 65 / 0.07), 0 10px 28px rgb(5 19 65 / 0.12);
+  --shadow-lg: 0 4px 12px rgb(5 19 65 / 0.1), 0 24px 56px rgb(5 19 65 / 0.18);
+  --shadow-cta: 0 6px 20px rgb(3 40 185 / 0.32);
+  --shadow-cta-hover: 0 10px 30px rgb(3 40 185 / 0.45); /* glow del CTA primario en hover */
+  --shadow-gold-hover: 0 10px 30px rgb(138 123 77 / 0.4); /* glow dorado para CTAs sobre oscuro */
+  --shadow-whatsapp-hover: 0 10px 30px rgb(14 128 64 / 0.35); /* glow verde del CTA WhatsApp en hover (gemelo de cta/gold-hover) */
+  --shadow-header: 0 6px 24px rgb(5 19 65 / 0.28); /* sombra del header tras scroll */
+
+  /* Halo de foco reutilizable para campos de formulario: cobalto a baja alfa.
+     Acompaña al borde cobalto (indicador ≥3:1) sin reemplazar el outline de teclado. */
+  --ring-focus: 0 0 0 4px rgb(3 40 185 / 0.16);
+
+  /* ---------- Transiciones ---------- */
+  /* Curva de ENTRADA: ataque rápido + desaceleración larga (reveals, ken-burns) */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Curva de INTERACCIÓN: más ajustada, para hover/focus/estado del header */
+  --ease-interactive: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --speed-fast: 160ms;
+  --speed-base: 260ms;
+  --speed-slow: 480ms;
+  --speed-cinematic: 900ms; /* reveals largos y dibujo del acento */
+
+  /* ---------- Movimiento de escena ---------- */
+  --stagger-step: 80ms; /* paso base del escalonado de entrada */
+  --stagger-step-walk: 120ms; /* cadencia más pausada: refuerza la lectura de "recorrido" (proceso 01→04) */
+  --ken-burns-dur: 18s; /* zoom lento de la imagen de fondo del hero */
+  --count-up-dur: 1600ms; /* ascenso de los contadores de métricas (más largo que cinematic: hay que leer la cifra) */
+  --pulse-dur: 2400ms; /* latido del indicador "en ejecución" de la ficha de obra */
+  --sheen-dur: 7s; /* brillo metálico que cruza el panel de marca (Nosotros) — un barrido + descanso largo */
+  --float-dur: 6s; /* flotación sutil del panel de marca (Nosotros) */
+}

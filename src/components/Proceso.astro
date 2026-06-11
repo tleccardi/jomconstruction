@@ -1,0 +1,252 @@
+---
+const PASOS = [
+  {
+    titulo: 'Contanos tu proyecto',
+    texto:
+      'Escribinos por WhatsApp o dejanos tus datos en el formulario. Te respondemos dentro de las 24 hs hábiles.',
+  },
+  {
+    titulo: 'Visitamos y relevamos sin cargo',
+    texto:
+      'Coordinamos una visita al terreno o a la obra, relevamos medidas y necesidades, y definimos el alcance con vos.',
+  },
+  {
+    titulo: 'Presupuesto detallado por escrito',
+    texto:
+      'Recibís un presupuesto claro, ítem por ítem, con plazos y forma de pago. Sin letra chica ni sorpresas después.',
+  },
+  {
+    titulo: 'Ejecutamos y entregamos',
+    texto:
+      'Arrancamos con fecha de entrega por contrato, avances documentados con fotos y comunicación directa durante toda la obra.',
+  },
+];
+---
+
+<section id="proceso" class="section proceso">
+  <div class="container">
+    <header class="section-head">
+      <p class="kicker reveal">Cómo trabajamos</p>
+      <h2 class="section-title reveal" style="--reveal-delay: 90ms">
+        Un proceso claro, de la consulta a la entrega
+      </h2>
+      <p class="section-lede reveal" style="--reveal-delay: 180ms">
+        Una obra es una inversión grande. Por eso cada paso está pensado para que sepas siempre
+        qué sigue, cuánto cuesta y cuándo se entrega.
+      </p>
+    </header>
+
+    <ol class="pasos" role="list">
+      {
+        PASOS.map((paso, i) => (
+          <li class="paso reveal" style={`--reveal-delay: calc(var(--stagger-step-walk) * ${i})`}>
+            <span class="paso-num" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <h3>{paso.titulo}</h3>
+            <p>{paso.texto}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .proceso {
+    background: var(--color-white);
+  }
+
+  /* ---------- Kicker: la línea se "dibuja" al entrar (mismo gesto que el hero) ---------- */
+  html:not(.no-js) .kicker::before {
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  html:not(.no-js) .kicker.is-visible::before {
+    animation: proceso-kicker-line var(--speed-cinematic) var(--ease-out) 120ms forwards;
+  }
+
+  @keyframes proceso-kicker-line {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* ---------- Pasos ---------- */
+  .pasos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-xl) var(--space-lg);
+    padding: 0;
+    list-style: none;
+  }
+
+  /* fuera de escritorio el riel no aplica (los pasos se apilan): se conserva la
+     regla superior actual. El layout mobile se afina en un pase aparte. */
+  .paso {
+    position: relative;
+    padding-top: var(--space-md);
+    border-top: 2px solid var(--color-line);
+  }
+
+  .paso-num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    line-height: var(--leading-tight);
+    font-variant-numeric: tabular-nums; /* 01–04 a ancho fijo: alineación prolija */
+    color: var(--color-sand-deep); /* fallback sólido si no hay background-clip: text */
+    transition: filter var(--speed-base) var(--ease-interactive);
+  }
+
+  /* dorado metálico recortado sobre el número, afinado para fondo claro
+     (mismo recurso que las cifras de métricas y el acento del hero). */
+  @supports ((background-clip: text) or (-webkit-background-clip: text)) {
+    .paso-num {
+      background: var(--gradient-gold-on-light);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .paso h3 {
+    margin-top: var(--space-sm);
+    font-size: var(--text-md);
+    font-family: var(--font-body);
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .paso p {
+    margin-top: var(--space-xs);
+    max-width: 32ch; /* la medida cierra cada paso como bloque, no como párrafo suelto */
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  /* ---------- Riel conector + nodos (solo escritorio: fila única garantizada) ---------- */
+  @media (min-width: 64em) {
+    .pasos {
+      grid-template-columns: repeat(4, 1fr);
+      position: relative;
+      --node-d: 0.875rem;
+      --node-r: calc(var(--node-d) / 2);
+    }
+
+    /* dos capas a lo ancho de toda la fila (del nodo 01 al final de la columna 04):
+       ::before = track tenue siempre presente · ::after = relleno dorado que se dibuja. */
+    .pasos::before,
+    .pasos::after {
+      content: '';
+      position: absolute;
+      z-index: 0;
+      top: var(--node-r);
+      left: 0;
+      right: 0;
+      height: 2px;
+    }
+
+    .pasos::before {
+      background: var(--color-line);
+      transform: translateY(-50%);
+    }
+
+    .pasos::after {
+      background: linear-gradient(90deg, var(--color-sand), var(--color-sand-deep));
+      transform: translateY(-50%) scaleX(0);
+      transform-origin: left center;
+      transition: transform var(--speed-cinematic) var(--ease-out);
+    }
+
+    /* el riel se dibuja en cuanto el primer paso entra en viewport (guía 01→04).
+       Sin observer nuevo: se engancha al .is-visible que ya pone el observer global. */
+    .pasos:has(.paso.is-visible)::after {
+      transform: translateY(-50%) scaleX(1);
+    }
+
+    .paso {
+      border-top: 0; /* fuera la regla suelta: ahora conecta el riel */
+      padding-top: 1.85rem; /* banda para el nodo, por encima del número */
+      z-index: 1; /* contenido + nodo por encima del riel */
+    }
+
+    /* nodo "estación" por paso, alineado al número (izq), recortando el riel */
+    .paso::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: var(--node-d);
+      height: var(--node-d);
+      border-radius: var(--radius-full);
+      background: var(--color-sand-deep);
+      box-shadow: 0 0 0 3px var(--color-white); /* halo blanco: separa el nodo del riel */
+      transform: scale(0);
+      transform-origin: center;
+      transition:
+        transform var(--speed-base) var(--ease-out) var(--reveal-delay, 0ms),
+        background-color var(--speed-base) var(--ease-interactive);
+    }
+
+    .paso.is-visible::before {
+      transform: scale(1);
+    }
+
+    /* hover sutil del paso (no interactivo, puro deleite): el nodo se "enciende"
+       en cobalto y el número levanta brillo. Solo transform/filter/color → barato. */
+    .paso:hover::before {
+      background: var(--color-cobalt);
+    }
+
+    .paso:hover .paso-num {
+      filter: brightness(1.06);
+    }
+
+    /* #5 — progreso ligado al scroll donde haya soporte nativo (degrada al draw por
+       reveal de arriba). Off-main-thread, sin listeners de scroll → sin jank. */
+    @media (prefers-reduced-motion: no-preference) {
+      @supports (animation-timeline: view()) {
+        .pasos::after {
+          transform: translateY(-50%) scaleX(0);
+          animation: pasos-fill linear both;
+          animation-timeline: view();
+          animation-range: entry 10% cover 55%;
+        }
+      }
+    }
+
+    /* sin JS: riel y nodos en su estado final, visibles */
+    html.no-js .pasos::after {
+      transform: translateY(-50%) scaleX(1);
+    }
+
+    html.no-js .paso::before {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes pasos-fill {
+    from {
+      transform: translateY(-50%) scaleX(0);
+    }
+    to {
+      transform: translateY(-50%) scaleX(1);
+    }
+  }
+
+  /* escritorio + reduced-motion: riel dibujado y nodos visibles, sin animar */
+  @media (min-width: 64em) and (prefers-reduced-motion: reduce) {
+    .pasos::after {
+      transform: translateY(-50%) scaleX(1);
+      transition: none;
+      animation: none;
+    }
+
+    .paso::before {
+      transform: scale(1);
+      transition: none;
+    }
+  }
+</style>

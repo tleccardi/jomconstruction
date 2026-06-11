@@ -1,0 +1,731 @@
+---
+import { Image } from 'astro:assets';
+import fotoPanoramica from '../assets/obra-aerea-panoramica.jpg';
+import fotoEstructuras from '../assets/obra-estructuras.jpg';
+import fotoCenital from '../assets/obra-vista-cenital.jpg';
+
+// Estructura preparada para sumar obras a futuro: agregar items a este array.
+const FOTOS = [
+  {
+    src: fotoPanoramica,
+    alt: 'Vista aérea panorámica del desarrollo residencial: varios edificios de media altura en etapa de estructura',
+    caption: 'Vista aérea del conjunto — edificios en etapa de estructura',
+  },
+  {
+    src: fotoEstructuras,
+    alt: 'Edificios en construcción con estructuras de hormigón armado y mampostería, junto al sector de fundaciones',
+    caption: 'Estructuras de hormigón armado y fundaciones de las próximas etapas',
+  },
+  {
+    src: fotoCenital,
+    alt: 'Vista cenital de la obra: tres edificios en construcción y las plateas de fundación del resto del predio',
+    caption: 'Vista cenital del predio completo y plateas de fundación',
+  },
+];
+
+// Obra real: León Gallo, San Justo. Superficie y Estado son PROVISORIOS — los ajusta el cliente.
+type DatoObra = { label: string; value: string; destacado?: boolean; estado?: boolean };
+const DATOS_OBRA: DatoObra[] = [
+  { label: 'Tipo de obra', value: 'Obra nueva — desarrollo residencial' },
+  { label: 'Ubicación', value: 'León Gallo, San Justo — La Matanza, Buenos Aires' },
+  { label: 'Superficie', value: '19.800 m² cubiertos · 6 edificios', destacado: true },
+  { label: 'Estado', value: 'En ejecución — entrega 2027', estado: true },
+];
+---
+
+<section id="obras" class="section obras">
+  <div class="container">
+    <header class="section-head">
+      <p class="kicker reveal">Obras</p>
+      <h2 class="section-title reveal" style="--reveal-delay: calc(var(--stagger-step) * 1)">
+        La prueba está en la obra
+      </h2>
+      <p class="section-lede reveal" style="--reveal-delay: calc(var(--stagger-step) * 2)">
+        Sin renders ni fotos de archivo: esto es lo que estamos construyendo hoy. Un desarrollo
+        residencial de varios edificios, documentado desde el aire.
+      </p>
+    </header>
+
+    <article class="obra" aria-labelledby="obra-titulo">
+      <div class="obra-galeria">
+        <button
+          type="button"
+          class="obra-foto obra-foto--principal reveal"
+          data-lightbox-open="0"
+          aria-haspopup="dialog"
+          aria-label={`Ampliar foto: ${FOTOS[0]!.caption}`}
+        >
+          {/* width acotado a la resolución real de los assets (fotos vía WhatsApp ~1110px) */}
+          <span class="obra-foto-media">
+            <Image
+              src={FOTOS[0]!.src}
+              alt={FOTOS[0]!.alt}
+              layout="constrained"
+              width={1104}
+              quality={78}
+              sizes="(min-width: 72em) 1104px, calc(100vw - 2.5rem)"
+            />
+          </span>
+          <span class="obra-foto-caption" aria-hidden="true">{FOTOS[0]!.caption}</span>
+          <span class="obra-foto-zoom" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m21 21-4.3-4.3M11 8v6M8 11h6"></path>
+            </svg>
+          </span>
+        </button>
+
+        <div class="obra-thumbs">
+          {
+            FOTOS.slice(1).map((foto, i) => (
+              <button
+                type="button"
+                class="obra-foto reveal"
+                data-lightbox-open={i + 1}
+                style={`--reveal-delay: calc(var(--stagger-step) * ${i + 1})`}
+                aria-haspopup="dialog"
+                aria-label={`Ampliar foto: ${foto.caption}`}
+              >
+                <Image
+                  src={foto.src}
+                  alt={foto.alt}
+                  layout="constrained"
+                  width={720}
+                  quality={75}
+                  sizes="(min-width: 72em) 544px, (min-width: 48em) 50vw, calc(100vw - 2.5rem)"
+                />
+                <span class="obra-foto-caption" aria-hidden="true">{foto.caption}</span>
+                <span class="obra-foto-zoom" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  >
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m21 21-4.3-4.3M11 8v6M8 11h6" />
+                  </svg>
+                </span>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="obra-info reveal" style="--reveal-delay: calc(var(--stagger-step) * 3)">
+        <h3 id="obra-titulo">Desarrollo residencial — León Gallo, San Justo</h3>
+        <p>
+          Conjunto de edificios de vivienda en altura media, ejecutado por etapas: estructura de
+          hormigón armado, mampostería y fundaciones de las torres siguientes avanzando en
+          paralelo.
+        </p>
+        <dl class="obra-datos">
+          {
+            DATOS_OBRA.map((dato, i) => (
+              <div style={`--row-i: ${i}`}>
+                <dt>{dato.label}</dt>
+                <dd class:list={['obra-dato-valor', { 'obra-dato-valor--num': dato.destacado }]}>
+                  {dato.estado ? (
+                    <span class="obra-estado">
+                      <span class="obra-estado-dot" aria-hidden="true" />
+                      {dato.value}
+                    </span>
+                  ) : (
+                    dato.value
+                  )}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <a href="#contacto" class="btn btn--primary">Quiero una obra así</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<dialog id="lightbox" class="lightbox" aria-label="Galería de fotos de la obra">
+  <div class="lightbox-inner">
+    <button type="button" class="lightbox-btn lightbox-close" data-lightbox-close>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <line x1="5" y1="5" x2="19" y2="19"></line>
+        <line x1="19" y1="5" x2="5" y2="19"></line>
+      </svg>
+      <span class="visually-hidden">Cerrar galería</span>
+    </button>
+
+    {
+      FOTOS.map((foto, i) => (
+        <figure class="lightbox-slide" data-slide={i} hidden={i !== 0}>
+          <Image
+            src={foto.src}
+            alt={foto.alt}
+            layout="constrained"
+            width={1104}
+            quality={82}
+            sizes="(min-width: 75em) 1104px, calc(100vw - 4rem)"
+          />
+          <figcaption>
+            {foto.caption} <span class="lightbox-count">({i + 1} de {FOTOS.length})</span>
+          </figcaption>
+        </figure>
+      ))
+    }
+
+    <p class="visually-hidden" role="status" data-lightbox-status></p>
+
+    <div class="lightbox-nav">
+      <button type="button" class="lightbox-btn" data-lightbox-prev>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m15 18-6-6 6-6"></path>
+        </svg>
+        <span class="visually-hidden">Foto anterior</span>
+      </button>
+      <button type="button" class="lightbox-btn" data-lightbox-next>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m9 6 6 6-6 6"></path>
+        </svg>
+        <span class="visually-hidden">Foto siguiente</span>
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .obras {
+    background: var(--color-cream);
+  }
+
+  /* la línea del kicker se dibuja al entrar (scoped a Obras: no afecta otras secciones) */
+  .kicker::before {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--speed-slow) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .kicker.is-visible::before {
+    transform: scaleX(1);
+  }
+
+  :global(html.no-js) .kicker::before {
+    transform: none;
+  }
+
+  .obra {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+
+  .obra-galeria {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .obra-foto {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--speed-base) var(--ease-interactive);
+  }
+
+  /* scrim que aparece en hover/focus: da contraste al caption y al botón de zoom */
+  .obra-foto::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to top, rgb(5 19 65 / 0.55), rgb(5 19 65 / 0) 45%);
+    opacity: 0;
+    transition: opacity var(--speed-base) var(--ease-out);
+    pointer-events: none;
+  }
+
+  .obra-foto:hover::after,
+  .obra-foto:focus-visible::after {
+    opacity: 1;
+  }
+
+  /* capa que aísla el parallax (solo principal) del scale de hover/entrada del img */
+  .obra-foto-media {
+    display: block;
+  }
+
+  .obra-foto img {
+    width: 100%;
+    /* asentar de entrada (mini ken-burns) + push de hover comparten esta transición */
+    transform: scale(1.06);
+    transition: transform var(--speed-slow) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .obra-foto.is-visible img {
+    transform: scale(1);
+  }
+
+  /* sin JS la foto queda en su tamaño natural (no asienta) */
+  :global(html.no-js) .obra-foto img {
+    transform: none;
+  }
+
+  /* hover: el push es inmediato (sin heredar el delay de entrada) */
+  .obra-foto:hover img,
+  .obra-foto:focus-visible img {
+    transition-delay: 0ms;
+  }
+
+  .obra-foto--principal:hover img,
+  .obra-foto--principal:focus-visible img {
+    transform: scale(1.06);
+  }
+
+  .obra-thumbs .obra-foto:hover img,
+  .obra-thumbs .obra-foto:focus-visible img {
+    transform: scale(1.04);
+  }
+
+  /* jerarquía: la protagonista se eleva más que las secundarias */
+  .obra-foto--principal:hover,
+  .obra-foto--principal:focus-visible {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .obra-thumbs .obra-foto:hover,
+  .obra-thumbs .obra-foto:focus-visible {
+    box-shadow: var(--shadow-md);
+  }
+
+  .obra-foto-caption {
+    position: absolute;
+    left: var(--space-md);
+    right: calc(var(--space-md) + 3.5rem);
+    bottom: var(--space-md);
+    z-index: 2;
+    color: var(--color-white);
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    text-shadow: 0 1px 2px rgb(5 19 65 / 0.5);
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity var(--speed-base) var(--ease-interactive),
+      transform var(--speed-base) var(--ease-interactive);
+    pointer-events: none;
+  }
+
+  .obra-foto:hover .obra-foto-caption,
+  .obra-foto:focus-visible .obra-foto-caption {
+    opacity: 1;
+    transform: none;
+  }
+
+  .obra-foto-zoom {
+    position: absolute;
+    right: var(--space-md);
+    bottom: var(--space-md);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-full);
+    background: rgb(5 19 65 / 0.72);
+    color: var(--color-white);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transform: translateY(8px) scale(0.92);
+    transition:
+      opacity var(--speed-base) var(--ease-interactive),
+      transform var(--speed-base) var(--ease-interactive),
+      background-color var(--speed-base) var(--ease-interactive);
+  }
+
+  .obra-foto:hover .obra-foto-zoom,
+  .obra-foto:focus-visible .obra-foto-zoom {
+    opacity: 1;
+    transform: none;
+    background: var(--color-cobalt);
+  }
+
+  .obra-foto-zoom svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: transform var(--speed-base) var(--ease-interactive);
+  }
+
+  .obra-foto:hover .obra-foto-zoom svg,
+  .obra-foto:focus-visible .obra-foto-zoom svg {
+    transform: scale(1.08);
+  }
+
+  /* parallax sutil de la foto protagonista (progressive enhancement, sin JS) */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .obra-foto--principal .obra-foto-media {
+        animation: obra-parallax linear both;
+        animation-timeline: view();
+        animation-range: cover 0% cover 100%;
+        will-change: transform;
+      }
+    }
+  }
+
+  @keyframes obra-parallax {
+    from {
+      transform: translateY(-2.5%) scale(1.08);
+    }
+    to {
+      transform: translateY(2.5%) scale(1.08);
+    }
+  }
+
+  .obra-thumbs {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .obra-info h3 {
+    font-size: var(--text-xl);
+    color: var(--color-ink);
+    max-width: 24ch;
+  }
+
+  .obra-info > p {
+    margin-top: var(--space-md);
+    color: var(--color-text-muted);
+    max-width: 56ch;
+  }
+
+  .obra-datos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg) var(--space-2xl);
+    margin-block: var(--space-xl);
+    padding: var(--space-lg) var(--space-xl);
+    background: var(--color-white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    /* acento superior dorado, siguiendo las esquinas redondeadas (mismo oro de los botones) */
+    border-top: 2px solid var(--color-sand);
+  }
+
+  /* cada fila: hoja técnica con separador hairline (la fila superior no lleva) */
+  .obra-datos > div {
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-line);
+    /* cascada interna: las filas se "escriben" tras aparecer la ficha */
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity var(--speed-base) var(--ease-out),
+      transform var(--speed-base) var(--ease-out);
+    transition-delay: calc(var(--stagger-step) * (4 + var(--row-i, 0)));
+  }
+
+  .obra-datos > div:nth-child(-n + 2) {
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .obra-info.is-visible .obra-datos > div {
+    opacity: 1;
+    transform: none;
+  }
+
+  :global(html.no-js) .obra-datos > div {
+    opacity: 1;
+    transform: none;
+  }
+
+  .obra-datos dt {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-sand-deep);
+  }
+
+  .obra-dato-valor {
+    display: block;
+    margin: var(--space-2xs) 0 0;
+    font-weight: 600;
+    color: var(--color-ink);
+    overflow-wrap: anywhere;
+  }
+
+  /* cifra destacada (m²): orgullo de escala en tipografía display */
+  .obra-dato-valor--num {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--text-lg);
+    line-height: var(--leading-snug);
+  }
+
+  /* pill de estado "vivo" con punto pulsante */
+  .obra-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-2xs) var(--space-sm);
+    border-radius: var(--radius-full);
+    background: var(--color-cobalt-soft);
+    color: var(--color-cobalt);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .obra-estado-dot {
+    position: relative;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: var(--radius-full);
+    background: var(--color-red);
+  }
+
+  .obra-estado-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--color-red);
+    animation: obra-pulse var(--pulse-dur) var(--ease-out) infinite;
+  }
+
+  @keyframes obra-pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    70%,
+    100% {
+      transform: scale(2.6);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .obra-estado-dot::after {
+      animation: none;
+    }
+  }
+
+  @media (min-width: 48em) {
+    .obra-thumbs {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ---------- Lightbox ---------- */
+  .lightbox {
+    width: min(100vw, 100%);
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    /* gutters horizontales amplios: reservan el carril de las flechas fuera de la imagen */
+    padding: var(--space-xl) var(--space-3xl);
+    border: none;
+    background: transparent;
+    display: none;
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity var(--speed-base) var(--ease-out),
+      transform var(--speed-base) var(--ease-out),
+      display var(--speed-base) allow-discrete,
+      overlay var(--speed-base) allow-discrete;
+  }
+
+  .lightbox[open] {
+    display: grid;
+    place-items: center;
+    opacity: 1;
+    transform: none;
+  }
+
+  /* estado de entrada: el navegador transiciona desde acá al abrir (showModal) */
+  @starting-style {
+    .lightbox[open] {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  .lightbox::backdrop {
+    background: rgb(5 19 65 / 0.92);
+    opacity: 0;
+    transition:
+      opacity var(--speed-base) var(--ease-out),
+      display var(--speed-base) allow-discrete,
+      overlay var(--speed-base) allow-discrete;
+  }
+
+  .lightbox[open]::backdrop {
+    opacity: 1;
+  }
+
+  @starting-style {
+    .lightbox[open]::backdrop {
+      opacity: 0;
+    }
+  }
+
+  .lightbox-inner {
+    position: relative;
+    width: min(86rem, 100%);
+  }
+
+  .lightbox-slide {
+    margin: 0;
+  }
+
+  .lightbox-slide img {
+    width: 100%;
+    max-height: 78dvh;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+  }
+
+  .lightbox-slide figcaption {
+    margin-top: var(--space-md);
+    text-align: center;
+    color: var(--color-fog);
+    font-size: var(--text-sm);
+  }
+
+  .lightbox-count {
+    opacity: 0.7;
+  }
+
+  /* solo el ícono (sin círculo): flecha y cruz limpias, con sombra para leer sobre la foto */
+  .lightbox-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    color: var(--color-white);
+    transition:
+      color var(--speed-fast) var(--ease-out),
+      transform var(--speed-fast) var(--ease-interactive);
+  }
+
+  .lightbox-btn:hover {
+    color: var(--color-sand-light);
+    transform: scale(1.12);
+  }
+
+  .lightbox-btn svg {
+    width: 1.625rem;
+    height: 1.625rem;
+    filter: drop-shadow(0 1px 3px rgb(5 19 65 / 0.55));
+  }
+
+  /* controles fijos al viewport (no a la imagen): se anclan a los bordes oscuros */
+  .lightbox-close {
+    position: fixed;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 3;
+  }
+
+  /* flechas ancladas a la imagen (no al viewport): quedan justo por fuera de sus bordes */
+  .lightbox-nav {
+    position: absolute;
+    inset-inline: calc(-1 * var(--space-2xl));
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .lightbox-nav .lightbox-btn {
+    pointer-events: auto;
+  }
+</style>
+
+<script>
+  const lightbox = document.getElementById('lightbox') as HTMLDialogElement | null;
+
+  if (lightbox) {
+    const slides = Array.from(lightbox.querySelectorAll<HTMLElement>('[data-slide]'));
+    const status = lightbox.querySelector<HTMLElement>('[data-lightbox-status]');
+    let current = 0;
+
+    const show = (index: number) => {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => {
+        slide.hidden = i !== current;
+      });
+      // anuncia el cambio de foto a lectores de pantalla (WCAG 4.1.3)
+      const caption = slides[current]?.querySelector('figcaption')?.textContent?.trim();
+      if (status && caption) status.textContent = caption;
+    };
+
+    document.querySelectorAll<HTMLButtonElement>('[data-lightbox-open]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        show(Number(btn.dataset.lightboxOpen ?? 0));
+        lightbox.showModal();
+      });
+    });
+
+    lightbox.querySelector('[data-lightbox-close]')?.addEventListener('click', () => {
+      lightbox.close();
+    });
+
+    lightbox.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => {
+      show(current - 1);
+    });
+
+    lightbox.querySelector('[data-lightbox-next]')?.addEventListener('click', () => {
+      show(current + 1);
+    });
+
+    lightbox.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') show(current - 1);
+      if (event.key === 'ArrowRight') show(current + 1);
+    });
+
+    // Cerrar al clickear el fondo (fuera del contenido)
+    lightbox.addEventListener('click', (event) => {
+      if (event.target === lightbox) lightbox.close();
+    });
+  }
+</script>

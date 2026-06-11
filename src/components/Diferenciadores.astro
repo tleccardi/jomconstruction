@@ -1,0 +1,231 @@
+---
+const DIFERENCIADORES = [
+  {
+    titulo: 'Cumplimiento de plazos',
+    texto:
+      'La fecha de entrega se firma en el contrato y se cumple. Planificamos la obra completa antes de poner el primer ladrillo.',
+    icono: 'M12 8v4l3 3M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+  },
+  {
+    titulo: 'Presupuesto transparente',
+    texto:
+      'Cotizamos ítem por ítem para que sepas exactamente qué estás pagando. Cualquier adicional se aprueba antes, con vos.',
+    icono:
+      'M9 7h6m-6 4h6m-6 4h4m-9 6V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16l-3-2-3 2-3-2-3 2Z',
+  },
+  {
+    titulo: 'Calidad supervisada',
+    texto:
+      'Dirección técnica presente en obra y controles en cada etapa: estructura, instalaciones y terminaciones.',
+    icono:
+      'M9 12l2 2 4-4m5.6 2a9.6 9.6 0 0 1-9.6 9.6A9.6 9.6 0 0 1 2.4 12 9.6 9.6 0 0 1 12 2.4 9.6 9.6 0 0 1 21.6 12Z',
+  },
+  {
+    titulo: 'Comunicación directa',
+    texto:
+      'Un único responsable de tu obra te informa los avances con fotos y reportes. Sin intermediarios ni respuestas vagas.',
+    icono:
+      'M8 10h8m-8 4h5m-9 7V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8l-4 4Z',
+  },
+];
+---
+
+<section class="section diferenciadores">
+  <div class="container">
+    <div class="diferenciadores-grid">
+      <header class="section-head diferenciadores-head">
+        <p class="kicker reveal">Por qué elegirnos</p>
+        <h2 class="section-title reveal" style="--reveal-delay: 90ms">
+          Lo que prometemos se puede comprobar
+        </h2>
+        <p class="section-lede reveal" style="--reveal-delay: 180ms">
+          No vendemos adjetivos: cada compromiso que asumimos queda por escrito y se puede
+          verificar durante la obra.
+        </p>
+        <div class="diferenciadores-cta-wrap reveal" style="--reveal-delay: 270ms">
+          <a href="#contacto" class="btn btn--primary diferenciadores-cta">
+            Hablemos de tu obra
+            <span class="btn-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14m-6-6 6 6-6 6" />
+              </svg>
+            </span>
+          </a>
+        </div>
+      </header>
+
+      <ul class="diferenciadores-items" role="list">
+        {
+          DIFERENCIADORES.map((item, i) => (
+            <li
+              class="diferenciador reveal"
+              style={`--reveal-delay: calc(var(--stagger-step) * ${i} + 120ms)`}
+            >
+              <div class="diferenciador-inner">
+                <span class="diferenciador-icono" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d={item.icono} />
+                  </svg>
+                </span>
+                <h3>{item.titulo}</h3>
+                <p>{item.texto}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .diferenciadores {
+    background: var(--color-mist);
+  }
+
+  .diferenciadores-grid {
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+
+  .diferenciadores-head {
+    margin-bottom: 0;
+  }
+
+  /* ---------- Kicker: la línea roja se "dibuja" al entrar (mismo gesto que Proceso/Hero) ---------- */
+  html:not(.no-js) .kicker::before {
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  html:not(.no-js) .kicker.is-visible::before {
+    animation: difer-kicker-line var(--speed-cinematic) var(--ease-out) 120ms forwards;
+  }
+
+  @keyframes difer-kicker-line {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .diferenciadores-cta-wrap {
+    margin-top: var(--space-xl);
+  }
+
+  .diferenciadores-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-xl) var(--space-lg);
+    padding: 0;
+    list-style: none;
+  }
+
+  /* El .reveal (global) vive en el <li> y aporta la entrada (opacity + translateY,
+     escalonada por --reveal-delay). El hover vive en .diferenciador-inner para no
+     pelear con el transform del reveal ni heredar su transition-delay — mismo
+     patrón que Servicios (.servicio-card / -inner) y MetricsBar. */
+  .diferenciador {
+    display: flex;
+  }
+
+  .diferenciador-inner {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: var(--space-xl);
+    background: var(--color-white);
+    border: 1px solid var(--color-line);
+    border-top: 2px solid var(--color-sand); /* terminación superior dorada (igual que servicios/ficha de obra) */
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); /* profundidad en reposo: la tarjeta deja de verse plana */
+    transition:
+      transform var(--speed-base) var(--ease-interactive),
+      box-shadow var(--speed-base) var(--ease-interactive),
+      border-color var(--speed-base) var(--ease-interactive);
+  }
+
+  .diferenciador:hover .diferenciador-inner,
+  .diferenciador:focus-within .diferenciador-inner {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    /* sin recolorear el borde a cobalto: la card solo se eleva, la corona dorada queda */
+  }
+
+  /* Ícono: tile con tinte cobalto en reposo. En hover "se enciende": se rellena de
+     cobalto, el ícono vira a dorado, escala y gana glow dorado. Mismo par cobalto +
+     dorado que Servicios, pero acá el flip es el gesto central del hover. */
+  .diferenciador-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-bottom: var(--space-md);
+    border-radius: var(--radius-md);
+    background-color: var(--color-cobalt-soft);
+    color: var(--color-cobalt);
+    box-shadow: inset 0 0 0 1px rgb(3 40 185 / 0.12); /* hairline cobalto en reposo */
+    transition:
+      transform var(--speed-base) var(--ease-interactive),
+      background-color var(--speed-base) var(--ease-interactive),
+      color var(--speed-base) var(--ease-interactive),
+      box-shadow var(--speed-base) var(--ease-interactive);
+  }
+
+  .diferenciador-icono svg {
+    width: 1.625rem;
+    height: 1.625rem;
+  }
+
+  .diferenciador:hover .diferenciador-icono,
+  .diferenciador:focus-within .diferenciador-icono {
+    transform: scale(1.06);
+    background-color: var(--color-cobalt);
+    color: var(--color-sand-light);
+    box-shadow:
+      inset 0 0 0 1px rgb(228 220 176 / 0.4),
+      var(--shadow-gold-hover);
+  }
+
+  .diferenciador h3 {
+    font-size: var(--text-md);
+    font-family: var(--font-body);
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .diferenciador p {
+    margin-top: var(--space-xs);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 64em) {
+    .diferenciadores-grid {
+      grid-template-columns: 5fr 7fr;
+      gap: var(--space-3xl);
+    }
+  }
+
+  /* prefers-reduced-motion: global.css ya neutraliza .reveal y lleva transiciones y
+     animaciones a ~0ms, así el flip del ícono y el lift de la tarjeta saltan a su
+     estado final sin animar, y la línea del kicker aparece dibujada. El sticky se
+     mantiene (no es animación). Nada queda oculto detrás del movimiento. */
+</style>
