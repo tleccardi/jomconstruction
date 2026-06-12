@@ -311,6 +311,19 @@ const year = new Date().getFullYear();
     font-size: var(--text-xs);
   }
 
+  /* DESKTOP (≥48em): las secciones nunca colapsan. El contenido se ve
+     siempre, sin depender del estado [open] del <details> (a prueba de
+     no-JS y de cualquier mecanismo de ocultamiento del navegador).
+     Cubre el mecanismo moderno (::details-content) y el clásico (display). */
+  @media (min-width: 48em) {
+    .footer-group::details-content {
+      content-visibility: visible;
+    }
+    .footer-group:not([open]) > .footer-acc-panel {
+      display: block;
+    }
+  }
+
   /* ============================================================
      MOBILE (≤47.99em) — el desktop (≥48em) NO se toca.
      Cierre de marca: marca + descripción, redes como chips

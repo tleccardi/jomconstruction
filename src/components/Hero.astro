@@ -1,14 +1,92 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import heroImg from '../assets/hero.jpeg';
 import { WHATSAPP_URL } from '../config';
+
+// Poster optimizado del video: es el frame inmediato (cubre hasta que arranca la
+// reproducción) y el fallback fijo bajo prefers-reduced-motion. Reusa la imagen
+// de obra existente vía el pipeline de Astro, sin duplicar el asset en /public.
+const poster = await getImage({
+  src: heroImg,
+  width: 1600,
+  quality: 70,
+  format: 'webp',
+});
 ---
 
 <section id="inicio" class="hero">
-  {/* Campo "plano": la foto deja de ir a sangre; el texto se apoya sobre el
-      cobalto-noche sólido (contraste AA holgado) y la grilla técnica de
-      MetricsBar/Nosotros hila el hero con el resto del sitio. Decorativo. */}
-  <div class="hero-field" aria-hidden="true"></div>
+  {/* Video de obra a sangre como fondo. Decorativo: sin audio, no esencial →
+      aria-hidden + tabindex=-1; el contenido real es el texto de abajo. muted +
+      playsinline habilitan el autoplay sin gesto del usuario. El poster (webp de
+      la imagen de obra) es el LCP y cubre el primer paint, el video no compite.
+      En mobile, el gate inline de abajo reemplaza la fuente por el encode liviano
+      (~1 MB, 720p) adelantándose al fetch durante el parseo; en desktop queda el
+      master 1080p. Bajo reduced-motion / Save-Data / red 2g → poster fijo. */}
+  <video
+    class="hero-video"
+    poster={poster.src}
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+    aria-hidden="true"
+    tabindex="-1"
+    data-hero-video
+  >
+    {/* src de desktop por defecto; el gate inline lo cambia por el encode
+        liviano mobile cuando corresponde. */}
+    <source
+      src="/video.mp4"
+      type="video/mp4"
+      data-src-mobile="/video-mobile.mp4"
+    />
+  </video>
+  {/* Gate inline, síncrono, justo tras el <video>: corre en el parse — antes de
+      que el algoritmo de selección de recurso (diferido a "stable state") dispare
+      la descarga. Por eso puede:
+        1) cortar el video (reduced-motion / Save-Data / red 2g) → poster fijo, y
+        2) en mobile, apuntar la fuente al encode liviano sin que se baje el
+           master 1080p ni un byte.
+      Desktop: no entra a ninguna rama → conserva el <source> estático /video.mp4
+      y el autoplay nativo, idéntico a hoy (también sin JS). */}
+  <script is:inline>
+    (function () {
+      var v = document.currentScript.previousElementSibling;
+      if (!v || v.tagName !== 'VIDEO') return;
+      var source = v.querySelector('source');
+      if (!source) return;
+
+      var conn =
+        navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      var saveData = !!(conn && conn.saveData);
+      var slowNet = !!(conn && /(?:^|-)2g$/.test(conn.effectiveType || ''));
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Poster fijo: ni un frame de movimiento ni descarga de video.
+      if (reduce || saveData || slowNet) {
+        v.removeAttribute('autoplay');
+        v.preload = 'none';
+        v.removeAttribute('data-hero-video');
+        return;
+      }
+
+      // Mobile: servir el encode liviano 720p (~1,2 MB) en lugar del master
+      // 1080p. v.load() re-dispara la selección con la fuente nueva antes de que
+      // arranque el autoplay.
+      if (window.matchMedia('(max-width: 48em)').matches) {
+        source.src = source.getAttribute('data-src-mobile');
+        v.load();
+      }
+    })();
+  </script>
+
+  {/* Scrim de marca sobre el video: el contraste cambia frame a frame, así que
+      el texto no se apoya en un overlay plano sino en capas de cobalto-noche
+      (peso a la izquierda, donde va la columna + anclaje inferior bajo CTAs/
+      ficha). La grilla "plano técnico" tenue hila con MetricsBar/Nosotros y
+      evita el "video + degradado negro" genérico. Decorativo. */}
+  <div class="hero-scrim" aria-hidden="true"></div>
 
   <div class="container hero-grid">
     <div class="hero-copy">
@@ -49,27 +127,6 @@ import { WHATSAPP_URL } from '../config';
         <li>Personal asegurado con ART</li>
       </ul>
     </div>
-
-    {/* Lámina de obra: la foto pasa a ser prueba enmarcada (no papel tapiz).
-        Mantiene el pipeline <Image> con priority para el LCP. */}
-    <figure class="hero-plate reveal">
-      <div class="hero-plate-frame">
-        <Image
-          src={heroImg}
-          alt="Vista aérea de un desarrollo residencial de varios edificios en construcción ejecutado por JOM Construction"
-          priority
-          layout="constrained"
-          width={1280}
-          widths={[480, 720, 960, 1280]}
-          sizes="(min-width: 64em) 44vw, 92vw"
-          quality={80}
-          class="hero-plate-img"
-        />
-      </div>
-      <figcaption class="hero-plate-cap">
-        Desarrollo residencial en ejecución · Buenos Aires
-      </figcaption>
-    </figure>
   </div>
 </section>
 
@@ -82,39 +139,66 @@ import { WHATSAPP_URL } from '../config';
     min-height: 100svh;
     padding-top: calc(var(--header-h) + var(--space-lg));
     padding-bottom: var(--space-2xl);
+    /* base "noche" bajo el video: cubre el primer paint y el caso de que el
+       video no cargue (red caída, formato no soportado) sin pantalla negra. */
     background: var(--color-cobalt-night);
     overflow: hidden;
   }
 
-  /* ---------- Campo "plano": grilla técnica + luz ambiente + grano ---------- */
-  .hero-field {
+  /* ---------- Video de fondo a sangre ---------- */
+  .hero-video {
     position: absolute;
     inset: 0;
     z-index: 0;
-    pointer-events: none;
-    /* luz cobalto detrás del texto (arriba-izq) + acento dorado tenue (abajo-der,
-       bajo la lámina). Estático → se pinta una sola vez, cero costo en runtime. */
-    background:
-      radial-gradient(78% 60% at 16% 24%, rgb(96 128 246 / 0.20), transparent 60%),
-      radial-gradient(70% 80% at 94% 96%, rgb(227 220 176 / 0.06), transparent 60%);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
 
-  /* grilla "plano técnico": líneas doradas tenues, desvanecidas hacia los bordes
-     con una máscara radial para que no se lea como tabla (mismo gesto que MetricsBar) */
-  .hero-field::before {
+  /* ---------- Scrim de legibilidad + textura de marca ---------- */
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    /* tres capas de cobalto-noche (no negro: mantiene la temperatura de marca):
+       1) anclaje inferior para CTAs/ficha, 2) peso a la izquierda para la
+       columna de texto, 3) sombra superior bajo el header fijo. */
+    background:
+      linear-gradient(
+        0deg,
+        rgb(5 19 65 / 0.86) 0%,
+        rgb(5 19 65 / 0.18) 34%,
+        transparent 54%
+      ),
+      linear-gradient(
+        100deg,
+        rgb(5 19 65 / 0.92) 0%,
+        rgb(5 19 65 / 0.64) 40%,
+        rgb(5 19 65 / 0.34) 70%,
+        rgb(5 19 65 / 0.5) 100%
+      ),
+      linear-gradient(180deg, rgb(5 19 65 / 0.5) 0%, transparent 20%);
+  }
+
+  /* grilla "plano técnico": líneas doradas apenas perceptibles, desvanecidas con
+     una máscara radial hacia los bordes para que no se lea como tabla (mismo
+     gesto que MetricsBar). Sesgada a la izquierda, donde está el texto. */
+  .hero-scrim::before {
     content: '';
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgb(227 220 176 / 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(227 220 176 / 0.05) 1px, transparent 1px);
+      linear-gradient(rgb(227 220 176 / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(227 220 176 / 0.04) 1px, transparent 1px);
     background-size: 2.5rem 2.5rem;
-    -webkit-mask-image: radial-gradient(130% 115% at 68% 42%, #000 32%, transparent 84%);
-    mask-image: radial-gradient(130% 115% at 68% 42%, #000 32%, transparent 84%);
+    -webkit-mask-image: radial-gradient(130% 120% at 30% 40%, #000 30%, transparent 82%);
+    mask-image: radial-gradient(130% 120% at 30% 40%, #000 30%, transparent 82%);
   }
 
-  /* grano sutil: textura tangible + mata el banding de los degradados (estático) */
-  .hero-field::after {
+  /* grano sutil: textura tangible + mata el banding de los degradados del scrim */
+  .hero-scrim::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -124,17 +208,19 @@ import { WHATSAPP_URL } from '../config';
     mix-blend-mode: overlay;
   }
 
-  /* ---------- Grilla del hero ---------- */
+  /* ---------- Contenido sobre el video ---------- */
   .hero-grid {
     position: relative;
-    z-index: 1;
-    display: grid;
-    gap: var(--space-2xl);
-    align-items: center;
+    z-index: 2;
     color: var(--color-white);
   }
 
-  /* ---------- Columna de texto ---------- */
+  /* columna acotada: el texto no se estira a todo el ancho sobre el video */
+  .hero-copy {
+    max-width: 52rem;
+  }
+
+  /* ---------- Kicker ---------- */
   .hero-kicker {
     display: inline-flex;
     align-items: center;
@@ -177,17 +263,27 @@ import { WHATSAPP_URL } from '../config';
     }
   }
 
+  /* ---------- Título ---------- */
   .hero-title {
-    /* el tope queda por debajo de --text-3xl: en la columna del split la línea
-       larga ("en tiempo y presupuesto.") tiene que entrar en un solo renglón */
-    font-size: clamp(2.1rem, 1.55rem + 2.3vw, 3rem);
-    line-height: 1.06;
+    /* ya no está acotado por la columna del split: gana presencia sobre el
+       video sin pasar de 2 líneas (los <span> fuerzan el quiebre). */
+    font-size: clamp(2.4rem, 1.7rem + 3vw, 3.75rem);
+    line-height: 1.1;
     letter-spacing: -0.01em;
     color: var(--color-white);
+    /* sombra suave: despega el título del video y sostiene el contraste aunque
+       pase un frame claro detrás (el contraste varía frame a frame). */
+    text-shadow: 0 2px 14px rgb(5 19 65 / 0.45);
   }
 
   .hero-title-line {
     display: block;
+    /* reserva para los descendentes (g / p / y): con background-clip:text la caja
+       de cada línea recorta el gradiente y cortaba la cola de la 'g'. El padding
+       agranda la caja de pintado; el margin negativo lo compensa para no alterar
+       el interlineado. */
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
   }
 
   /* palabra clave en dorado de marca: contraste de color, no solo de tamaño */
@@ -206,7 +302,10 @@ import { WHATSAPP_URL } from '../config';
     }
 
     .hero-title-accent {
-      background: var(--gradient-gold);
+      /* sheen claro→medio (no baja a sand-deep): sobre el video, el tramo oscuro
+         del --gradient-gold perdía contraste en el borde inferior de las letras.
+         --gradient-gold-soft mantiene el oro siempre por encima de AA grande. */
+      background: var(--gradient-gold-soft);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -217,7 +316,7 @@ import { WHATSAPP_URL } from '../config';
     max-width: 34rem;
     margin-top: var(--space-lg);
     font-size: var(--text-md);
-    color: rgb(255 255 255 / 0.88);
+    color: rgb(255 255 255 / 0.9);
   }
 
   .hero-ctas {
@@ -232,6 +331,16 @@ import { WHATSAPP_URL } from '../config';
     display: inline-flex;
   }
 
+  /* el CTA fantasma necesita cama propia sobre el video (skill: ghost sobre
+     foto). Cobalto translúcido + leve frost: el borde y el texto blanco se leen
+     sobre cualquier frame, sin parecer un botón relleno. El relleno blanco del
+     hover (::before global) sigue subiendo por encima. */
+  .hero-ctas .btn--ghost {
+    background: rgb(5 19 65 / 0.34);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+
   /* ---------- Ficha de credenciales ---------- */
   .hero-ficha {
     position: relative;
@@ -242,7 +351,7 @@ import { WHATSAPP_URL } from '../config';
     padding-top: var(--space-lg);
     list-style: none;
     font-size: var(--text-sm);
-    color: rgb(255 255 255 / 0.85);
+    color: rgb(255 255 255 / 0.88);
   }
 
   /* filete dorado que se traza al revelar (gesto de Nosotros), no un border quieto */
@@ -300,127 +409,114 @@ import { WHATSAPP_URL } from '../config';
       center / contain no-repeat;
   }
 
-  /* ---------- Lámina de obra ---------- */
-  .hero-plate {
-    position: relative;
-    isolation: isolate;
-    margin: 0;
-  }
-
-  /* marco dorado offset que asoma por detrás (broken grid, gesto de Nosotros).
-     Sobre el campo oscuro va como CONTORNO (no bloque relleno: el relleno sand se
-     lava a gris murky). Lee como un registro de plano técnico, nítido y on-brand. */
-  .hero-plate::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    right: calc(-1 * var(--space-md));
-    bottom: calc(-1 * var(--space-md));
-    width: 56%;
-    height: 56%;
-    border: 1.5px solid rgb(227 220 176 / 0.45);
-    background: rgb(227 220 176 / 0.06);
-    border-radius: var(--radius-lg);
-  }
-
-  .hero-plate-frame {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 4 / 3;
-    border-radius: var(--radius-lg);
-    border: 1px solid rgb(255 255 255 / 0.16);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .hero-plate-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 32%;
-  }
-
-  /* refracción de borde: luz arriba + hairline dorado interior (lenguaje metálico) */
-  .hero-plate-frame::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.28),
-      inset 0 0 0 1px rgb(227 220 176 / 0.1);
-    pointer-events: none;
-  }
-
-  .hero-plate-cap {
-    margin-top: var(--space-sm);
-    font-size: var(--text-sm);
-    color: var(--color-fog);
-  }
-
-  /* la lámina entra desde la derecha (espeja el panel de Nosotros, que entra desde
-     la izquierda) en vez del translateY del .reveal global */
-  .hero-plate.reveal {
-    transform: translateX(28px);
-  }
-
-  .hero-plate.reveal.is-visible {
-    transform: none;
-  }
-
-  /* sin JS la lámina no recibe .is-visible: la dejamos asentada */
-  html.no-js .hero-plate.reveal {
-    transform: none;
-  }
-
-  /* drift sutil del accent-shape al pasar por el viewport (degrada a nada donde no
-     hay scroll timelines). Solo si el usuario no pidió reducir movimiento. */
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .hero-plate::before {
-        animation: hero-accent-drift linear both;
-        animation-timeline: view();
-        animation-range: cover;
-      }
-    }
-  }
-
-  @keyframes hero-accent-drift {
-    from {
-      transform: translateY(-10px);
-    }
-    to {
-      transform: translateY(10px);
-    }
-  }
-
-  /* ---------- Desktop: split editorial asimétrico ---------- */
-  @media (min-width: 64em) {
-    .hero-grid {
-      grid-template-columns: 1.06fr 0.94fr;
-      gap: var(--space-3xl);
-      align-items: center;
+  /* ========== Mobile (≤48em) ==========
+     El split asimétrico de desktop colapsa a una columna anclada arriba, con su
+     propio lecho de contraste sobre el poster/video liviano. TODO vive acá: el
+     render ≥48em queda idéntico. */
+  @media (max-width: 48em) {
+    /* Anclar el contenido bajo el header fijo (no centrar: en pantalla chica el
+       bloque puede superar el alto y el centrado dejaría el kicker pegado al
+       header). Conservo min-height:100svh → sin salto cuando la barra del
+       navegador aparece/desaparece. */
+    .hero {
+      align-content: start;
+      padding-top: calc(var(--header-h) + var(--space-md));
+      padding-bottom: var(--space-xl);
     }
 
-    .hero-plate-frame {
-      aspect-ratio: 5 / 4;
+    /* Scrim vertical propio de mobile: el texto va full-width y arranca arriba,
+       así que reemplazo el degradado sesgado a la izquierda (pensado para la
+       columna de desktop) por un lecho cobalto-noche parejo de arriba a abajo.
+       Sobre el poster fijo el contraste es determinístico → AA verificable. */
+    .hero-scrim {
+      background: linear-gradient(
+        180deg,
+        rgb(5 19 65 / 0.66) 0%,
+        rgb(5 19 65 / 0.56) 44%,
+        rgb(5 19 65 / 0.72) 74%,
+        rgb(5 19 65 / 0.92) 100%
+      );
     }
-  }
 
-  /* ---------- Mobile: una columna; la lámina cierra el hero ---------- */
-  @media (max-width: 63.99em) {
-    .hero-plate {
+    /* Recentrar la máscara de la grilla técnica a la columna (en desktop está
+       sesgada al 30% donde iba el texto). */
+    .hero-scrim::before {
+      -webkit-mask-image: radial-gradient(120% 85% at 50% 42%, #000 32%, transparent 84%);
+      mask-image: radial-gradient(120% 85% at 50% 42%, #000 32%, transparent 84%);
+    }
+
+    /* Seguro de legibilidad para los textos sin sombra propia (el h1 ya trae la
+       suya): aguanta cualquier zona clara del poster/video. */
+    .hero-kicker,
+    .hero-sub,
+    .hero-ficha {
+      text-shadow: 0 1px 10px rgb(5 19 65 / 0.55);
+    }
+
+    /* H1: bajo el piso del clamp de desktop para un quiebre prolijo a 360px
+       (la línea-acento no entra en un renglón a 2.4rem → desbordaba). */
+    .hero-title {
+      font-size: clamp(1.95rem, 1.5rem + 2.4vw, 2.6rem);
+    }
+
+    /* Ritmo vertical más compacto: kicker→H1→sub→CTAs entran sobre el fold. */
+    .hero-kicker {
+      margin-bottom: var(--space-md);
+    }
+
+    .hero-sub {
       margin-top: var(--space-md);
     }
 
-    .hero-plate-frame {
-      aspect-ratio: 16 / 10;
+    /* CTAs apiladas a ancho REAL: el contenedor pasa a columna y los wrappers
+       .reveal toman el ancho completo. Antes el .btn{width:100%} resolvía contra
+       el ancho del span inline-flex → no llenaba. */
+    .hero-ctas {
+      flex-direction: column;
+      align-items: stretch;
+      margin-top: var(--space-lg);
     }
-  }
 
-  @media (max-width: 48em) {
+    .hero-ctas > .reveal {
+      display: flex;
+      width: 100%;
+    }
+
     .hero-ctas .btn {
       width: 100%;
-      max-width: 24rem;
+    }
+
+    /* Ficha en columna: cada credencial en su renglón con el tilde dorado
+       alineado (en fila wrappeaba desparejo a 360px). align-items:flex-start +
+       padding-inline-start:0 (saca el sangrado default del <ul>) → los checks
+       quedan a ras del borde izquierdo, en línea con el H1/sub/CTAs. */
+    .hero-ficha {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-inline-start: 0;
+      gap: var(--space-sm);
+      margin-top: var(--space-lg);
     }
   }
 </style>
+
+<script>
+  // El autoplay lo resuelven el atributo `autoplay` del <video> (camino nativo,
+  // el más confiable para muted-autoplay) y el gate inline de reduced-motion.
+  // Acá, como mejora progresiva: se pausa el video cuando el hero sale del
+  // viewport (decodificar un loop fuera de pantalla es gasto puro de CPU/batería)
+  // y se reanuda al volver. Bajo reduced-motion el gate inline ya quitó
+  // [data-hero-video], así que este bloque no corre y el poster queda fijo.
+  const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+
+  if (video && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) video.play().catch(() => {});
+        else video.pause();
+      },
+      { threshold: 0.05 }
+    );
+    io.observe(video);
+  }
+</script>

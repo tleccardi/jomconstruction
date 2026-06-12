@@ -3,33 +3,104 @@ import { Image } from 'astro:assets';
 import fotoPanoramica from '../assets/obra-aerea-panoramica.jpg';
 import fotoEstructuras from '../assets/obra-estructuras.jpg';
 import fotoCenital from '../assets/obra-vista-cenital.jpg';
+import hotelBahia from '../assets/hotel-cilene-1-bahia.jpeg';
+import hotelExcavacion from '../assets/hotel-cilene-2-excavacion.jpeg';
+import hotelHormigonado from '../assets/hotel-cilene-3-hormigonado.jpeg';
+import hotelHormigonera from '../assets/hotel-cilene-4-hormigonera.jpeg';
 
-// Estructura preparada para sumar obras a futuro: agregar items a este array.
-const FOTOS = [
-  {
-    src: fotoPanoramica,
-    alt: 'Vista aérea panorámica del desarrollo residencial: varios edificios de media altura en etapa de estructura',
-    caption: 'Vista aérea del conjunto — edificios en etapa de estructura',
-  },
-  {
-    src: fotoEstructuras,
-    alt: 'Edificios en construcción con estructuras de hormigón armado y mampostería, junto al sector de fundaciones',
-    caption: 'Estructuras de hormigón armado y fundaciones de las próximas etapas',
-  },
-  {
-    src: fotoCenital,
-    alt: 'Vista cenital de la obra: tres edificios en construcción y las plateas de fundación del resto del predio',
-    caption: 'Vista cenital del predio completo y plateas de fundación',
-  },
-];
+// ============================================================
+// DATA: una entrada por obra. Para sumar obras a futuro basta
+// con agregar un item a OBRAS (cada uno trae su set de fotos y
+// su ficha). El selector de obras (tabs) y el lightbox se
+// construyen solos a partir de este array.
+// ============================================================
+type DatoObra = {
+  label: string;
+  value: string;
+  destacado?: boolean; // cifra grande en tipografía display (m², año…)
+  estado?: boolean; // pill "en ejecución" con punto latiente
+  finalizada?: boolean; // pill "finalizada" con check (sin latido)
+};
+type Foto = { src: ImageMetadata; alt: string; caption: string };
+type Obra = {
+  id: string;
+  nombreCorto: string; // etiqueta del tab
+  meta: string; // 2ª línea del tab (ubicación · año)
+  titulo: string; // <h3> del panel
+  descripcion: string;
+  datos: DatoObra[];
+  fotos: Foto[]; // [0] es la principal; el resto son miniaturas
+};
 
-// Obra real: León Gallo, San Justo. Superficie y Estado son PROVISORIOS — los ajusta el cliente.
-type DatoObra = { label: string; value: string; destacado?: boolean; estado?: boolean };
-const DATOS_OBRA: DatoObra[] = [
-  { label: 'Tipo de obra', value: 'Obra nueva — desarrollo residencial' },
-  { label: 'Ubicación', value: 'León Gallo, San Justo — La Matanza, Buenos Aires' },
-  { label: 'Superficie', value: '19.800 m² cubiertos · 6 edificios', destacado: true },
-  { label: 'Estado', value: 'En ejecución — entrega 2027', estado: true },
+const OBRAS: Obra[] = [
+  {
+    id: 'leon-gallo',
+    nombreCorto: 'Desarrollo residencial',
+    meta: 'San Justo, Bs. As. · 2026',
+    titulo: 'Desarrollo residencial — León Gallo, San Justo',
+    descripcion:
+      'Conjunto de edificios de vivienda en altura media, ejecutado por etapas: estructura de hormigón armado, mampostería y fundaciones de las torres siguientes avanzando en paralelo.',
+    // Año y Estado son PROVISORIOS — los ajusta el cliente.
+    datos: [
+      { label: 'Tipo de obra', value: 'Obra nueva — desarrollo residencial' },
+      { label: 'Ubicación', value: 'León Gallo, San Justo — La Matanza, Buenos Aires' },
+      { label: 'Año', value: '2026', destacado: true },
+      { label: 'Estado', value: 'En ejecución — entrega 2027', estado: true },
+    ],
+    fotos: [
+      {
+        src: fotoPanoramica,
+        alt: 'Vista aérea panorámica del desarrollo residencial: varios edificios de media altura en etapa de estructura',
+        caption: 'Vista aérea del conjunto — edificios en etapa de estructura',
+      },
+      {
+        src: fotoEstructuras,
+        alt: 'Edificios en construcción con estructuras de hormigón armado y mampostería, junto al sector de fundaciones',
+        caption: 'Estructuras de hormigón armado y fundaciones de las próximas etapas',
+      },
+      {
+        src: fotoCenital,
+        alt: 'Vista cenital de la obra: tres edificios en construcción y las plateas de fundación del resto del predio',
+        caption: 'Vista cenital del predio completo y plateas de fundación',
+      },
+    ],
+  },
+  {
+    id: 'hotel-cilene',
+    nombreCorto: 'Hotel Cilene del Faro',
+    meta: 'Tierra del Fuego · 2007',
+    titulo: 'Hotel Cilene del Faro Suites & Spa',
+    descripcion:
+      'Hotel & spa en Tierra del Fuego. JOM ejecutó la obra desde el movimiento de suelos y las fundaciones hasta la estructura, hormigonando en pleno invierno fueguino, sobre la bahía y al pie de los cerros nevados.',
+    datos: [
+      { label: 'Tipo de obra', value: 'Obra nueva — hotel & spa' },
+      { label: 'Ubicación', value: 'Tierra del Fuego, Argentina' },
+      { label: 'Año', value: '2007', destacado: true },
+      { label: 'Estado', value: 'Finalizada', finalizada: true },
+    ],
+    fotos: [
+      {
+        src: hotelBahia,
+        alt: 'Fundaciones del hotel sobre la bahía de Tierra del Fuego: operarios y una excavadora JOM trabajando entre armaduras de hierro, con el mar y los cerros nevados de fondo',
+        caption: 'Fundaciones sobre la bahía — armaduras y la cordillera fueguina de fondo',
+      },
+      {
+        src: hotelExcavacion,
+        alt: 'Excavadora naranja de JOM cargando tierra en un camión volcador durante el movimiento de suelos, con el edificio del hotel de techos a dos aguas detrás',
+        caption: 'Movimiento de suelos — excavadora JOM cargando el volquete',
+      },
+      {
+        src: hotelHormigonado,
+        alt: 'Camión bomba hormigonando los encofrados de madera del hotel durante una nevada, con la estructura protegida por lonas',
+        caption: 'Hormigonado de la estructura en plena nevada',
+      },
+      {
+        src: hotelHormigonera,
+        alt: 'Camión hormigonero y excavadora de JOM trabajando junto al edificio del hotel sobre la nieve, con encofrados y armaduras en primer plano',
+        caption: 'Hormigonera y excavadora JOM al pie del hotel',
+      },
+    ],
+  },
 ];
 ---
 
@@ -41,66 +112,77 @@ const DATOS_OBRA: DatoObra[] = [
         La prueba está en la obra
       </h2>
       <p class="section-lede reveal" style="--reveal-delay: calc(var(--stagger-step) * 2)">
-        Sin renders ni fotos de archivo: esto es lo que estamos construyendo hoy. Un desarrollo
-        residencial de varios edificios, documentado desde el aire.
+        Sin renders ni fotos de archivo: documentamos lo que construimos. Elegí una obra para
+        recorrerla en detalle, de un desarrollo residencial en Buenos Aires a un hotel &amp; spa en
+        Tierra del Fuego.
       </p>
     </header>
 
-    <article class="obra" aria-labelledby="obra-titulo">
-      <div class="obra-galeria">
-        <button
-          type="button"
-          class="obra-foto obra-foto--principal reveal"
-          data-lightbox-open="0"
-          aria-haspopup="dialog"
-          aria-label={`Ampliar foto: ${FOTOS[0]!.caption}`}
-        >
-          {/* width acotado a la resolución real de los assets (fotos vía WhatsApp ~1110px) */}
-          <span class="obra-foto-media">
-            <Image
-              src={FOTOS[0]!.src}
-              alt={FOTOS[0]!.alt}
-              layout="constrained"
-              width={1104}
-              quality={78}
-              sizes="(min-width: 72em) 1104px, calc(100vw - 2.5rem)"
-            />
-          </span>
-          <span class="obra-foto-caption" aria-hidden="true">{FOTOS[0]!.caption}</span>
-          <span class="obra-foto-zoom" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            >
-              <circle cx="11" cy="11" r="7"></circle>
-              <path d="m21 21-4.3-4.3M11 8v6M8 11h6"></path>
-            </svg>
-          </span>
-        </button>
+    {/* Selector de obras (patrón WAI-ARIA Tabs, activación automática).
+        Sin JS se oculta y los paneles quedan apilados (ver bloque html.no-js). */}
+    <div
+      class="obra-tabs reveal"
+      role="tablist"
+      aria-label="Obras de JOM Construction"
+      style="--reveal-delay: calc(var(--stagger-step) * 3)"
+    >
+      {
+        OBRAS.map((obra, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${obra.id}`}
+            class="obra-tab"
+            aria-selected={i === 0 ? 'true' : 'false'}
+            aria-controls={`panel-${obra.id}`}
+            tabindex={i === 0 ? 0 : -1}
+          >
+            <span class="obra-tab-nombre">{obra.nombreCorto}</span>
+            <span class="obra-tab-meta">{obra.meta}</span>
+          </button>
+        ))
+      }
+    </div>
 
-        <div class="obra-thumbs">
-          {
-            FOTOS.slice(1).map((foto, i) => (
+    {
+      OBRAS.map((obra, oi) => {
+        // sizes de las miniaturas según cuántas entran en la fila (desktop)
+        const thumbCount = Math.max(obra.fotos.length - 1, 1);
+        const thumbPx = Math.round(1104 / thumbCount);
+        const thumbVw = Math.round(100 / thumbCount);
+        const thumbSizes = `(min-width: 72em) ${thumbPx}px, (min-width: 48em) ${thumbVw}vw, calc(100vw - 2.5rem)`;
+        return (
+          <article
+            class="obra obra-panel"
+            role="tabpanel"
+            id={`panel-${obra.id}`}
+            aria-labelledby={`tab-${obra.id}`}
+            hidden={oi !== 0}
+          >
+            <div class="obra-galeria">
               <button
                 type="button"
-                class="obra-foto reveal"
-                data-lightbox-open={i + 1}
-                style={`--reveal-delay: calc(var(--stagger-step) * ${i + 1})`}
+                class="obra-foto obra-foto--principal reveal"
+                data-lightbox-open="0"
+                data-obra={oi}
+                data-obra-nombre={obra.titulo}
                 aria-haspopup="dialog"
-                aria-label={`Ampliar foto: ${foto.caption}`}
+                aria-label={`Ampliar foto: ${obra.fotos[0]!.caption}`}
               >
-                <Image
-                  src={foto.src}
-                  alt={foto.alt}
-                  layout="constrained"
-                  width={720}
-                  quality={75}
-                  sizes="(min-width: 72em) 544px, (min-width: 48em) 50vw, calc(100vw - 2.5rem)"
-                />
-                <span class="obra-foto-caption" aria-hidden="true">{foto.caption}</span>
+                {/* width acotado: el render desktop ronda los 1104px */}
+                <span class="obra-foto-media">
+                  <Image
+                    src={obra.fotos[0]!.src}
+                    alt={obra.fotos[0]!.alt}
+                    layout="constrained"
+                    width={1104}
+                    quality={78}
+                    sizes="(min-width: 72em) 1104px, calc(100vw - 2.5rem)"
+                  />
+                </span>
+                <span class="obra-foto-caption" aria-hidden="true">
+                  {obra.fotos[0]!.caption}
+                </span>
                 <span class="obra-foto-zoom" aria-hidden="true">
                   <svg
                     viewBox="0 0 24 24"
@@ -114,40 +196,89 @@ const DATOS_OBRA: DatoObra[] = [
                   </svg>
                 </span>
               </button>
-            ))
-          }
-        </div>
-      </div>
 
-      <div class="obra-info reveal" style="--reveal-delay: calc(var(--stagger-step) * 3)">
-        <h3 id="obra-titulo">Desarrollo residencial — León Gallo, San Justo</h3>
-        <p>
-          Conjunto de edificios de vivienda en altura media, ejecutado por etapas: estructura de
-          hormigón armado, mampostería y fundaciones de las torres siguientes avanzando en
-          paralelo.
-        </p>
-        <dl class="obra-datos">
-          {
-            DATOS_OBRA.map((dato, i) => (
-              <div style={`--row-i: ${i}`}>
-                <dt>{dato.label}</dt>
-                <dd class:list={['obra-dato-valor', { 'obra-dato-valor--num': dato.destacado }]}>
-                  {dato.estado ? (
-                    <span class="obra-estado">
-                      <span class="obra-estado-dot" aria-hidden="true" />
-                      {dato.value}
+              <div class="obra-thumbs">
+                {obra.fotos.slice(1).map((foto, i) => (
+                  <button
+                    type="button"
+                    class="obra-foto reveal"
+                    data-lightbox-open={i + 1}
+                    data-obra={oi}
+                    data-obra-nombre={obra.titulo}
+                    style={`--reveal-delay: calc(var(--stagger-step) * ${i + 1})`}
+                    aria-haspopup="dialog"
+                    aria-label={`Ampliar foto: ${foto.caption}`}
+                  >
+                    <Image
+                      src={foto.src}
+                      alt={foto.alt}
+                      layout="constrained"
+                      width={720}
+                      quality={75}
+                      sizes={thumbSizes}
+                    />
+                    <span class="obra-foto-caption" aria-hidden="true">
+                      {foto.caption}
                     </span>
-                  ) : (
-                    dato.value
-                  )}
-                </dd>
+                    <span class="obra-foto-zoom" aria-hidden="true">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      >
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="m21 21-4.3-4.3M11 8v6M8 11h6" />
+                      </svg>
+                    </span>
+                  </button>
+                ))}
               </div>
-            ))
-          }
-        </dl>
-        <a href="#contacto" class="btn btn--primary">Quiero una obra así</a>
-      </div>
-    </article>
+            </div>
+
+            <div class="obra-info reveal" style="--reveal-delay: calc(var(--stagger-step) * 3)">
+              <h3 id={`obra-titulo-${obra.id}`}>{obra.titulo}</h3>
+              <p>{obra.descripcion}</p>
+              <dl class="obra-datos">
+                {obra.datos.map((dato, i) => (
+                  <div style={`--row-i: ${i}`}>
+                    <dt>{dato.label}</dt>
+                    <dd class:list={['obra-dato-valor', { 'obra-dato-valor--num': dato.destacado }]}>
+                      {dato.estado ? (
+                        <span class="obra-estado">
+                          <span class="obra-estado-dot" aria-hidden="true" />
+                          {dato.value}
+                        </span>
+                      ) : dato.finalizada ? (
+                        <span class="obra-estado obra-estado--done">
+                          <svg
+                            class="obra-estado-check"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="m20 6-11 11-5-5" />
+                          </svg>
+                          {dato.value}
+                        </span>
+                      ) : (
+                        dato.value
+                      )}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <a href="#contacto" class="btn btn--primary">Quiero una obra así</a>
+            </div>
+          </article>
+        );
+      })
+    }
   </div>
 </section>
 
@@ -169,21 +300,26 @@ const DATOS_OBRA: DatoObra[] = [
     </button>
 
     {
-      FOTOS.map((foto, i) => (
-        <figure class="lightbox-slide" data-slide={i} hidden={i !== 0}>
-          <Image
-            src={foto.src}
-            alt={foto.alt}
-            layout="constrained"
-            width={1104}
-            quality={82}
-            sizes="(min-width: 75em) 1104px, calc(100vw - 4rem)"
-          />
-          <figcaption>
-            {foto.caption} <span class="lightbox-count">({i + 1} de {FOTOS.length})</span>
-          </figcaption>
-        </figure>
-      ))
+      OBRAS.map((obra, oi) =>
+        obra.fotos.map((foto, i) => (
+          <figure class="lightbox-slide" data-obra={oi} data-slide={i} hidden>
+            <Image
+              src={foto.src}
+              alt={foto.alt}
+              layout="constrained"
+              width={1104}
+              quality={82}
+              sizes="(min-width: 75em) 1104px, calc(100vw - 4rem)"
+            />
+            <figcaption>
+              {foto.caption}{' '}
+              <span class="lightbox-count">
+                ({i + 1} de {obra.fotos.length})
+              </span>
+            </figcaption>
+          </figure>
+        ))
+      )
     }
 
     <p class="visually-hidden" role="status" data-lightbox-status></p>
@@ -240,6 +376,109 @@ const DATOS_OBRA: DatoObra[] = [
 
   :global(html.no-js) .kicker::before {
     transform: none;
+  }
+
+  /* ---------- Selector de obras (tabs) ---------- */
+  /* Selector tipo "filtro": los nombres en UNA fila horizontal, subrayado = obra
+     activa. Texto compacto y `nowrap` para que las dos obras entren sin apilarse;
+     si un ancho muy chico no las banca, la fila scrollea en horizontal (no apila). */
+  .obra-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-2xl);
+    border-bottom: 1px solid var(--color-line);
+    overflow-x: auto;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .obra-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .obra-tab {
+    position: relative;
+    flex: 0 0 auto;
+    padding: 0 0 var(--space-sm);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    transition: color var(--speed-base) var(--ease-interactive);
+  }
+
+  /* subrayado activo, apoyado sobre el hairline del contenedor */
+  .obra-tab::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--color-cobalt);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--speed-base) var(--ease-interactive);
+  }
+
+  .obra-tab:hover {
+    color: var(--color-ink);
+  }
+
+  /* obra activa: texto cobalto + subrayado (mismo color, como la referencia) */
+  .obra-tab[aria-selected='true'] {
+    color: var(--color-cobalt);
+  }
+
+  .obra-tab[aria-selected='true']::after {
+    transform: scaleX(1);
+  }
+
+  .obra-tab-nombre {
+    font-family: var(--font-display);
+    font-size: var(--text-sm); /* achicado para que entren las dos en una fila aun en mobile angosto */
+    line-height: var(--leading-snug);
+    color: inherit;
+  }
+
+  /* sólo las letras: ubicación · año viven en la ficha */
+  .obra-tab-meta {
+    display: none;
+  }
+
+  /* sin JS no hay tabs operables: se ocultan y se muestran todos los paneles
+     apilados (degradación: la sección sigue siendo navegable por sus <h3>) */
+  :global(html.no-js) .obra-tabs {
+    display: none;
+  }
+  :global(html.no-js) .obra-panel[hidden] {
+    display: grid; /* anula el [hidden] del UA para apilar todas las obras */
+  }
+  :global(html.no-js) .obra-panel + .obra-panel {
+    margin-top: var(--space-3xl);
+  }
+
+  /* `.obra { display: grid }` (más específico que el `[hidden]` del UA) le ganaba
+     al ocultamiento nativo y dejaba los dos paneles a la vista. Lo forzamos acá:
+     `.obra-panel[hidden]` (0,2,0) le gana a `.obra` (0,1,0). El override de no-js
+     más arriba es aún más específico, así que ahí siguen apilados. */
+  .obra-panel[hidden] {
+    display: none;
+  }
+
+  /* cross-fade al cambiar de obra (feedback del cambio de estado).
+     Sólo opacidad: no compone transform con el reveal interno del panel. */
+  @media (prefers-reduced-motion: no-preference) {
+    .obra-panel.is-entering {
+      animation: obra-panel-in var(--speed-base) var(--ease-out);
+    }
+  }
+
+  @keyframes obra-panel-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .obra {
@@ -528,6 +767,17 @@ const DATOS_OBRA: DatoObra[] = [
     animation: obra-pulse var(--pulse-dur) var(--ease-out) infinite;
   }
 
+  /* obra finalizada: misma pill, pero estado cerrado (check, sin latido) */
+  .obra-estado--done {
+    background: var(--color-mist);
+    color: var(--color-sand-text);
+  }
+
+  .obra-estado-check {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
   @keyframes obra-pulse {
     0% {
       transform: scale(1);
@@ -547,8 +797,12 @@ const DATOS_OBRA: DatoObra[] = [
   }
 
   @media (min-width: 48em) {
+    /* las miniaturas de cada obra entran en una sola fila, repartidas a partes
+       iguales (2 thumbs → 2 col, 3 thumbs → 3 col): cada foto es clickeable y
+       todas viven en el lightbox sin necesidad de un "+N" */
     .obra-thumbs {
-      grid-template-columns: 1fr 1fr;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
     }
   }
 
@@ -684,10 +938,13 @@ const DATOS_OBRA: DatoObra[] = [
 
   /* ============================================================
      MOBILE ONLY (≤47.99em) — el render desktop ≥48em NO recibe
-     ninguna de estas reglas (galería grid + thumbs 2-col + lightbox
+     ninguna de estas reglas (galería grid + thumbs en fila + lightbox
      con flechas en el carril oscuro quedan intactos).
      ============================================================ */
   @media (max-width: 47.99em) {
+    /* El selector (subrayado en una fila) ya se define en el bloque base para todos
+       los anchos; con 2 obras entran las dos y, si no, scrollea en horizontal. */
+
     /* --- Galería → carrusel horizontal swipeable con peek ---
        (NN/g: swipe + media imagen asomando como signifier fuerte;
         Baymard: señalizar fotos ocultas; Chrome/MDN: scroll-snap nativo) */
@@ -706,13 +963,14 @@ const DATOS_OBRA: DatoObra[] = [
       display: none;
     }
 
-    /* los 2 thumbs entran al flex junto a la principal SIN tocar el HTML */
+    /* los thumbs entran al flex junto a la principal SIN tocar el HTML */
     .obra-thumbs {
       display: contents;
     }
 
     .obra-galeria .obra-foto {
       flex: 0 0 85%;
+      aspect-ratio: 4 / 3; /* altura uniforme entre slides: sin saltos ni huecos al swipe */
       scroll-snap-align: center;
       /* desacople del reveal: la slide SIEMPRE renderiza visible dentro del
          scroller (el IntersectionObserver vertical no es fiable para ítems
@@ -720,7 +978,13 @@ const DATOS_OBRA: DatoObra[] = [
       opacity: 1;
       transform: none;
     }
+    /* la principal envuelve su img en .obra-foto-media: que también llene el box 4:3 */
+    .obra-galeria .obra-foto-media {
+      height: 100%;
+    }
     .obra-galeria .obra-foto img {
+      height: 100%;
+      object-fit: cover; /* recorta sólo el preview; el lightbox muestra el frame completo (contain) */
       transform: none;
     }
     /* sin hover en touch: la lupa "tocá para ampliar" queda siempre visible */
@@ -770,6 +1034,7 @@ const DATOS_OBRA: DatoObra[] = [
     /* --- Ficha de datos → 1 columna legible --- */
     .obra-datos {
       grid-template-columns: 1fr;
+      padding: var(--space-lg); /* menos lateral que el --space-xl de base: más ancho útil en 360px */
     }
     /* el nth-child(-n+2) de base limpia los 2 primeros (pensado para 2-col);
        en 1-col devolvemos el hairline al 2º ítem (el 1º sigue limpio) */
@@ -786,6 +1051,10 @@ const DATOS_OBRA: DatoObra[] = [
     /* --- Lightbox → más imagen + flechas legibles sobre la foto --- */
     .lightbox {
       padding: var(--space-lg) var(--space-md);
+    }
+    /* la imagen deja lugar para cruz (arriba) + caption + flechas (abajo) sin desbordar 100dvh */
+    .lightbox-slide img {
+      max-height: 60dvh;
     }
     /* flechas FUERA de la imagen: barra inferior en la banda oscura, al ancho
        de la foto, prev a la izquierda / next a la derecha (la posición lateral
@@ -817,25 +1086,112 @@ const DATOS_OBRA: DatoObra[] = [
 </style>
 
 <script>
+  // ---------- Selector de obras (tabs, patrón WAI-ARIA) ----------
+  // Activación AUTOMÁTICA: las flechas mueven foco y activan a la vez. Es la
+  // recomendación del APG cuando los paneles están precargados en el DOM
+  // (acá lo están: Astro renderiza todas las obras, sólo se ocultan con [hidden]).
+  const tablist = document.querySelector<HTMLElement>('.obra-tabs[role="tablist"]');
+
+  if (tablist) {
+    const tabs = Array.from(tablist.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const panelDe = (tab: HTMLButtonElement) =>
+      document.getElementById(tab.getAttribute('aria-controls') ?? '');
+
+    const activar = (tab: HTMLButtonElement, { foco = true } = {}) => {
+      if (tab.getAttribute('aria-selected') === 'true') {
+        if (foco) tab.focus();
+        return;
+      }
+      tabs.forEach((t) => {
+        const activo = t === tab;
+        t.setAttribute('aria-selected', activo ? 'true' : 'false');
+        t.tabIndex = activo ? 0 : -1;
+        const panel = panelDe(t);
+        if (panel) panel.hidden = !activo;
+      });
+      const panel = panelDe(tab);
+      if (panel) {
+        // el contenido .reveal del panel recién mostrado puede no haber sido
+        // observado nunca (estaba en display:none): lo marcamos visible a mano
+        panel.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
+        if (!reduce) {
+          panel.classList.remove('is-entering');
+          void panel.offsetWidth; // reinicia la animación de cross-fade
+          panel.classList.add('is-entering');
+        }
+      }
+      // en mobile la tira de chips scrollea: recentrar el activo aunque el cambio
+      // venga de un tap (con foco:false el navegador no hace scroll-into-view solo).
+      // Gateado por overflow real: en ≥48em los chips entran y esto es no-op, así
+      // que el desktop aprobado no cambia.
+      if (tablist.scrollWidth > tablist.clientWidth) {
+        tab.scrollIntoView({
+          inline: 'center',
+          block: 'nearest',
+          behavior: reduce ? 'auto' : 'smooth',
+        });
+      }
+      if (foco) tab.focus();
+    };
+
+    // click: activa sin re-robar el foco (el botón ya lo recibe al clickear)
+    tablist.addEventListener('click', (event) => {
+      const tab = (event.target as HTMLElement).closest<HTMLButtonElement>('[role="tab"]');
+      if (tab) activar(tab, { foco: false });
+    });
+
+    // teclado: flechas / Home / End mueven foco + activan
+    tablist.addEventListener('keydown', (event) => {
+      const i = tabs.indexOf(document.activeElement as HTMLButtonElement);
+      if (i < 0) return;
+      let next = -1;
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (i + 1) % tabs.length;
+      else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp')
+        next = (i - 1 + tabs.length) % tabs.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = tabs.length - 1;
+      if (next >= 0) {
+        event.preventDefault();
+        activar(tabs[next]!);
+      }
+    });
+  }
+
+  // ---------- Lightbox (por obra) ----------
   const lightbox = document.getElementById('lightbox') as HTMLDialogElement | null;
 
   if (lightbox) {
     const slides = Array.from(lightbox.querySelectorAll<HTMLElement>('[data-slide]'));
     const status = lightbox.querySelector<HTMLElement>('[data-lightbox-status]');
+    let currentObra = 0;
     let current = 0;
 
+    // las fotos de la obra activa, en orden
+    const grupo = (obra: number) => slides.filter((s) => Number(s.dataset.obra) === obra);
+
     const show = (index: number) => {
-      current = (index + slides.length) % slides.length;
-      slides.forEach((slide, i) => {
-        slide.hidden = i !== current;
+      const g = grupo(currentObra);
+      if (!g.length) return;
+      current = (index + g.length) % g.length;
+      slides.forEach((slide) => {
+        slide.hidden = true;
       });
+      const activa = g[current];
+      if (activa) activa.hidden = false;
       // anuncia el cambio de foto a lectores de pantalla (WCAG 4.1.3)
-      const caption = slides[current]?.querySelector('figcaption')?.textContent?.trim();
+      const caption = activa?.querySelector('figcaption')?.textContent?.trim();
       if (status && caption) status.textContent = caption;
     };
 
     document.querySelectorAll<HTMLButtonElement>('[data-lightbox-open]').forEach((btn) => {
       btn.addEventListener('click', () => {
+        currentObra = Number(btn.dataset.obra ?? 0);
+        const nombre = btn.dataset.obraNombre;
+        lightbox.setAttribute(
+          'aria-label',
+          nombre ? `Galería de fotos — ${nombre}` : 'Galería de fotos de la obra'
+        );
         show(Number(btn.dataset.lightboxOpen ?? 0));
         lightbox.showModal();
       });

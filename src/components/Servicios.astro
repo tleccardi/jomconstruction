@@ -105,8 +105,12 @@ const SERVICIOS: Servicio[] = [
         }
       </ul>
 
-      {/* Los dots del carrusel son nativos (::scroll-marker, ver media query):
-          no hay markup ni JS, igual que en Obras. */}
+      {/* Dots del carrusel (mobile): los genera el <script> de abajo como botones
+          reales — funcionan en todo navegador, iOS Safari incluido, a diferencia
+          de ::scroll-marker que sólo existe en Chromium 135+ (por eso se veían en
+          la emulación del navegador de escritorio pero no en el celu real). Sin JS
+          quedan vacíos y ocultos: el peek de la card siguiente sigue siendo el cue. */}
+      <nav class="servicios-dots" aria-label="Navegación del carrusel de servicios" data-servicios-dots></nav>
 
       {/* CTA: en desktop es la 6ª celda de la grilla; en mobile sale del riel y
           queda fijo, full-width, debajo (un CTA de conversión no debe esconderse
@@ -308,6 +312,12 @@ const SERVICIOS: Servicio[] = [
     flex-grow: 0;
   }
 
+  /* Dots del carrusel: sólo se muestran en mobile (ver media query). En desktop
+     y sin JS quedan ocultos para no colarse como 7ª celda en la grilla 3×2. */
+  .servicios-dots {
+    display: none;
+  }
+
   /* ============================================================
      CARRUSEL MOBILE (≤47.99em) — scroll-snap nativo.
      Todo el carrusel vive acá adentro: a ≥48em no se evalúa ninguna de estas
@@ -388,30 +398,46 @@ const SERVICIOS: Servicio[] = [
       transition: none;
     }
 
-    /* indicador de carrusel: dots nativos centrados (mismo patrón que Obras).
-       Mejora progresiva (Chrome 135+); sin soporte, el peek de la card siguiente
-       sigue siendo el cue (NN/g: peek > dots). Sin contador, cero JS. */
-    @supports (scroll-marker-group: after) {
-      .servicios-grid {
-        scroll-marker-group: after;
-      }
-      .servicios-grid::scroll-marker-group {
-        display: flex;
-        justify-content: center;
-        gap: var(--space-xs);
-        padding-top: var(--space-xs);
-      }
-      .servicios-grid .servicio-card::scroll-marker {
-        content: '';
-        width: 0.5rem;
-        height: 0.5rem;
-        border-radius: var(--radius-full);
-        background: var(--color-line);
-        transition: background-color var(--speed-fast) var(--ease-out);
-      }
-      .servicios-grid .servicio-card::scroll-marker:target-current {
-        background: var(--color-cobalt);
-      }
+    /* indicador de carrusel: dots reales (botones) que monta el <script> — andan
+       en todo navegador, iOS Safari incluido, donde ::scroll-marker (Chromium 135+)
+       no existe. Son además tappables (vía extra de navegación al swipe, WCAG 2.5.1).
+       Sin JS el contenedor queda vacío y el peek sigue siendo el cue (NN/g: peek > dots). */
+    .servicios-dots {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-xs);
+      padding-top: var(--space-md);
+    }
+    /* sin JS no se generan botones: el contenedor vacío no ocupa lugar */
+    .servicios-dots:empty {
+      display: none;
+    }
+    /* :global() porque los botones los crea el <script> con createElement y NO
+       llevan el atributo de scope de Astro — sin :global las reglas scoped no los
+       alcanzarían. Quedan acotados al wrapper .servicios-dots (sí scopeado). */
+    .servicios-dots :global(.servicios-dot) {
+      display: grid;
+      place-content: center;
+      /* área táctil 24px (WCAG 2.5.8) con el punto visible chico y centrado */
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: var(--radius-full);
+    }
+    .servicios-dots :global(.servicios-dot::before) {
+      content: '';
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: var(--radius-full);
+      background: var(--color-line);
+      transition:
+        background-color var(--speed-fast) var(--ease-out),
+        transform var(--speed-fast) var(--ease-out);
+    }
+    /* card activa: punto cobalto un punto más grande (mismo lenguaje que el chip
+       activo de los tabs de Obras) */
+    .servicios-dots :global(.servicios-dot[aria-current='true']::before) {
+      background: var(--color-cobalt);
+      transform: scale(1.25);
     }
 
     /* CTA full-width debajo del carrusel (sale del riel). Margen amplio para
@@ -426,3 +452,94 @@ const SERVICIOS: Servicio[] = [
      queda oculto detrás del movimiento (flecha, subrayado y acento parten de un
      estado legible), por eso no se necesita nada extra acá. */
 </style>
+
+<script>
+  // ---------- Dots del carrusel de servicios (sólo mobile) ----------
+  // Reemplazo cross-browser de ::scroll-marker (Chromium 135+, ausente en iOS
+  // Safari/Firefox): botones reales que reflejan la card activa y permiten saltar
+  // a cada servicio. Se montan SÓLO cuando el riel es un scroller real (≤47.99em)
+  // y se desarman en ≥48em — donde .servicios-grid es display:contents (la grilla
+  // 3×2 no lleva dots). La card activa = la más centrada en el riel, calculada en
+  // un handler de scroll del PROPIO riel (no de window), throttleado con rAF.
+  const riel = document.querySelector<HTMLElement>('.servicios-grid');
+  const dotsWrap = document.querySelector<HTMLElement>('[data-servicios-dots]');
+
+  if (riel && dotsWrap) {
+    const mql = window.matchMedia('(max-width: 47.99em)');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const cards = Array.from(riel.querySelectorAll<HTMLElement>('.servicio-card'));
+    let dots: HTMLButtonElement[] = [];
+    let onScroll: (() => void) | null = null;
+
+    // marca como activa la card cuyo centro queda más cerca del centro del riel
+    const update = () => {
+      const rect = riel.getBoundingClientRect();
+      const center = rect.left + rect.width / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      cards.forEach((c, i) => {
+        const r = c.getBoundingClientRect();
+        const dist = Math.abs(r.left + r.width / 2 - center);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = i;
+        }
+      });
+      dots.forEach((d, i) =>
+        i === best ? d.setAttribute('aria-current', 'true') : d.removeAttribute('aria-current')
+      );
+    };
+
+    const build = () => {
+      dots = cards.map((card, i) => {
+        const titulo = card.querySelector('h3')?.textContent?.trim() ?? `servicio ${i + 1}`;
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'servicios-dot';
+        dot.setAttribute('aria-label', `Ir a ${titulo}`);
+        // tap en el dot: centra la card (navegación alternativa al swipe, WCAG 2.5.1)
+        dot.addEventListener('click', () => {
+          card.scrollIntoView({
+            inline: 'center',
+            block: 'nearest',
+            behavior: reduce.matches ? 'auto' : 'smooth',
+          });
+        });
+        dotsWrap.appendChild(dot);
+        return dot;
+      });
+
+      // scroll del riel → un solo recálculo por frame (rAF), no por evento
+      let ticking = false;
+      onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      };
+      riel.addEventListener('scroll', onScroll, { passive: true });
+      update(); // estado inicial: card 0 activa
+    };
+
+    const teardown = () => {
+      if (onScroll) riel.removeEventListener('scroll', onScroll);
+      onScroll = null;
+      dotsWrap.replaceChildren();
+      dots = [];
+    };
+
+    // construye en mobile, desarma en desktop (y al cruzar el breakpoint)
+    const sync = () => {
+      if (mql.matches) {
+        if (!onScroll) build();
+      } else if (onScroll) {
+        teardown();
+      }
+    };
+
+    sync();
+    mql.addEventListener('change', sync);
+  }
+</script>

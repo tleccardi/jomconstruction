@@ -12,3 +12,6 @@ node_modules/
 # OS / editor
 .DS_Store
 Thumbs.db
+
+# backup del master de video original (1080p sin optimizar) — no deployar
+backup/

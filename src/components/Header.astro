@@ -67,7 +67,7 @@ import { NAV_LINKS, WHATSAPP_URL } from '../config';
   </div>
 </header>
 
-<dialog id="menu-mobile" class="menu-dialog" aria-label="Menú de navegación">
+<dialog id="menu-mobile" class="menu-dialog" aria-label="Menú de navegación" tabindex="-1">
   <div class="menu-top">
     <span class="brand-name">JOM <strong>Construction</strong></span>
     <button type="button" class="menu-btn" data-menu-close>
@@ -247,26 +247,21 @@ import { NAV_LINKS, WHATSAPP_URL } from '../config';
     min-height: 2.75rem;
   }
 
-  /* botón hamburguesa (header) y cerrar (dialog): ambos son solo-móvil
-     (el del header está oculto ≥56em; el del dialog vive dentro del menú,
-     que nunca se abre en desktop). El borde sutil los lee como "control". */
+  /* botón hamburguesa (header) y cerrar (dialog): solo-móvil. Sin recuadro:
+     el ícono flota. Mantiene el área táctil de 2.75rem (≥44px) y tinta a dorado
+     en hover/foco como el resto del menú. */
   .menu-btn {
     display: none;
     align-items: center;
     justify-content: center;
     width: 2.75rem;
     height: 2.75rem;
-    border: 1px solid rgb(255 255 255 / 0.18);
-    border-radius: var(--radius-sm);
     color: var(--color-white);
-    transition:
-      background-color var(--speed-fast) var(--ease-interactive),
-      border-color var(--speed-fast) var(--ease-interactive);
+    transition: color var(--speed-fast) var(--ease-interactive);
   }
 
   .menu-btn:hover {
-    background: rgb(255 255 255 / 0.08);
-    border-color: rgb(255 255 255 / 0.3);
+    color: var(--color-sand-light);
   }
 
   /* ---------- Menú mobile (drawer lateral) ---------- */
@@ -285,12 +280,20 @@ import { NAV_LINKS, WHATSAPP_URL } from '../config';
        fijo, así la X cae centrada donde estaba la hamburguesa */
     padding: 0 var(--container-pad) var(--container-pad);
     border: none;
-    background: var(--color-cobalt-night);
+    /* relieve: sheen de luz arriba + profundidad vertical (night → abyss) */
+    background:
+      radial-gradient(135% 55% at 50% 0%, rgb(255 255 255 / 0.05), transparent 62%),
+      linear-gradient(180deg, var(--color-cobalt-night) 0%, var(--color-cobalt-abyss) 100%);
     color: var(--color-white);
     box-shadow:
-      -1px 0 0 rgb(255 255 255 / 0.06),
-      -24px 0 60px rgb(3 13 46 / 0.5);
+      inset 1px 0 0 rgb(255 255 255 / 0.07), /* filo interior iluminado */
+      -24px 0 60px rgb(3 13 46 / 0.55); /* sombra proyectada sobre la página */
     overflow-y: auto;
+  }
+
+  /* el foco programático al abrir cae en el panel (no en la cruz): sin anillo */
+  .menu-dialog:focus-visible {
+    outline: none;
   }
 
   .menu-dialog::backdrop {
@@ -358,11 +361,15 @@ import { NAV_LINKS, WHATSAPP_URL } from '../config';
     opacity: 0.75;
   }
 
-  /* sección activa (estado real del scrollspy): texto dorado + tinte + riel */
+  /* sección activa (estado real del scrollspy): tile dorada con relieve
+     (gradiente + highlight superior + sombra que la levanta) + riel dorado */
   .menu-links a[aria-current] {
     color: var(--color-sand-light);
-    background: rgb(228 220 176 / 0.12);
-    box-shadow: inset 3px 0 0 var(--color-sand-light);
+    background: linear-gradient(180deg, rgb(228 220 176 / 0.16), rgb(228 220 176 / 0.04));
+    box-shadow:
+      inset 3px 0 0 var(--color-sand-light),
+      inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 6px 18px rgb(3 13 46 / 0.45);
   }
 
   .menu-ctas {
@@ -474,6 +481,10 @@ import { NAV_LINKS, WHATSAPP_URL } from '../config';
           else a.removeAttribute('aria-current');
         });
       dialog.showModal();
+      // showModal() enfoca la cruz (1er focuseable) y le dibuja el anillo;
+      // movemos el foco al panel para que NO quede "seleccionada" al abrir.
+      // El trap modal y el Tab hacia los controles siguen intactos.
+      dialog.focus();
       openBtn.setAttribute('aria-expanded', 'true');
     });
 
