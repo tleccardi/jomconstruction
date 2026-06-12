@@ -184,6 +184,17 @@ const aniosDeOficio = new Date().getFullYear() - TRAYECTORIA_DESDE;
     }
   }
 
+  /* flotación de menor amplitud para la placa compacta de mobile (ver F) */
+  @keyframes nosotros-float-sm {
+    0%,
+    100% {
+      transform: translateY(-3px);
+    }
+    50% {
+      transform: translateY(3px);
+    }
+  }
+
   @keyframes nosotros-sheen {
     0% {
       transform: translateX(-130%);
@@ -351,6 +362,77 @@ const aniosDeOficio = new Date().getFullYear() - TRAYECTORIA_DESDE;
     margin: var(--space-2xs) 0 0;
     font-weight: 600;
     color: var(--color-ink);
+  }
+
+  /* ========== MOBILE (apilado) — refinamientos < 64em ==========
+     La columna única ya viene de las reglas base; acá ordenamos proporción,
+     jerarquía y peso del dato-ancla para pantalla chica. Nada de esto se
+     evalúa a ≥64em → el layout 5fr/6fr de desktop queda intacto. */
+  @media (max-width: 63.99em) {
+    /* B · las dos zonas se acercan: de "dos islas" a un bloque continuo */
+    .nosotros-grid {
+      gap: var(--space-xl);
+    }
+
+    /* A · placa de marca: el logo casi cuadrado (1416×1111) dejaba un slab de
+       ~290px de alto. Lo acotamos a una placa contenida (~190px) y la
+       aplanamos (shadow-md). NO se toca background/gradiente → la integración
+       del logo sobre el cobalto sigue sin costuras. */
+    .nosotros-logo-card {
+      padding-block: clamp(1.5rem, 5vw, 2rem);
+      box-shadow: var(--shadow-md);
+    }
+
+    .nosotros-logo-card :global(img) {
+      max-width: min(11.5rem, 58%);
+    }
+
+    /* E · el panel entra hacia arriba como el resto del stack (en vez del
+       translateX lateral, que es el gesto del 2-col de desktop): un solo
+       cascade vertical. .is-visible{transform:none} sigue compartido. */
+    .nosotros-logo.reveal {
+      transform: translateY(24px);
+    }
+
+    /* C · jerarquía del relato: aire bajo la cabecera y un primer párrafo
+       "lead" (más oscuro y un punto más grande) que abre la historia. */
+    .nosotros-head {
+      margin-bottom: var(--space-xl);
+    }
+
+    .nosotros-texto > p:first-of-type {
+      font-size: var(--text-md);
+      color: var(--color-ink);
+    }
+
+    /* D · la trayectoria pasa a ser el dato-ancla: cifra dorada grande con su
+       etiqueta un escalón más legible al lado. Mantiene el clip metálico y
+       tabular-nums del base; el count-up no cambia. */
+    .nosotros-trayectoria {
+      gap: var(--space-md);
+    }
+
+    .nosotros-anios {
+      font-size: clamp(3rem, 2rem + 6vw, 3.5rem);
+    }
+
+    .nosotros-anios-label {
+      font-size: var(--text-sm);
+    }
+  }
+
+  /* F · teléfonos: bajamos el ruido del accent shape detrás de la placa chica */
+  @media (max-width: 47.99em) {
+    .nosotros-logo::before {
+      opacity: 0.35;
+    }
+  }
+
+  /* F · y suavizamos la flotación (placa más pequeña → amplitud menor) */
+  @media (max-width: 47.99em) and (prefers-reduced-motion: no-preference) {
+    .nosotros-logo-card {
+      animation-name: nosotros-float-sm;
+    }
   }
 
   @media (min-width: 64em) {

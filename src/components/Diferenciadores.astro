@@ -224,6 +224,118 @@ const DIFERENCIADORES = [
     }
   }
 
+  /* ============================================================
+     MOBILE (≤47.99em) — "comprobante firmado".
+     Los 4 diferenciadores dejan de ser 4 cajas apiladas y planas: se unifican
+     en un panel tipo acta (corona dorada UNA sola vez, filas separadas por
+     hairline, ícono-chip cobalto a la izquierda de cada compromiso) y la CTA
+     baja al pie como barra de cierre. Todo vive acá dentro: a ≥48em no se
+     evalúa ninguna de estas reglas, así que la grilla single-col (48–64em) y el
+     layout 5fr/7fr (≥64em) quedan intactos byte por byte.
+     ============================================================ */
+  @media (max-width: 47.99em) {
+    /* El header se "disuelve" (display:contents) para que kicker/título/lede/CTA
+       participen del mismo flujo flex que el panel de ítems. Así reordeno la CTA
+       al pie con `order`, sin tocar el DOM ni el desktop: display:contents solo
+       existe en este breakpoint. gap:0 → el ritmo lo dan los márgenes propios. */
+    .diferenciadores-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      align-items: stretch; /* anula el align-items:start base: panel y CTA full-width */
+    }
+
+    .diferenciadores-head {
+      display: contents;
+    }
+
+    /* Panel "comprobante": el chrome que antes repetía cada card (fondo, borde,
+       corona dorada, sombra, radio) vive una sola vez acá. */
+    .diferenciadores-items {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: var(--space-2xl); /* reemplaza el gap header→items de la grilla */
+      padding: 0;
+      background: var(--color-white);
+      border: 1px solid var(--color-line);
+      border-top: 2px solid var(--color-sand);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* CTA al pie: `order` la manda después del panel; ancho completo = barra de
+       cierre. Su margin-top base (--space-xl) da el aire panel→CTA. */
+    .diferenciadores-cta-wrap {
+      order: 1;
+    }
+
+    .diferenciadores-cta {
+      width: 100%;
+    }
+
+    /* Cada item pierde su caja y pasa a ser una FILA del panel:
+       ícono · (título + texto), con un único hairline como divisor entre filas
+       (no caja con borde arriba+abajo en cada fila). */
+    .diferenciador-inner {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: var(--space-md);
+      align-items: start;
+      padding: var(--space-lg);
+      background: none;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .diferenciador + .diferenciador .diferenciador-inner {
+      border-top: 1px solid var(--color-line);
+    }
+
+    /* el lift -6px de la card no aplica dentro del panel (levantar una fila de
+       una lista hairline se ve roto): en mobile el feedback táctil vive en el
+       chip, no en la fila. Neutralizo por si hay un dispositivo híbrido con hover. */
+    .diferenciador:hover .diferenciador-inner,
+    .diferenciador:focus-within .diferenciador-inner {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Ícono-chip: 2.75rem (=44px, target táctil), ahora a la IZQUIERDA del
+       título (más escaneable que ícono-arriba). En reposo ya muestra el par
+       cobalto + dorado (aro dorado inset), porque en mobile no hay hover que lo
+       "encienda": el chip no queda muerto. */
+    .diferenciador-icono {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      width: 2.75rem;
+      height: 2.75rem;
+      margin-bottom: 0;
+      box-shadow: inset 0 0 0 1px rgb(138 123 77 / 0.25);
+    }
+
+    .diferenciador h3 {
+      grid-column: 2;
+    }
+
+    .diferenciador p {
+      grid-column: 2;
+    }
+
+    /* tap: el chip hace el flip cobalto→dorado (el gesto que en desktop es
+       hover). Se hunde levemente (scale .97) en vez de crecer: lectura de
+       "press". Reusa el mismo par cobalto+dorado del hover. */
+    .diferenciador:active .diferenciador-icono {
+      transform: scale(0.97);
+      background-color: var(--color-cobalt);
+      color: var(--color-sand-light);
+      box-shadow:
+        inset 0 0 0 1px rgb(228 220 176 / 0.4),
+        var(--shadow-gold-hover);
+    }
+  }
+
   /* prefers-reduced-motion: global.css ya neutraliza .reveal y lleva transiciones y
      animaciones a ~0ms, así el flip del ícono y el lift de la tarjeta saltan a su
      estado final sin animar, y la línea del kicker aparece dibujada. El sticky se

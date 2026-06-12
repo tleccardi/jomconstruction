@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>JOM Construction · Variantes de header</title>
+<!-- Artefacto interno de comparacion. No es produccion: las fuentes van por <link> de Google Fonts. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   TOKENS DE MARCA (reproducidos de src/styles/tokens.css)
+   ============================================================ */
+:root {
+  --color-cobalt: #0328b9;
+  --color-cobalt-deep: #021d85;
+  --color-cobalt-night: #051341;
+  --color-cobalt-abyss: #030d2e;
+  --color-cobalt-soft: #e8ecfb;
+
+  --color-sand: #d9cfa3;
+  --color-sand-light: #e4dcb0;
+  --color-sand-deep: #8a7b4d;
+  --color-sand-text: #6f6238;
+
+  --gradient-gold: linear-gradient(180deg, var(--color-sand-light) 0%, var(--color-sand) 55%, var(--color-sand-deep) 100%);
+  --gradient-gold-on-light: linear-gradient(180deg, var(--color-sand) 0%, var(--color-sand-deep) 60%, var(--color-sand-text) 100%);
+  --gradient-pearl: linear-gradient(180deg, var(--color-white) 0%, #eef1f9 50%, #cdd6ea 100%);
+  --gradient-gold-soft: linear-gradient(180deg, var(--color-sand-light) 0%, var(--color-sand) 100%);
+
+  --color-red: #e23b2e;
+  --color-red-bright: #ff4635;
+
+  --color-white: #ffffff;
+  --color-cream: #faf8f2;
+  --color-mist: #f1f3f9;
+  --color-line: #e3e1d8;
+  --color-ink: #10142b;
+  --color-slate: #474d68;
+  --color-fog: #b8c0e4;
+
+  --color-bg: var(--color-white);
+  --color-text: var(--color-ink);
+  --color-text-muted: var(--color-slate);
+  --color-focus: var(--color-cobalt);
+  --color-whatsapp: #0e8040;
+  --color-whatsapp-deep: #0a6a35;
+
+  --font-display: 'Marcellus', Georgia, serif;
+  --font-body: 'Figtree', system-ui, sans-serif;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-md: clamp(1.125rem, 1rem + 0.5vw, 1.3125rem);
+  --text-lg: clamp(1.3125rem, 1.15rem + 0.8vw, 1.625rem);
+  --text-xl: clamp(1.625rem, 1.35rem + 1.2vw, 2.125rem);
+  --text-2xl: clamp(2rem, 1.6rem + 1.8vw, 2.875rem);
+  --text-3xl: clamp(2.5rem, 1.9rem + 2.8vw, 4rem);
+
+  --leading-tight: 1.12;
+  --leading-snug: 1.3;
+  --leading-body: 1.65;
+  --tracking-wide: 0.08em;
+  --tracking-caps: 0.16em;
+
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  --container-max: 80rem;
+  --container-pad: clamp(1.25rem, 4vw, 2.5rem);
+  --header-h: 4.5rem;
+  --header-h-scrolled: 3.75rem;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-full: 999px;
+
+  --shadow-sm: 0 1px 2px rgb(5 19 65 / 0.06), 0 2px 8px rgb(5 19 65 / 0.06);
+  --shadow-md: 0 2px 6px rgb(5 19 65 / 0.07), 0 10px 28px rgb(5 19 65 / 0.12);
+  --shadow-lg: 0 4px 12px rgb(5 19 65 / 0.1), 0 24px 56px rgb(5 19 65 / 0.18);
+  --shadow-cta: 0 6px 20px rgb(3 40 185 / 0.32);
+  --shadow-cta-hover: 0 10px 30px rgb(3 40 185 / 0.45);
+  --shadow-gold-hover: 0 10px 30px rgb(138 123 77 / 0.4);
+  --shadow-whatsapp-hover: 0 10px 30px rgb(14 128 64 / 0.35);
+  --shadow-header: 0 6px 24px rgb(5 19 65 / 0.28);
+  --ring-focus: 0 0 0 4px rgb(3 40 185 / 0.16);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-interactive: cubic-bezier(0.32, 0.72, 0, 1);
+  --speed-fast: 160ms;
+  --speed-base: 260ms;
+  --speed-slow: 480ms;
+}
+
+/* ============================================================
+   CHROME DEL DOCUMENTO (pagina de comparacion, tema claro unico)
+   ============================================================ */
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+}
+
+.doc-container {
+  max-width: 84rem;
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+a { color: var(--color-cobalt); }
+
+:focus-visible {
+  outline: 2px solid var(--color-cobalt);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.doc-head {
+  padding-block: var(--space-3xl) var(--space-xl);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.doc-kicker {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-sand-text);
+}
+
+.doc-head h1 {
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.01em;
+}
+
+.doc-lede {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--color-slate);
+}
+
+.doc-howto {
+  margin: var(--space-lg) 0 0;
+  padding: var(--space-md) var(--space-lg);
+  max-width: 62ch;
+  background: var(--color-cobalt-soft);
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+}
+
+.doc-howto strong { color: var(--color-cobalt-deep); }
+
+/* ---------- Research ---------- */
+.doc-research { padding-block: var(--space-2xl); border-bottom: 1px solid var(--color-line); }
+
+.doc-research h2,
+.doc-variant h2,
+.doc-reco h2 {
+  margin: 0 0 var(--space-lg);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+}
+
+.doc-research ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md) var(--space-xl);
+}
+
+.doc-research li {
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+}
+
+.doc-research .src {
+  display: block;
+  margin-top: var(--space-2xs);
+  color: var(--color-slate);
+  font-size: var(--text-xs);
+}
+
+/* ---------- Indice ---------- */
+.doc-index { padding-block: var(--space-xl); }
+
+.doc-index ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.doc-index a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-full);
+  background: var(--color-white);
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color var(--speed-base) var(--ease-interactive), box-shadow var(--speed-base) var(--ease-interactive);
+}
+
+.doc-index a:hover { border-color: var(--color-cobalt); box-shadow: var(--shadow-sm); }
+
+/* ---------- Seccion de variante ---------- */
+.doc-variant {
+  padding-block: var(--space-2xl) var(--space-3xl);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.doc-variant h2 span { color: var(--color-sand-text); }
+
+/* ficha de anotacion */
+.doc-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: var(--space-xl);
+  padding: var(--space-lg) var(--space-xl);
+  margin-bottom: var(--space-xl);
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+}
+
+.doc-card h3 {
+  margin: 0 0 var(--space-2xs);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-slate);
+}
+
+.doc-card p { margin: 0 0 var(--space-md); }
+.doc-card p:last-child { margin-bottom: 0; }
+
+.doc-card ul { margin: 0 0 var(--space-md); padding-left: 1.1rem; }
+.doc-card li { margin-bottom: var(--space-2xs); }
+
+.doc-effort {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.8rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: var(--text-xs);
+  color: var(--color-cobalt-deep);
+  background: var(--color-cobalt-soft);
+}
+
+/* ---------- Marcos de preview ---------- */
+.doc-frames {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.doc-frame {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.doc-frame-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-cream);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-slate);
+}
+
+.doc-frame-toggle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.25rem 1rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-full);
+  background: var(--color-white);
+  color: var(--color-cobalt-deep);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--speed-base) var(--ease-interactive), background-color var(--speed-base) var(--ease-interactive);
+}
+
+.doc-frame-toggle:hover { border-color: var(--color-cobalt); }
+
+.doc-frame-toggle[aria-pressed='true'] {
+  background: var(--color-cobalt-deep);
+  border-color: var(--color-cobalt-deep);
+  color: var(--color-white);
+}
+
+.doc-frame-scroller {
+  /* simula el viewport: container queries de las variantes + scroll propio */
+  container-type: inline-size;
+  container-name: viewport;
+  position: relative;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  height: 35rem;
+  background: var(--color-white);
+}
+
+.doc-frame--desktop { min-width: 0; }
+.doc-frame--desktop .doc-frame-wrap { overflow-x: auto; }
+.doc-frame--desktop .doc-frame-scroller { min-width: 64rem; }
+
+.doc-frame--mobile .doc-frame-scroller { width: 24.375rem; height: 43rem; }
+
+.doc-frame-scroller.menu-open { overflow: hidden; }
+
+/* sentinel del estado scrolled: igual gesto que el sitio real */
+.demo-sentinel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: var(--header-h);
+  pointer-events: none;
+}
+
+/* ---------- Contenido demo dentro de cada marco ---------- */
+.demo-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  height: 34rem;
+  overflow: hidden;
+}
+
+.demo-hero-img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.demo-hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgb(5 19 65 / 0.6) 0%, rgb(5 19 65 / 0.28) 45%, rgb(5 19 65 / 0.72) 100%);
+}
+
+.demo-hero-copy {
+  padding: var(--space-2xl) var(--container-pad);
+  max-width: 38rem;
+  color: var(--color-white);
+}
+
+.demo-hero-kicker {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-sand-light);
+}
+
+.demo-hero-title {
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-xl);
+  line-height: var(--leading-tight);
+}
+
+.demo-hero-sub { margin: 0; color: var(--color-fog); font-size: var(--text-sm); }
+
+.demo-section {
+  padding: var(--space-2xl) var(--container-pad);
+  background: var(--color-white);
+}
+
+.demo-section--alt { background: var(--color-mist); }
+
+.demo-section h4 {
+  margin: 0 0 var(--space-xs);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-lg);
+}
+
+.demo-section p { margin: 0; max-width: 56ch; color: var(--color-slate); font-size: var(--text-sm); }
+
+/* ---------- Recomendacion ---------- */
+.doc-reco { padding-block: var(--space-2xl) var(--space-3xl); }
+
+.doc-reco-body {
+  padding: var(--space-xl);
+  background: var(--color-cobalt-night);
+  color: var(--color-white);
+  border-radius: var(--radius-lg);
+}
+
+.doc-reco-body strong { color: var(--color-sand-light); }
+
+.doc-reco-body p { margin: 0 0 var(--space-md); max-width: 75ch; }
+.doc-reco-body p:last-child { margin-bottom: 0; }
+
+/* colapso del propio documento en pantallas angostas */
+@media (max-width: 64em) {
+  .doc-frames { grid-template-columns: 1fr; }
+  .doc-research ul { grid-template-columns: 1fr; }
+  .doc-card { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* @@VARIANT_CSS@@ */
+</style>
+</head>
+<body>
+
+<header class="doc-head">
+  <div class="doc-container">
+    <p class="doc-kicker">Comparacion interna · No publicar</p>
+    <h1>Cinco variantes de header para JOM Construction</h1>
+    <p class="doc-lede">
+      Cinco familias UX distintas de header para la landing, construidas sobre los tokens reales de la marca
+      (cobalto + dorado, Marcellus + Figtree). Cada variante se presenta en un marco desktop y uno mobile,
+      con su ficha de patron, racional y esfuerzo de implementacion.
+    </p>
+    <p class="doc-howto">
+      <strong>Como usar:</strong> scrollea adentro de cada marco para ver el estado compacto real,
+      o usa el boton "Simular scroll". Proba hover sobre links y CTA, y recorre con Tab para ver el foco de teclado.
+      Los menues mobile se abren con la hamburguesa de cada marco angosto.
+    </p>
+  </div>
+</header>
+
+<section class="doc-research" aria-labelledby="research-title">
+  <div class="doc-container">
+    <h2 id="research-title">Hallazgos de la investigacion</h2>
+    <ul>
+      <!-- @@RESEARCH@@ -->
+    </ul>
+  </div>
+</section>
+
+<nav class="doc-index" aria-label="Indice de variantes">
+  <div class="doc-container">
+    <ol>
+      <!-- @@INDEX@@ -->
+    </ol>
+  </div>
+</nav>
+
+<main>
+  <!-- @@VARIANTS@@ -->
+
+  <section class="doc-reco" id="recomendacion" aria-labelledby="reco-title">
+    <div class="doc-container">
+      <h2 id="reco-title">Recomendacion</h2>
+      <div class="doc-reco-body">
+        <!-- @@RECO@@ -->
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ============================================================
+   MOTOR COMPARTIDO DE LOS MARCOS
+   ============================================================ */
+(() => {
+  // Estado scrolled por marco: sentinel de 72px + IntersectionObserver con
+  // root en el propio scroller (mismo gesto que el Header.astro real).
+  document.querySelectorAll('[data-frame]').forEach((frame) => {
+    const sentinel = frame.querySelector('.demo-sentinel');
+    if (!sentinel || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (frame.dataset.forced === 'true') return;
+        frame.classList.toggle('is-scrolled', !entry.isIntersecting);
+      },
+      { root: frame, threshold: 0 }
+    );
+    io.observe(sentinel);
+  });
+
+  // Toggle manual del estado scrolled (boton en la barra de cada marco).
+  document.querySelectorAll('[data-toggle-scrolled]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const frame = document.getElementById(btn.dataset.toggleScrolled);
+      if (!frame) return;
+      const on = frame.classList.toggle('is-scrolled');
+      frame.dataset.forced = on ? 'true' : 'false';
+      btn.setAttribute('aria-pressed', String(on));
+    });
+  });
+
+  // Las anclas internas de los headers no deben navegar el documento.
+  document.querySelectorAll('[data-frame] a[href^="#"]').forEach((a) => {
+    a.addEventListener('click', (e) => e.preventDefault());
+  });
+})();
+
+// @@VARIANT_JS@@
+</script>
+</body>
+</html>

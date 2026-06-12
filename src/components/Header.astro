@@ -90,9 +90,9 @@ import { NAV_LINKS, WHATSAPP_URL } from '../config';
   <nav aria-label="Navegación principal (móvil)">
     <ul role="list" class="menu-links">
       {
-        NAV_LINKS.map((link) => (
+        NAV_LINKS.map((link, i) => (
           <li>
-            <a href={link.href} data-menu-link>
+            <a href={link.href} data-menu-link style={`--i:${i}`}>
               {link.label}
             </a>
           </li>
@@ -101,8 +101,14 @@ import { NAV_LINKS, WHATSAPP_URL } from '../config';
     </ul>
   </nav>
   <div class="menu-ctas">
-    <a href="#contacto" class="btn btn--gold" data-menu-link>Pedí tu presupuesto</a>
-    <a href={WHATSAPP_URL} class="btn btn--whatsapp" target="_blank" rel="noopener">
+    <a href="#contacto" class="btn btn--gold" data-menu-link style={`--i:${NAV_LINKS.length}`}>Pedí tu presupuesto</a>
+    <a
+      href={WHATSAPP_URL}
+      class="btn btn--whatsapp"
+      target="_blank"
+      rel="noopener"
+      style={`--i:${NAV_LINKS.length + 1}`}
+    >
       <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path
           d="M17.5 14.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07a8.1 8.1 0 0 1-2.39-1.47 8.95 8.95 0 0 1-1.65-2.05c-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.21-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.89 1.22 3.09.15.2 2.1 3.21 5.1 4.5.71.3 1.27.49 1.7.63.72.23 1.37.2 1.88.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88a9.83 9.83 0 0 1 9.88 9.89c0 5.45-4.44 9.88-9.89 9.88m8.41-18.29A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.9 11.9 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.16-3.48-8.4"
@@ -241,38 +247,63 @@ import { NAV_LINKS, WHATSAPP_URL } from '../config';
     min-height: 2.75rem;
   }
 
+  /* botón hamburguesa (header) y cerrar (dialog): ambos son solo-móvil
+     (el del header está oculto ≥56em; el del dialog vive dentro del menú,
+     que nunca se abre en desktop). El borde sutil los lee como "control". */
   .menu-btn {
     display: none;
     align-items: center;
     justify-content: center;
     width: 2.75rem;
     height: 2.75rem;
+    border: 1px solid rgb(255 255 255 / 0.18);
     border-radius: var(--radius-sm);
     color: var(--color-white);
+    transition:
+      background-color var(--speed-fast) var(--ease-interactive),
+      border-color var(--speed-fast) var(--ease-interactive);
   }
 
-  /* ---------- Menú mobile ---------- */
+  .menu-btn:hover {
+    background: rgb(255 255 255 / 0.08);
+    border-color: rgb(255 255 255 / 0.3);
+  }
+
+  /* ---------- Menú mobile (drawer lateral) ---------- */
+  /* panel anclado arriba a la derecha, ancho parcial: la página queda visible
+     y oscurecida a la izquierda. NO lleva `display` acá (lo pone [open]) para
+     no pelear con el `dialog:not([open]){display:none}` del user-agent. */
   .menu-dialog {
-    width: 100%;
-    max-width: 100%;
+    position: fixed;
+    inset: 0 0 auto auto; /* top:0 right:0 → pegado a la esquina de la hamburguesa */
+    width: min(87vw, 23rem);
+    max-width: 23rem;
     height: 100dvh;
     max-height: 100dvh;
     margin: 0;
-    padding: var(--container-pad);
+    /* sin padding-top: el header del drawer ocupa la banda exacta del header
+       fijo, así la X cae centrada donde estaba la hamburguesa */
+    padding: 0 var(--container-pad) var(--container-pad);
     border: none;
     background: var(--color-cobalt-night);
     color: var(--color-white);
+    box-shadow:
+      -1px 0 0 rgb(255 255 255 / 0.06),
+      -24px 0 60px rgb(3 13 46 / 0.5);
+    overflow-y: auto;
   }
 
   .menu-dialog::backdrop {
-    background: rgb(5 19 65 / 0.6);
+    background: rgb(3 13 46 / 0.6);
   }
 
   .menu-top {
+    flex: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: var(--header-h);
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
   }
 
   .menu-top .menu-btn {
@@ -282,26 +313,65 @@ import { NAV_LINKS, WHATSAPP_URL } from '../config';
   .menu-links {
     list-style: none;
     padding: 0;
-    margin-block: var(--space-2xl);
+    margin-block: var(--space-lg);
     display: grid;
-    gap: var(--space-lg);
+    gap: var(--space-2xs);
   }
 
   .menu-links a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 3.25rem; /* fila táctil cómoda (52px) */
+    padding-inline: var(--space-sm);
+    border-radius: var(--radius-md);
     font-family: var(--font-display);
     font-size: var(--text-xl);
     color: var(--color-white);
     text-decoration: none;
+    transition:
+      color var(--speed-fast) var(--ease-interactive),
+      background-color var(--speed-fast) var(--ease-interactive);
   }
 
-  .menu-links a:hover {
+  /* chevron sutil: aparece en hover/foco y en la sección activa */
+  .menu-links a::after {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-top: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity var(--speed-fast) var(--ease-interactive);
+  }
+
+  .menu-links a:hover,
+  .menu-links a:focus-visible {
     color: var(--color-sand-light);
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  .menu-links a:hover::after,
+  .menu-links a:focus-visible::after,
+  .menu-links a[aria-current]::after {
+    opacity: 0.75;
+  }
+
+  /* sección activa (estado real del scrollspy): texto dorado + tinte + riel */
+  .menu-links a[aria-current] {
+    color: var(--color-sand-light);
+    background: rgb(228 220 176 / 0.12);
+    box-shadow: inset 3px 0 0 var(--color-sand-light);
   }
 
   .menu-ctas {
     display: grid;
-    gap: var(--space-md);
-    max-width: 24rem;
+    gap: var(--space-sm);
+    /* anclado al pie del drawer, separado por una hairline (como la referencia) */
+    margin-top: auto;
+    padding-top: var(--space-lg);
+    border-top: 1px solid rgb(255 255 255 / 0.08);
   }
 
   @media (max-width: 56em) {
@@ -312,11 +382,76 @@ import { NAV_LINKS, WHATSAPP_URL } from '../config';
     .header .menu-btn {
       display: inline-flex;
     }
-  }
 
-  @media (max-width: 30em) {
+    /* en mobile la conversión vive en el menú y en el FAB de WhatsApp:
+       el header queda limpio (marca + hamburguesa) */
     .header-cta {
       display: none;
+    }
+
+    /* el fondo no scrollea detrás del menú abierto */
+    :global(html:has(.menu-dialog[open])) {
+      overflow: hidden;
+    }
+
+    /* drawer lateral: entra deslizándose desde la derecha (desde la esquina de
+       la hamburguesa). Funciona con showModal()/close() sin tocar el JS.
+       `display` NO va en el estado base para no pisar el dialog:not([open]){none}
+       del user-agent; lo pone [open] junto al layout en columna. */
+    .menu-dialog {
+      transform: translateX(100%);
+      transition:
+        transform var(--speed-base) var(--ease-out),
+        overlay var(--speed-base) var(--ease-out) allow-discrete,
+        display var(--speed-base) var(--ease-out) allow-discrete;
+    }
+
+    .menu-dialog[open] {
+      display: flex;
+      flex-direction: column; /* header arriba, links, y CTAs al pie (margin-top:auto) */
+      transform: translateX(0);
+    }
+
+    @starting-style {
+      .menu-dialog[open] {
+        transform: translateX(100%);
+      }
+    }
+
+    .menu-dialog::backdrop {
+      background: rgb(3 13 46 / 0);
+      transition:
+        background-color var(--speed-base) var(--ease-out),
+        overlay var(--speed-base) var(--ease-out) allow-discrete,
+        display var(--speed-base) var(--ease-out) allow-discrete;
+    }
+
+    .menu-dialog[open]::backdrop {
+      background: rgb(3 13 46 / 0.6);
+    }
+
+    @starting-style {
+      .menu-dialog[open]::backdrop {
+        background: rgb(3 13 46 / 0);
+      }
+    }
+
+    /* entrada escalonada de filas + CTAs. backwards = mantiene el estado inicial
+       durante el delay y luego libera (no pisa el :hover de los .btn). */
+    @media (prefers-reduced-motion: no-preference) {
+      .menu-dialog[open] .menu-links a,
+      .menu-dialog[open] .menu-ctas > * {
+        animation: menu-row-in var(--speed-base) var(--ease-out) backwards;
+        animation-delay: calc(var(--i, 0) * var(--stagger-step));
+      }
+    }
+  }
+
+  /* entrada de cada fila del menú (transform/opacity: barato, sin reflow) */
+  @keyframes menu-row-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
     }
   }
 </style>
@@ -328,6 +463,16 @@ import { NAV_LINKS, WHATSAPP_URL } from '../config';
 
   if (dialog && openBtn) {
     openBtn.addEventListener('click', () => {
+      // Espejar la sección activa que ya calculó el scrollspy del nav desktop,
+      // para que el menú mobile muestre dónde está parado el usuario al abrir.
+      const currentHash =
+        document.querySelector<HTMLAnchorElement>('.nav-desktop a[aria-current]')?.hash ?? '';
+      dialog
+        .querySelectorAll<HTMLAnchorElement>('.menu-links a[href^="#"]')
+        .forEach((a) => {
+          if (a.hash && a.hash === currentHash) a.setAttribute('aria-current', 'true');
+          else a.removeAttribute('aria-current');
+        });
       dialog.showModal();
       openBtn.setAttribute('aria-expanded', 'true');
     });

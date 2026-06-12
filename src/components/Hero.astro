@@ -5,165 +5,136 @@ import { WHATSAPP_URL } from '../config';
 ---
 
 <section id="inicio" class="hero">
-  <div class="hero-bg-wrap" aria-hidden="true">
-    <Image
-      src={heroImg}
-      alt="Vista aérea de un desarrollo residencial de varios edificios en construcción ejecutado por JOM Construction"
-      priority
-      layout="full-width"
-      widths={[640, 960, 1280, 1920, 2560]}
-      sizes="100vw"
-      quality={78}
-      class="hero-bg"
-    />
-  </div>
-  <div class="hero-overlay" aria-hidden="true"></div>
+  {/* Campo "plano": la foto deja de ir a sangre; el texto se apoya sobre el
+      cobalto-noche sólido (contraste AA holgado) y la grilla técnica de
+      MetricsBar/Nosotros hila el hero con el resto del sitio. Decorativo. */}
+  <div class="hero-field" aria-hidden="true"></div>
 
-  <div class="container hero-content">
-    <p class="hero-kicker reveal" style="--reveal-delay: 250ms">
-      Empresa constructora · Buenos Aires
-    </p>
-    <h1 class="hero-title">
-      <span class="hero-title-line reveal" style="--reveal-delay: 450ms">Tu obra, entregada</span>
-      <span class="hero-title-line reveal" style="--reveal-delay: 560ms">
-        <span class="hero-title-accent">en tiempo y presupuesto</span>.
-      </span>
-    </h1>
-    <p class="hero-sub reveal" style="--reveal-delay: 700ms">
-      Obra nueva, desarrollos residenciales y refacciones para empresas y particulares.
-      Presupuesto detallado por escrito, plazos firmados por contrato y un solo equipo
-      responsable de punta a punta.
-    </p>
-    <div class="hero-ctas">
-      <span class="reveal" style="--reveal-delay: 880ms">
-        <a href="#contacto" class="btn btn--gold">Pedí tu presupuesto sin cargo</a>
-      </span>
-      <span class="reveal" style="--reveal-delay: 960ms">
-        <a href={WHATSAPP_URL} class="btn btn--ghost" target="_blank" rel="noopener">
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path
-              d="M17.5 14.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07a8.1 8.1 0 0 1-2.39-1.47 8.95 8.95 0 0 1-1.65-2.05c-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.21-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.89 1.22 3.09.15.2 2.1 3.21 5.1 4.5.71.3 1.27.49 1.7.63.72.23 1.37.2 1.88.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88a9.83 9.83 0 0 1 9.88 9.89c0 5.45-4.44 9.88-9.89 9.88m8.41-18.29A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.9 11.9 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.16-3.48-8.4"
-            ></path>
-          </svg>
-          Escribinos por WhatsApp
-        </a>
-      </span>
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="hero-kicker reveal" style="--reveal-delay: 200ms">
+        Empresa constructora · Buenos Aires
+      </p>
+      <h1 class="hero-title">
+        <span class="hero-title-line reveal" style="--reveal-delay: 320ms">Tu obra, entregada</span>
+        <span class="hero-title-line reveal" style="--reveal-delay: 430ms">
+          <span class="hero-title-accent">en tiempo y presupuesto</span>.
+        </span>
+      </h1>
+      <p class="hero-sub reveal" style="--reveal-delay: 580ms">
+        Obra nueva, desarrollos y refacciones para empresas y particulares.
+        Un solo equipo responsable, de la primera visita a la entrega.
+      </p>
+      <div class="hero-ctas">
+        <span class="reveal" style="--reveal-delay: 700ms">
+          <a href="#contacto" class="btn btn--gold">Pedí tu presupuesto sin cargo</a>
+        </span>
+        <span class="reveal" style="--reveal-delay: 780ms">
+          <a href={WHATSAPP_URL} class="btn btn--ghost" target="_blank" rel="noopener">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M17.5 14.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07a8.1 8.1 0 0 1-2.39-1.47 8.95 8.95 0 0 1-1.65-2.05c-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.21-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.89 1.22 3.09.15.2 2.1 3.21 5.1 4.5.71.3 1.27.49 1.7.63.72.23 1.37.2 1.88.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88a9.83 9.83 0 0 1 9.88 9.89c0 5.45-4.44 9.88-9.89 9.88m8.41-18.29A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.9 11.9 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.16-3.48-8.4"
+              ></path>
+            </svg>
+            Escribinos por WhatsApp
+          </a>
+        </span>
+      </div>
+
+      {/* Credenciales como ficha técnica: filete dorado que se traza + tildes
+          metálicos, no una fila suelta de bullets. Los 3 trust-signals se conservan. */}
+      <ul class="hero-ficha reveal" role="list" style="--reveal-delay: 940ms">
+        <li>Visita y presupuesto sin cargo</li>
+        <li>Respuesta dentro de las 24 hs hábiles</li>
+        <li>Personal asegurado con ART</li>
+      </ul>
     </div>
-    <ul class="hero-trust" role="list">
-      <li class="reveal" style="--reveal-delay: 1100ms">Visita y presupuesto sin cargo</li>
-      <li class="reveal" style="--reveal-delay: 1160ms">Respuesta dentro de las 24 hs hábiles</li>
-      <li class="reveal" style="--reveal-delay: 1220ms">Personal asegurado con ART</li>
-    </ul>
-  </div>
 
-  <div class="hero-scroll-cue">
-    <a class="hero-scroll-link" href="#servicios">
-      <svg
-        class="hero-scroll-chevron"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M6 9l6 6 6-6"></path>
-      </svg>
-      <span class="visually-hidden">Bajar a la siguiente sección</span>
-    </a>
+    {/* Lámina de obra: la foto pasa a ser prueba enmarcada (no papel tapiz).
+        Mantiene el pipeline <Image> con priority para el LCP. */}
+    <figure class="hero-plate reveal">
+      <div class="hero-plate-frame">
+        <Image
+          src={heroImg}
+          alt="Vista aérea de un desarrollo residencial de varios edificios en construcción ejecutado por JOM Construction"
+          priority
+          layout="constrained"
+          width={1280}
+          widths={[480, 720, 960, 1280]}
+          sizes="(min-width: 64em) 44vw, 92vw"
+          quality={80}
+          class="hero-plate-img"
+        />
+      </div>
+      <figcaption class="hero-plate-cap">
+        Desarrollo residencial en ejecución · Buenos Aires
+      </figcaption>
+    </figure>
   </div>
 </section>
 
 <style>
   .hero {
     position: relative;
+    isolation: isolate;
     display: grid;
     align-items: center;
     min-height: 100svh;
-    padding-top: var(--header-h);
-    padding-bottom: var(--space-3xl);
+    padding-top: calc(var(--header-h) + var(--space-lg));
+    padding-bottom: var(--space-2xl);
     background: var(--color-cobalt-night);
     overflow: hidden;
   }
 
-  /* capa de parallax: algo más alta que el hero para no descubrir bordes al desplazarse */
-  .hero-bg-wrap {
-    position: absolute;
-    inset: -10% 0;
-  }
-
-  .hero-bg {
+  /* ---------- Campo "plano": grilla técnica + luz ambiente + grano ---------- */
+  .hero-field {
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 30%;
-    transform-origin: 50% 35%;
-    will-change: transform;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    /* ken-burns: zoom lentísimo con micro-pan — la escena "respira" */
-    .hero-bg {
-      animation: ken-burns var(--ken-burns-dur) ease-in-out infinite alternate;
-    }
-
-    /* parallax nativo: el fondo se mueve más lento que el contenido al scrollear.
-       En navegadores sin animation-timeline simplemente no hay parallax (degrada limpio). */
-    @supports (animation-timeline: scroll()) {
-      .hero-bg-wrap {
-        animation: hero-parallax linear both;
-        animation-timeline: scroll(root);
-        animation-range: 0 100vh;
-      }
-    }
-  }
-
-  @keyframes ken-burns {
-    from {
-      transform: scale(1.05) translateY(0);
-    }
-    to {
-      transform: scale(1.14) translateY(-2%);
-    }
-  }
-
-  @keyframes hero-parallax {
-    to {
-      transform: translateY(8%);
-    }
-  }
-
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    /* luz cobalto detrás del texto (arriba-izq) + acento dorado tenue (abajo-der,
+       bajo la lámina). Estático → se pinta una sola vez, cero costo en runtime. */
     background:
-      radial-gradient(125% 125% at 78% 30%, transparent 42%, rgb(5 19 65 / 0.5) 100%),
-      linear-gradient(to top, rgb(5 19 65 / 0.55), transparent 40%),
-      linear-gradient(100deg, rgb(5 19 65 / 0.92) 0%, rgb(5 19 65 / 0.72) 38%, rgb(5 19 65 / 0.25) 75%);
+      radial-gradient(78% 60% at 16% 24%, rgb(96 128 246 / 0.20), transparent 60%),
+      radial-gradient(70% 80% at 94% 96%, rgb(227 220 176 / 0.06), transparent 60%);
   }
 
-  /* grano sutil: textura tangible + mata el banding del degradado (estático, sin costo) */
-  .hero-overlay::after {
+  /* grilla "plano técnico": líneas doradas tenues, desvanecidas hacia los bordes
+     con una máscara radial para que no se lea como tabla (mismo gesto que MetricsBar) */
+  .hero-field::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgb(227 220 176 / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(227 220 176 / 0.05) 1px, transparent 1px);
+    background-size: 2.5rem 2.5rem;
+    -webkit-mask-image: radial-gradient(130% 115% at 68% 42%, #000 32%, transparent 84%);
+    mask-image: radial-gradient(130% 115% at 68% 42%, #000 32%, transparent 84%);
+  }
+
+  /* grano sutil: textura tangible + mata el banding de los degradados (estático) */
+  .hero-field::after {
     content: '';
     position: absolute;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 160px 160px;
-    opacity: 0.06;
+    opacity: 0.05;
     mix-blend-mode: overlay;
-    pointer-events: none;
   }
 
-  .hero-content {
+  /* ---------- Grilla del hero ---------- */
+  .hero-grid {
     position: relative;
     z-index: 1;
+    display: grid;
+    gap: var(--space-2xl);
+    align-items: center;
     color: var(--color-white);
-    padding-block: var(--space-3xl);
   }
 
+  /* ---------- Columna de texto ---------- */
   .hero-kicker {
     display: inline-flex;
     align-items: center;
@@ -199,7 +170,6 @@ import { WHATSAPP_URL } from '../config';
     }
   }
 
-  /* sin movimiento: la línea queda dibujada y quieta */
   @media (prefers-reduced-motion: reduce) {
     .hero-kicker::before {
       transform: scaleX(1);
@@ -208,8 +178,10 @@ import { WHATSAPP_URL } from '../config';
   }
 
   .hero-title {
-    max-width: 20ch;
-    font-size: var(--text-3xl);
+    /* el tope queda por debajo de --text-3xl: en la columna del split la línea
+       larga ("en tiempo y presupuesto.") tiene que entrar en un solo renglón */
+    font-size: clamp(2.1rem, 1.55rem + 2.3vw, 3rem);
+    line-height: 1.06;
     letter-spacing: -0.01em;
     color: var(--color-white);
   }
@@ -223,7 +195,7 @@ import { WHATSAPP_URL } from '../config';
     color: var(--color-sand-light); /* fallback sólido si no hay background-clip: text */
   }
 
-  /* efecto metálico en todo el h1 (mismo que las cifras):
+  /* efecto metálico en todo el h1 (mismo token que las cifras):
      la línea principal en "perla" (blanco frío) y el acento en dorado. */
   @supports ((background-clip: text) or (-webkit-background-clip: text)) {
     .hero-title-line {
@@ -233,7 +205,6 @@ import { WHATSAPP_URL } from '../config';
       -webkit-text-fill-color: transparent;
     }
 
-    /* el acento (hijo) se pinta dorado sobre su propio texto; el resto queda perla */
     .hero-title-accent {
       background: var(--gradient-gold);
       -webkit-background-clip: text;
@@ -243,7 +214,7 @@ import { WHATSAPP_URL } from '../config';
   }
 
   .hero-sub {
-    max-width: 36rem;
+    max-width: 34rem;
     margin-top: var(--space-lg);
     font-size: var(--text-md);
     color: rgb(255 255 255 / 0.88);
@@ -261,111 +232,192 @@ import { WHATSAPP_URL } from '../config';
     display: inline-flex;
   }
 
-  .hero-trust {
+  /* ---------- Ficha de credenciales ---------- */
+  .hero-ficha {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-xs) var(--space-xl);
+    gap: var(--space-sm) var(--space-xl);
     margin-top: var(--space-xl);
-    padding: 0;
+    padding-top: var(--space-lg);
     list-style: none;
     font-size: var(--text-sm);
     color: rgb(255 255 255 / 0.85);
   }
 
-  .hero-trust li {
+  /* filete dorado que se traza al revelar (gesto de Nosotros), no un border quieto */
+  .hero-ficha::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgb(227 220 176 / 0.55),
+      rgb(227 220 176 / 0.12) 62%,
+      transparent
+    );
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--speed-slow) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .hero-ficha.is-visible::before {
+    transform: scaleX(1);
+  }
+
+  /* sin JS / reduced-motion: el filete queda trazado y quieto */
+  html.no-js .hero-ficha::before {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-ficha::before {
+      transform: scaleX(1);
+      transition: none;
+    }
+  }
+
+  .hero-ficha li {
     display: inline-flex;
     align-items: center;
     gap: var(--space-xs);
   }
 
-  .hero-trust li::before {
+  .hero-ficha li::before {
     content: '';
-    width: 1rem;
-    height: 1rem;
+    width: 1.05rem;
+    height: 1.05rem;
     flex-shrink: 0;
     /* mismo dorado metálico; la máscara lo recorta a la forma del tilde */
     background: var(--gradient-gold);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")
+      center / contain no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")
       center / contain no-repeat;
   }
 
-  /* ---------- Indicador de scroll ---------- */
-  .hero-scroll-cue {
-    position: absolute;
-    z-index: 2;
-    left: 50%;
-    bottom: var(--space-xl);
-    width: 2.75rem;
-    margin-left: -1.375rem; /* centrado sin transform */
+  /* ---------- Lámina de obra ---------- */
+  .hero-plate {
+    position: relative;
+    isolation: isolate;
+    margin: 0;
   }
 
-  /* Entrada propia, NO vía IntersectionObserver: el cue queda al borde inferior,
-     dentro del margen que el observer descarta, así que con .reveal casi nunca
-     se disparaba. Al ser above-the-fold, animamos en la carga con un delay corto. */
+  /* marco dorado offset que asoma por detrás (broken grid, gesto de Nosotros).
+     Sobre el campo oscuro va como CONTORNO (no bloque relleno: el relleno sand se
+     lava a gris murky). Lee como un registro de plano técnico, nítido y on-brand. */
+  .hero-plate::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    right: calc(-1 * var(--space-md));
+    bottom: calc(-1 * var(--space-md));
+    width: 56%;
+    height: 56%;
+    border: 1.5px solid rgb(227 220 176 / 0.45);
+    background: rgb(227 220 176 / 0.06);
+    border-radius: var(--radius-lg);
+  }
+
+  .hero-plate-frame {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgb(255 255 255 / 0.16);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .hero-plate-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 32%;
+  }
+
+  /* refracción de borde: luz arriba + hairline dorado interior (lenguaje metálico) */
+  .hero-plate-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.28),
+      inset 0 0 0 1px rgb(227 220 176 / 0.1);
+    pointer-events: none;
+  }
+
+  .hero-plate-cap {
+    margin-top: var(--space-sm);
+    font-size: var(--text-sm);
+    color: var(--color-fog);
+  }
+
+  /* la lámina entra desde la derecha (espeja el panel de Nosotros, que entra desde
+     la izquierda) en vez del translateY del .reveal global */
+  .hero-plate.reveal {
+    transform: translateX(28px);
+  }
+
+  .hero-plate.reveal.is-visible {
+    transform: none;
+  }
+
+  /* sin JS la lámina no recibe .is-visible: la dejamos asentada */
+  html.no-js .hero-plate.reveal {
+    transform: none;
+  }
+
+  /* drift sutil del accent-shape al pasar por el viewport (degrada a nada donde no
+     hay scroll timelines). Solo si el usuario no pidió reducir movimiento. */
   @media (prefers-reduced-motion: no-preference) {
-    html:not(.no-js) .hero-scroll-cue {
-      opacity: 0;
-      animation: cue-in var(--speed-slow) var(--ease-out) 900ms forwards;
+    @supports (animation-timeline: view()) {
+      .hero-plate::before {
+        animation: hero-accent-drift linear both;
+        animation-timeline: view();
+        animation-range: cover;
+      }
     }
   }
 
-  @keyframes cue-in {
+  @keyframes hero-accent-drift {
     from {
-      opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(-10px);
     }
     to {
-      opacity: 1;
-      transform: none;
+      transform: translateY(10px);
     }
   }
 
-  /* flecha dentro de un anillo: lectura inmediata de "bajá" + afordance de click */
-  /* sin anillo: solo el chevron (con sombra para leer sobre la foto) */
-  .hero-scroll-link {
-    display: grid;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    color: var(--color-sand-light);
-    transition:
-      color var(--speed-base) var(--ease-interactive),
-      transform var(--speed-base) var(--ease-interactive);
-  }
+  /* ---------- Desktop: split editorial asimétrico ---------- */
+  @media (min-width: 64em) {
+    .hero-grid {
+      grid-template-columns: 1.06fr 0.94fr;
+      gap: var(--space-3xl);
+      align-items: center;
+    }
 
-  .hero-scroll-link:hover {
-    color: var(--color-white);
-    transform: translateY(3px);
-  }
-
-  .hero-scroll-chevron {
-    width: 1.75rem;
-    height: 1.75rem;
-    filter: drop-shadow(0 1px 3px rgb(5 19 65 / 0.5));
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    /* bob vertical de la flecha, con más recorrido: invita a bajar */
-    .hero-scroll-chevron {
-      animation: scroll-bob 1.5s var(--ease-out) infinite;
+    .hero-plate-frame {
+      aspect-ratio: 5 / 4;
     }
   }
 
-  @keyframes scroll-bob {
-    0%,
-    100% {
-      transform: translateY(-3px);
+  /* ---------- Mobile: una columna; la lámina cierra el hero ---------- */
+  @media (max-width: 63.99em) {
+    .hero-plate {
+      margin-top: var(--space-md);
     }
-    50% {
-      transform: translateY(6px);
+
+    .hero-plate-frame {
+      aspect-ratio: 16 / 10;
     }
   }
 
   @media (max-width: 48em) {
-    .hero {
-      min-height: 100svh;
-    }
-
     .hero-ctas .btn {
       width: 100%;
       max-width: 24rem;

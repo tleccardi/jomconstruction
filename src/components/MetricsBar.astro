@@ -111,8 +111,12 @@ import { METRICS } from '../config';
     transition: transform var(--speed-base) var(--ease-interactive);
   }
 
-  .metric.is-visible:hover .metric-inner {
-    transform: translateY(-4px);
+  /* el lift solo con puntero fino: evita el hover "pegado" tras un tap en touch.
+     En desktop con mouse (hover: hover) el resultado es idéntico al actual. */
+  @media (hover: hover) {
+    .metric.is-visible:hover .metric-inner {
+      transform: translateY(-4px);
+    }
   }
 
   .metric dd {
@@ -142,8 +146,10 @@ import { METRICS } from '../config';
     }
   }
 
-  .metric.is-visible:hover .metric-num {
-    filter: brightness(1.12) drop-shadow(0 4px 16px rgb(227 220 176 / 0.25));
+  @media (hover: hover) {
+    .metric.is-visible:hover .metric-num {
+      filter: brightness(1.12) drop-shadow(0 4px 16px rgb(227 220 176 / 0.25));
+    }
   }
 
   .metric-suffix {
@@ -167,7 +173,40 @@ import { METRICS } from '../config';
   }
 
   @media (max-width: 47.99em) {
-    /* en 2 columnas, la de la izquierda no lleva separador */
+    /* R1 — columnas REALMENTE iguales. Con repeat(2, 1fr) el track es
+       minmax(auto, 1fr): no baja del min-content de "185.000" (~160px), que
+       forzaba la columna izquierda a ~208px y descentraba la grilla y el
+       separador. minmax(0, 1fr) permite tracks idénticos. */
+    .metrics-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* R2 — en media columna la escala display (--text-3xl ≈ 40px) no entra.
+       Bajamos a --text-2xl (≈32px): sigue siendo un "headline" impactante para
+       pantalla chica (Material 3 / LearnUI) y "185.000" pasa a caber holgado. */
+    .metric-num {
+      font-size: var(--text-2xl);
+    }
+
+    /* QW5 — sufijo un escalón más chico para conservar la proporción cifra/sufijo */
+    .metric-suffix {
+      font-size: var(--text-lg);
+    }
+
+    /* R3 — menos padding lateral: en una columna angosta, 24px×2 se comían el
+       ancho y arrimaban la cifra al separador. */
+    .metric {
+      padding-inline: var(--space-xs);
+    }
+
+    /* QW4 — tracking apenas menor: alivia el wrap de etiquetas largas
+       ("clientes que confiaron") en pantalla chica. */
+    .metric dt {
+      letter-spacing: 0.04em;
+    }
+
+    /* R4 — en 2 columnas, la de la izquierda no lleva separador. Con las
+       columnas ya iguales (R1), el único separador queda centrado. */
     .metric:nth-child(odd)::before {
       display: none;
     }

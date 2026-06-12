@@ -62,43 +62,56 @@ const SERVICIOS: Servicio[] = [
       </p>
     </header>
 
-    <ul class="servicios-grid" role="list">
-      {
-        SERVICIOS.map((servicio, i) => (
-          <li
-            class="servicio-card reveal"
-            style={`--reveal-delay: calc(var(--stagger-step) * ${i})`}
-          >
-            <div class="servicio-card-inner">
-              <span class="servicio-icono" aria-hidden="true">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+    {/* Mobile (≤47.99em): .servicios-grid se vuelve un carrusel scroll-snap con
+        dots nativos (::scroll-marker, igual que Obras) y el CTA cae debajo del
+        riel. Desktop (≥48em): .servicios-layout es la grilla y .servicios-grid usa
+        display:contents → las 5 cards + el CTA son los mismos 6 ítems 3×2 de
+        siempre. Por eso el desktop aprobado no cambia. */}
+    <div class="servicios-layout">
+      <ul class="servicios-grid" role="list" aria-label="Servicios">
+        {
+          SERVICIOS.map((servicio, i) => (
+            <li
+              class="servicio-card reveal"
+              style={`--reveal-delay: calc(var(--stagger-step) * ${i})`}
+            >
+              <div class="servicio-card-inner">
+                <span class="servicio-icono" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d={servicio.icono} />
+                  </svg>
+                </span>
+                <h3>{servicio.titulo}</h3>
+                <p>{servicio.descripcion}</p>
+                <a
+                  href={waLink(servicio.consulta)}
+                  target="_blank"
+                  rel="noopener"
+                  class="servicio-link"
                 >
-                  <path d={servicio.icono} />
-                </svg>
-              </span>
-              <h3>{servicio.titulo}</h3>
-              <p>{servicio.descripcion}</p>
-              <a
-                href={waLink(servicio.consulta)}
-                target="_blank"
-                rel="noopener"
-                class="servicio-link"
-              >
-                <span class="servicio-link-label">Consultar por este servicio</span>
-                <span class="servicio-flecha" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </li>
-        ))
-      }
+                  <span class="servicio-link-label">Consultar por este servicio</span>
+                  <span class="servicio-flecha" aria-hidden="true">→</span>
+                </a>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
 
-      <li
+      {/* Los dots del carrusel son nativos (::scroll-marker, ver media query):
+          no hay markup ni JS, igual que en Obras. */}
+
+      {/* CTA: en desktop es la 6ª celda de la grilla; en mobile sale del riel y
+          queda fijo, full-width, debajo (un CTA de conversión no debe esconderse
+          detrás de swipes). */}
+      <div
         class="servicio-card servicio-card--cta reveal"
         style={`--reveal-delay: calc(var(--stagger-step) * ${SERVICIOS.length})`}
       >
@@ -106,8 +119,8 @@ const SERVICIOS: Servicio[] = [
           <p>¿No sabés exactamente qué necesita tu proyecto? Contanos y te orientamos.</p>
           <a href="#contacto" class="btn btn--gold">Pedí tu presupuesto sin cargo</a>
         </div>
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -116,20 +129,31 @@ const SERVICIOS: Servicio[] = [
     background: var(--color-white);
   }
 
-  .servicios-grid {
+  /* La grilla 3×2 vive ahora en .servicios-layout (antes en .servicios-grid) para
+     poder sacar el CTA del riel en mobile sin tocar el desktop. En ≥48em
+     .servicios-grid usa display:contents → sus 5 <li> + el CTA quedan como los
+     mismos 6 ítems de la grilla. Layout computado ≥48em: idéntico al aprobado. */
+  .servicios-layout {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
     gap: var(--space-lg);
-    padding: 0;
-    list-style: none;
   }
 
   /* Desktop: exactamente 3 columnas (5 servicios + 1 card destacada = 3×2).
      Mobile/tablet conserva el auto-fit original; lo afinamos en su pasada. */
   @media (min-width: 64em) {
-    .servicios-grid {
+    .servicios-layout {
       grid-template-columns: repeat(3, 1fr);
     }
+  }
+
+  /* El <ul> ya no pinta caja propia en desktop: sus <li> ascienden a la grilla
+     de .servicios-layout. En mobile recupera caja y se vuelve el riel. */
+  .servicios-grid {
+    display: contents;
+    padding: 0;
+    margin: 0;
+    list-style: none;
   }
 
   /* La <li> solo posiciona y revela: .reveal (global.css) aporta opacity +
@@ -282,6 +306,119 @@ const SERVICIOS: Servicio[] = [
     font-weight: 600;
     color: var(--color-white);
     flex-grow: 0;
+  }
+
+  /* ============================================================
+     CARRUSEL MOBILE (≤47.99em) — scroll-snap nativo.
+     Todo el carrusel vive acá adentro: a ≥48em no se evalúa ninguna de estas
+     reglas, así que la grilla 3×2 aprobada queda intacta byte por byte.
+     ============================================================ */
+  @media (max-width: 47.99em) {
+    .servicios-layout {
+      display: block;
+    }
+
+    /* el <ul> deja de ser display:contents y pasa a ser el riel horizontal */
+    .servicios-grid {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: var(--space-md);
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      /* full-bleed: rompe el padding del .container para que la última card
+         llegue al borde y el peek use todo el ancho; scroll-padding realinea la
+         primera card con el título de la sección. */
+      margin-inline: calc(var(--container-pad) * -1);
+      padding-inline: var(--container-pad);
+      /* aire vertical: que overflow no recorte el focus-ring ni el lift -6px */
+      padding-block: var(--space-sm);
+      scroll-padding-inline: var(--container-pad);
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .servicios-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .servicios-grid .servicio-card {
+      flex: 0 0 85%; /* 1 card + ~1.1: asoma la siguiente como señal de "hay más" */
+      scroll-snap-align: start;
+    }
+
+    /* compactar las cards DEL CARRUSEL en mobile (scoped a .servicios-grid, así el
+       CTA y todo el desktop ≥48em conservan el padding holgado original): menos
+       padding, ícono más chico y gaps internos más ajustados. */
+    .servicios-grid .servicio-card-inner {
+      padding: var(--space-lg);
+      gap: var(--space-xs);
+    }
+
+    .servicios-grid .servicio-icono {
+      width: 2.75rem;
+      height: 2.75rem;
+      margin-bottom: var(--space-sm);
+    }
+
+    .servicios-grid .servicio-icono svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    /* título un punto más chico y descripción con interlineado snug: las dos
+       palancas que más bajan el alto sin tocar el contenido ni la jerarquía
+       (título display 18px sobre cuerpo 15px). */
+    .servicios-grid .servicio-card h3 {
+      font-size: var(--text-md);
+    }
+
+    .servicios-grid .servicio-card p {
+      line-height: var(--leading-snug);
+    }
+
+    /* reveal × carrusel: el IntersectionObserver (Layout.astro) usa el viewport
+       como root → las cards fuera de pantalla en X nunca intersectan y quedarían
+       en opacity:0 (y no dispara en scroll programático). Dentro del riel
+       desactivamos el reveal: las cards entran ya visibles. El header y el CTA
+       (fuera del riel) conservan su reveal normal. */
+    .servicios-grid .servicio-card.reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    /* indicador de carrusel: dots nativos centrados (mismo patrón que Obras).
+       Mejora progresiva (Chrome 135+); sin soporte, el peek de la card siguiente
+       sigue siendo el cue (NN/g: peek > dots). Sin contador, cero JS. */
+    @supports (scroll-marker-group: after) {
+      .servicios-grid {
+        scroll-marker-group: after;
+      }
+      .servicios-grid::scroll-marker-group {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-xs);
+        padding-top: var(--space-xs);
+      }
+      .servicios-grid .servicio-card::scroll-marker {
+        content: '';
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: var(--radius-full);
+        background: var(--color-line);
+        transition: background-color var(--speed-fast) var(--ease-out);
+      }
+      .servicios-grid .servicio-card::scroll-marker:target-current {
+        background: var(--color-cobalt);
+      }
+    }
+
+    /* CTA full-width debajo del carrusel (sale del riel). Margen amplio para
+       despegarlo de los dots: el indicador pertenece al riel, no al CTA. */
+    .servicio-card--cta {
+      margin-top: var(--space-2xl);
+    }
   }
 
   /* prefers-reduced-motion: global.css ya neutraliza .reveal y lleva las

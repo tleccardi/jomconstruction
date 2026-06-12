@@ -41,7 +41,18 @@ function getIniciales(nombre: string): string {
       </h2>
     </header>
 
-    <ul class="testimonios-grid" role="list">
+    {/* Mobile (≤47.99em): .testimonios-grid se vuelve un carrusel scroll-snap
+        1-up con peek + dots nativos (::scroll-marker, igual que Servicios/Obras).
+        Desktop (≥48em): sigue siendo la grilla aprobada, intacta. tabindex +
+        aria-label hacen el riel enfocable por teclado (scroll por flechas) en
+        mobile; en desktop solo agregan un tab-stop con nombre accesible, sin
+        cambio de render. */}
+    <ul
+      class="testimonios-grid"
+      role="list"
+      tabindex="0"
+      aria-label="Testimonios, deslizá para ver más"
+    >
       {
         TESTIMONIOS.map((testimonio, i) => {
           const iniciales = getIniciales(testimonio.nombre);
@@ -263,6 +274,98 @@ function getIniciales(nombre: string): string {
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--color-sand-text);
+  }
+
+  /* ============================================================
+     CARRUSEL MOBILE (≤47.99em) — scroll-snap nativo, mismo patrón que
+     Servicios/Obras. Todo el carrusel vive acá adentro: a ≥48em no se evalúa
+     ninguna de estas reglas, así que la grilla aprobada (auto-fit 48–64em,
+     3-col ≥64em) queda intacta byte por byte.
+     ============================================================ */
+  @media (max-width: 47.99em) {
+    /* carrusel testimonios v1 */
+    /* el <ul> deja de ser grilla y pasa a ser el riel horizontal 1-up */
+    .testimonios-grid {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: var(--space-md);
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      /* full-bleed: rompe el padding del .container para que la última card
+         llegue al borde y el peek use todo el ancho; scroll-padding realinea la
+         primera card con el título de la sección. */
+      margin-inline: calc(var(--container-pad) * -1);
+      padding-inline: var(--container-pad);
+      /* aire vertical: que overflow no recorte la sombra ni el focus-ring */
+      padding-block: var(--space-sm);
+      scroll-padding-inline: var(--container-pad);
+      scrollbar-width: none;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .testimonios-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* cada testimonio es una slide 1-up: ~85% deja asomar la siguiente como
+       señal de "hay más voces" (NN/g: peek como signifier primario) */
+    .testimonios-grid .testimonio {
+      flex: 0 0 85%;
+      scroll-snap-align: start;
+    }
+
+    /* reveal × carrusel: el IntersectionObserver (Layout.astro) usa el viewport
+       como root → las slides fuera de pantalla en X nunca intersectan y
+       quedarían en opacity:0 (y no dispara en scroll programático). Dentro del
+       riel desactivamos el reveal: las slides entran ya visibles. El header
+       (kicker + título), fuera del riel, conserva su reveal normal. */
+    .testimonios-grid .testimonio.reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    /* la cita toma peso de pull-quote: es la protagonista de la slide 1-up */
+    .testimonio-quote {
+      margin-bottom: var(--space-md);
+    }
+
+    .testimonio-quote svg {
+      width: 2rem;
+    }
+
+    .testimonio blockquote p {
+      font-size: var(--text-lg);
+      line-height: var(--leading-snug);
+    }
+
+    /* indicador de carrusel: dots nativos centrados (mismo patrón que
+       Servicios/Obras). Mejora progresiva (Chrome 135+); sin soporte, el peek de
+       la slide siguiente sigue siendo el cue. Sin contador, cero JS. */
+    @supports (scroll-marker-group: after) {
+      .testimonios-grid {
+        scroll-marker-group: after;
+      }
+      .testimonios-grid::scroll-marker-group {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-xs);
+        padding-top: var(--space-md);
+      }
+      .testimonios-grid .testimonio::scroll-marker {
+        content: '';
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: var(--radius-full);
+        background: var(--color-line);
+        transition: background-color var(--speed-fast) var(--ease-out);
+      }
+      .testimonios-grid .testimonio::scroll-marker:target-current {
+        background: var(--color-cobalt);
+      }
+    }
   }
 
   /* prefers-reduced-motion: global.css ya neutraliza .reveal (lo deja visible) y

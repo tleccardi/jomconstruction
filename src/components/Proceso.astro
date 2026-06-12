@@ -126,6 +126,156 @@ const PASOS = [
     color: var(--color-text-muted);
   }
 
+  /* ============================================================
+     MOBILE (≤47.99em): el riel del desktop, girado a vertical.
+     Convierte los 4 bloques apilados en un recorrido guiado 01→04.
+     Todo vive en esta media query: el render ≥48em (aprobado) no se toca.
+     ============================================================ */
+  @media (max-width: 47.99em) {
+    .pasos {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2xl); /* aire entre estaciones: el riel ocupa el gap */
+      position: relative;
+      --paso-gutter: 2.5rem; /* canaleta para el riel + el nodo */
+      --rail-x: 0.6rem; /* eje horizontal del riel dentro de la canaleta */
+      --rail-top: 0.7rem; /* centro óptico del nodo de la estación 01 */
+    }
+
+    /* riel a dos capas (mismo recurso que el desktop, pero vertical):
+       ::before = track tenue siempre presente · ::after = relleno dorado que se dibuja */
+    .pasos::before,
+    .pasos::after {
+      content: '';
+      position: absolute;
+      z-index: 0;
+      top: var(--rail-top);
+      bottom: 0;
+      left: var(--rail-x);
+      width: 2px;
+      transform: translateX(-50%);
+    }
+
+    .pasos::before {
+      background: var(--color-line);
+    }
+
+    .pasos::after {
+      background: linear-gradient(180deg, var(--color-sand), var(--color-sand-deep));
+      transform: translateX(-50%) scaleY(0);
+      transform-origin: top center;
+      transition: transform var(--speed-cinematic) var(--ease-out);
+    }
+
+    /* el relleno se dibuja en cuanto el primer paso entra en viewport
+       (se engancha al .is-visible del observer global; sin observer nuevo) */
+    .pasos:has(.paso.is-visible)::after {
+      transform: translateX(-50%) scaleY(1);
+    }
+
+    /* paso = contenido con canaleta a la izquierda; fuera el hairline suelto de arriba */
+    .paso {
+      position: relative;
+      z-index: 1; /* contenido + nodo por encima del riel */
+      padding: 0 0 0 var(--paso-gutter);
+      border-top: 0;
+    }
+
+    /* nodo "estación" sobre el riel, alineado al número (mismo nodo dorado que el desktop) */
+    .paso::before {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      top: var(--rail-top);
+      left: var(--rail-x);
+      width: 0.875rem;
+      height: 0.875rem;
+      border-radius: var(--radius-full);
+      background: var(--color-sand-deep);
+      box-shadow: 0 0 0 3px var(--color-white); /* halo: recorta el riel detrás del nodo */
+      transform: translate(-50%, -50%) scale(0);
+      transform-origin: center;
+      transition: transform var(--speed-base) var(--ease-out) var(--reveal-delay, 0ms);
+    }
+
+    .paso.is-visible::before {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* el riel termina en la estación 04: tapa blanca desde su nodo hacia abajo */
+    .paso:last-child::after {
+      content: '';
+      position: absolute;
+      z-index: 0; /* sobre el riel, por debajo del nodo */
+      top: var(--rail-top);
+      bottom: 0;
+      left: var(--rail-x);
+      width: 4px;
+      background: var(--color-white);
+      transform: translateX(-50%);
+    }
+
+    /* jerarquía: número dorado (wayfinding) → título (ancla de lectura) → texto */
+    .paso-num {
+      font-size: var(--text-lg);
+      line-height: 1.1;
+    }
+
+    .paso h3 {
+      margin-top: var(--space-2xs);
+      font-size: var(--text-lg);
+    }
+
+    .paso p {
+      margin-top: var(--space-2xs);
+    }
+
+    /* sin JS: riel y nodos en su estado final, visibles */
+    html.no-js .pasos::after {
+      transform: translateX(-50%) scaleY(1);
+    }
+
+    html.no-js .paso::before {
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  /* mejora progresiva: el dorado crece atado al scroll donde haya soporte nativo
+     (degrada al draw por reveal de arriba). Off-main-thread, sin listeners → sin jank. */
+  @media (max-width: 47.99em) and (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .pasos::after {
+        transform: translateX(-50%) scaleY(0);
+        animation: pasos-spine linear both;
+        animation-timeline: view();
+        animation-range: entry 15% cover 60%;
+      }
+    }
+  }
+
+  @keyframes pasos-spine {
+    from {
+      transform: translateX(-50%) scaleY(0);
+    }
+    to {
+      transform: translateX(-50%) scaleY(1);
+    }
+  }
+
+  /* mobile + reduced-motion: riel dibujado y nodos visibles, sin animar */
+  @media (max-width: 47.99em) and (prefers-reduced-motion: reduce) {
+    .pasos::after {
+      transform: translateX(-50%) scaleY(1);
+      transition: none;
+      animation: none;
+    }
+
+    .paso::before {
+      transform: translate(-50%, -50%) scale(1);
+      transition: none;
+    }
+  }
+
   /* ---------- Riel conector + nodos (solo escritorio: fila única garantizada) ---------- */
   @media (min-width: 64em) {
     .pasos {

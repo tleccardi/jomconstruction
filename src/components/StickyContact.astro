@@ -2,8 +2,8 @@
 import { WHATSAPP_URL } from '../config';
 ---
 
-<!-- Desktop: botón flotante de WhatsApp. Mobile: barra sticky con las 2 acciones. -->
-<a href={WHATSAPP_URL} class="wa-float" target="_blank" rel="noopener" data-sticky>
+<!-- Botón flotante de WhatsApp, abajo a la derecha (todas las pantallas). -->
+<a href={WHATSAPP_URL} class="wa-float" target="_blank" rel="noopener">
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path
       d="M17.5 14.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07a8.1 8.1 0 0 1-2.39-1.47 8.95 8.95 0 0 1-1.65-2.05c-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.21-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.89 1.22 3.09.15.2 2.1 3.21 5.1 4.5.71.3 1.27.49 1.7.63.72.23 1.37.2 1.88.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88a9.83 9.83 0 0 1 9.88 9.89c0 5.45-4.44 9.88-9.89 9.88m8.41-18.29A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.9 11.9 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.16-3.48-8.4"
@@ -12,59 +12,15 @@ import { WHATSAPP_URL } from '../config';
   <span class="visually-hidden">Escribinos por WhatsApp</span>
 </a>
 
-<div class="sticky-bar" data-sticky>
-  <a href={WHATSAPP_URL} class="btn btn--whatsapp" target="_blank" rel="noopener">
-    <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path
-        d="M17.5 14.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07a8.1 8.1 0 0 1-2.39-1.47 8.95 8.95 0 0 1-1.65-2.05c-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.21-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.89 1.22 3.09.15.2 2.1 3.21 5.1 4.5.71.3 1.27.49 1.7.63.72.23 1.37.2 1.88.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88a9.83 9.83 0 0 1 9.88 9.89c0 5.45-4.44 9.88-9.89 9.88m8.41-18.29A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.9 11.9 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.16-3.48-8.4"
-      ></path>
-    </svg>
-    WhatsApp
-  </a>
-  <a href="#contacto" class="btn btn--gold">Pedí tu presupuesto</a>
-</div>
-
 <style>
-  /* Ambos aparecen tras scrollear ~1 viewport (no canibalizan el CTA del hero).
-     visibility:hidden los saca del orden de tabulación mientras están ocultos (WCAG 2.4.7) */
-  .wa-float,
-  .sticky-bar {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition:
-      opacity var(--speed-base) var(--ease-out),
-      transform var(--speed-base) var(--ease-out),
-      visibility 0s linear var(--speed-base);
-  }
-
-  .wa-float.is-active,
-  .sticky-bar.is-active {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: none;
-    transition:
-      opacity var(--speed-base) var(--ease-out),
-      transform var(--speed-base) var(--ease-out),
-      visibility 0s;
-  }
-
-  /* sin JS: visibles siempre (mejor que nunca) */
-  :global(html.no-js) .wa-float,
-  :global(html.no-js) .sticky-bar {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: none;
-  }
-
+  /* Aparece tras scrollear ~1 viewport (no canibaliza el CTA del hero).
+     visibility:hidden lo saca del orden de tabulación mientras está oculto (WCAG 2.4.7) */
   .wa-float {
     position: fixed;
     right: 1.5rem;
     bottom: 1.5rem;
     z-index: 90;
-    display: none;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 3.75rem;
@@ -73,7 +29,34 @@ import { WHATSAPP_URL } from '../config';
     background: var(--color-whatsapp);
     color: var(--color-white);
     box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
     transform: translateY(0.75rem);
+    transition:
+      opacity var(--speed-base) var(--ease-out),
+      transform var(--speed-base) var(--ease-out),
+      background-color var(--speed-base) var(--ease-out),
+      visibility 0s linear var(--speed-base);
+  }
+
+  /* respeta el safe-area inferior (home indicator/gesture bar) en mobile */
+  @supports (bottom: env(safe-area-inset-bottom)) {
+    .wa-float {
+      bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
+  .wa-float.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition:
+      opacity var(--speed-base) var(--ease-out),
+      transform var(--speed-base) var(--ease-out),
+      background-color var(--speed-base) var(--ease-out),
+      visibility 0s;
   }
 
   .wa-float:hover {
@@ -85,58 +68,69 @@ import { WHATSAPP_URL } from '../config';
     height: 1.875rem;
   }
 
-  .sticky-bar {
-    position: fixed;
-    inset: auto 0 0 0;
-    z-index: 90;
-    display: none;
-    gap: var(--space-sm);
-    padding: var(--space-sm) var(--space-md);
-    padding-bottom: calc(var(--space-sm) + env(safe-area-inset-bottom, 0px));
-    background: rgb(5 19 65 / 0.92);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-top: 1px solid rgb(255 255 255 / 0.12);
-    transform: translateY(100%);
-  }
-
-  .sticky-bar .btn {
-    flex: 1;
-    min-height: 3rem;
-    padding-inline: var(--space-md);
-    white-space: nowrap;
-  }
-
-  @media (min-width: 48em) {
-    .wa-float {
-      display: inline-flex;
-    }
-  }
-
+  /* en mobile el FAB cede mientras Contacto está en vista: no duplica el
+     WhatsApp inline ni tapa el form. En ≥48em la regla no aplica → desktop igual. */
   @media (max-width: 47.99em) {
-    .sticky-bar {
-      display: flex;
+    .wa-float.is-ceding {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(0.75rem);
+      transition:
+        opacity var(--speed-base) var(--ease-out),
+        transform var(--speed-base) var(--ease-out),
+        visibility 0s linear var(--speed-base);
     }
+  }
+
+  /* sin JS: visible siempre (mejor que nunca) */
+  :global(html.no-js) .wa-float {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
   }
 </style>
 
 <script>
-  // Mostrar los CTAs persistentes recién cuando el hero salió de pantalla
-  const stickies = document.querySelectorAll<HTMLElement>('[data-sticky]');
+  // El FAB de WhatsApp aparece cuando el hero salió de pantalla. En mobile cede
+  // mientras Contacto está en vista (no tapa el form ni duplica el WhatsApp inline).
+  // El botón es display:none-free; sólo se modula opacidad/visibilidad.
+  const waFloat = document.querySelector<HTMLElement>('.wa-float');
   const hero = document.getElementById('inicio');
+  const contacto = document.getElementById('contacto');
 
-  if (stickies.length > 0) {
+  if (waFloat) {
     if (hero && 'IntersectionObserver' in window) {
-      const io = new IntersectionObserver(
+      let heroOut = false;
+      let contactoVisible = false;
+
+      const apply = () => {
+        waFloat.classList.toggle('is-active', heroOut);
+        // la regla .is-ceding sólo tiene efecto en ≤47.99em → el desktop no cambia
+        waFloat.classList.toggle('is-ceding', contactoVisible);
+      };
+
+      new IntersectionObserver(
         ([entry]) => {
-          const active = !entry?.isIntersecting;
-          stickies.forEach((el) => el.classList.toggle('is-active', active));
+          heroOut = !entry?.isIntersecting;
+          apply();
         },
         { threshold: 0.15 }
-      );
-      io.observe(hero);
+      ).observe(hero);
+
+      if (contacto) {
+        new IntersectionObserver(
+          ([entry]) => {
+            contactoVisible = !!entry?.isIntersecting;
+            apply();
+          },
+          // se activa cuando Contacto entró en el cuarto inferior del viewport
+          { rootMargin: '0px 0px -20% 0px' }
+        ).observe(contacto);
+      }
     } else {
-      stickies.forEach((el) => el.classList.add('is-active'));
+      waFloat.classList.add('is-active');
     }
   }
 </script>

@@ -393,9 +393,11 @@ const DATOS_OBRA: DatoObra[] = [
     transform: scale(1.08);
   }
 
-  /* parallax sutil de la foto protagonista (progressive enhancement, sin JS) */
+  /* parallax sutil de la foto protagonista (progressive enhancement, sin JS).
+     Acotado a ≥48em: en mobile la galería es un carrusel horizontal y el
+     parallax vertical de la principal pierde sentido (ver bloque mobile). */
   @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
+    @media (prefers-reduced-motion: no-preference) and (min-width: 48em) {
       .obra-foto--principal .obra-foto-media {
         animation: obra-parallax linear both;
         animation-timeline: view();
@@ -679,6 +681,139 @@ const DATOS_OBRA: DatoObra[] = [
   .lightbox-nav .lightbox-btn {
     pointer-events: auto;
   }
+
+  /* ============================================================
+     MOBILE ONLY (≤47.99em) — el render desktop ≥48em NO recibe
+     ninguna de estas reglas (galería grid + thumbs 2-col + lightbox
+     con flechas en el carril oscuro quedan intactos).
+     ============================================================ */
+  @media (max-width: 47.99em) {
+    /* --- Galería → carrusel horizontal swipeable con peek ---
+       (NN/g: swipe + media imagen asomando como signifier fuerte;
+        Baymard: señalizar fotos ocultas; Chrome/MDN: scroll-snap nativo) */
+    .obra-galeria {
+      display: flex;
+      gap: var(--space-md);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      /* aire vertical para que la sombra de las slides no se recorte
+         (overflow-x fuerza overflow-y a auto) */
+      padding-block: var(--space-sm);
+      scrollbar-width: none;
+      overscroll-behavior-x: contain;
+    }
+    .obra-galeria::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* los 2 thumbs entran al flex junto a la principal SIN tocar el HTML */
+    .obra-thumbs {
+      display: contents;
+    }
+
+    .obra-galeria .obra-foto {
+      flex: 0 0 85%;
+      scroll-snap-align: center;
+      /* desacople del reveal: la slide SIEMPRE renderiza visible dentro del
+         scroller (el IntersectionObserver vertical no es fiable para ítems
+         scrolleados en horizontal). El header de la sección conserva su reveal. */
+      opacity: 1;
+      transform: none;
+    }
+    .obra-galeria .obra-foto img {
+      transform: none;
+    }
+    /* sin hover en touch: la lupa "tocá para ampliar" queda siempre visible */
+    .obra-galeria .obra-foto-zoom {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* indicador de carrusel: mejora progresiva (Chrome 135+). Sin soporte,
+       el peek de la slide siguiente sigue siendo el cue (NN/g: peek > dots). */
+    @supports (scroll-marker-group: after) {
+      .obra-galeria {
+        scroll-marker-group: after;
+      }
+      .obra-galeria::scroll-marker-group {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-xs);
+        padding-top: var(--space-xs);
+      }
+      .obra-galeria .obra-foto::scroll-marker {
+        content: '';
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: var(--radius-full);
+        background: var(--color-line);
+        transition: background-color var(--speed-fast) var(--ease-out);
+      }
+      .obra-galeria .obra-foto::scroll-marker:target-current {
+        background: var(--color-cobalt);
+      }
+    }
+
+    /* El grupo de dots (::scroll-marker-group) se inserta como un ítem más del
+       grid .obra, así que heredaba su gap de 48px y quedaba flotando lejos de la
+       imagen. Anulamos el row-gap (los dots quedan pegados a la galería, sólo el
+       padding de los markers los separa) y devolvemos la separación a la ficha
+       vía margin-top. Sin soporte de scroll-marker no hay grupo: el margin-top
+       deja la galería↔ficha en los mismos 48px de siempre. */
+    .obra {
+      row-gap: 0;
+    }
+    .obra-info {
+      margin-top: var(--space-2xl);
+    }
+
+    /* --- Ficha de datos → 1 columna legible --- */
+    .obra-datos {
+      grid-template-columns: 1fr;
+    }
+    /* el nth-child(-n+2) de base limpia los 2 primeros (pensado para 2-col);
+       en 1-col devolvemos el hairline al 2º ítem (el 1º sigue limpio) */
+    .obra-datos > div:nth-child(2) {
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--color-line);
+    }
+
+    /* --- CTA contextual a ancho completo --- */
+    .obra-info .btn {
+      width: 100%;
+    }
+
+    /* --- Lightbox → más imagen + flechas legibles sobre la foto --- */
+    .lightbox {
+      padding: var(--space-lg) var(--space-md);
+    }
+    /* flechas FUERA de la imagen: barra inferior en la banda oscura, al ancho
+       de la foto, prev a la izquierda / next a la derecha (la posición lateral
+       comunica la dirección). En mobile la foto ocupa casi todo el ancho y no
+       hay carril lateral, así que el lugar correcto es debajo y al alcance del
+       pulgar. Se mantienen como alternativa de puntero simple al swipe (WCAG 2.5.1). */
+    .lightbox-nav {
+      position: static;
+      transform: none;
+      margin-top: var(--space-md);
+      padding-inline: var(--space-md);
+    }
+    /* iconos SIN círculo: no tapan nada y se leen por un halo de sombra. */
+    .lightbox-btn svg {
+      filter: drop-shadow(0 1px 2px rgb(5 19 65 / 0.75))
+        drop-shadow(0 0 5px rgb(5 19 65 / 0.55));
+    }
+    /* cruz de cierre: ARRIBA Y POR FUERA de la imagen (en la banda oscura),
+       anclada al borde superior de .lightbox-inner — no al viewport — para que
+       un transform residual del <dialog> no la desplace. Sin chip: el icono
+       blanco + halo se lee sobre el backdrop oscuro. */
+    .lightbox-close {
+      position: absolute;
+      top: auto;
+      bottom: calc(100% + var(--space-xs));
+      right: 0;
+    }
+  }
 </style>
 
 <script>
@@ -727,5 +862,39 @@ const DATOS_OBRA: DatoObra[] = [
     lightbox.addEventListener('click', (event) => {
       if (event.target === lightbox) lightbox.close();
     });
+
+    // Swipe entre fotos en touch: gesto ADICIONAL a flechas/teclado.
+    // Reutiliza show(), así que no toca el foco del <dialog>, el role=status
+    // ni los aria-labels. Sólo cuenta como swipe un gesto horizontal claro
+    // (ignora scroll/tap vertical).
+    let touchStartX: number | null = null;
+    let touchStartY: number | null = null;
+    lightbox.addEventListener(
+      'touchstart',
+      (event) => {
+        const t = event.changedTouches[0];
+        if (!t) return;
+        touchStartX = t.clientX;
+        touchStartY = t.clientY;
+      },
+      { passive: true }
+    );
+    lightbox.addEventListener(
+      'touchend',
+      (event) => {
+        if (touchStartX === null || touchStartY === null) return;
+        const t = event.changedTouches[0];
+        if (t) {
+          const dx = t.clientX - touchStartX;
+          const dy = t.clientY - touchStartY;
+          if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+            show(dx < 0 ? current + 1 : current - 1);
+          }
+        }
+        touchStartX = null;
+        touchStartY = null;
+      },
+      { passive: true }
+    );
   }
 </script>

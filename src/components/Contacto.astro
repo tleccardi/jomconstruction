@@ -56,7 +56,7 @@ const TIPOS_PROYECTO = [
 
       <div class="campo">
         <label for="f-nombre">Nombre</label>
-        <input id="f-nombre" name="nombre" type="text" required autocomplete="name" />
+        <input id="f-nombre" name="nombre" type="text" required autocomplete="name" autocapitalize="words" />
       </div>
 
       <div class="campo">
@@ -85,12 +85,12 @@ const TIPOS_PROYECTO = [
 
       <div class="campo">
         <label for="f-localidad">Localidad <span class="opcional">(opcional)</span></label>
-        <input id="f-localidad" name="localidad" type="text" autocomplete="address-level2" />
+        <input id="f-localidad" name="localidad" type="text" autocomplete="address-level2" autocapitalize="words" />
       </div>
 
       <div class="campo">
         <label for="f-mensaje">Contanos tu proyecto <span class="opcional">(opcional)</span></label>
-        <textarea id="f-mensaje" name="mensaje" rows="4"></textarea>
+        <textarea id="f-mensaje" name="mensaje" rows="4" autocapitalize="sentences"></textarea>
       </div>
 
       <!-- Honeypot anti-spam de Formspree: oculto para humanos -->
@@ -400,6 +400,29 @@ const TIPOS_PROYECTO = [
     .contacto-grid {
       grid-template-columns: 6fr 5fr;
       gap: var(--space-3xl);
+    }
+  }
+
+  /* ---------- Mobile (≤47.99em): WhatsApp primero, form con más aire ----------
+     Se respeta el orden natural del HTML (head → canales → form), así el
+     WhatsApp y los datos quedan primeros en una columna y el form cierra.
+     Todo vive en <48em: el desktop (6fr/5fr desde 64em) y el tablet (≥48em)
+     no se tocan. */
+  @media (max-width: 47.99em) {
+    /* cada .reveal se observa por separado, así que los delays largos
+       (calc(--stagger-step * 6) en los canales) se sienten lentos en una
+       columna. Bajar el paso recalcula los calc() inline sin tocar el HTML. */
+    .contacto {
+      --stagger-step: 45ms;
+    }
+
+    /* más respiración entre campos y entre label y campo en una columna */
+    .campo {
+      margin-bottom: var(--space-lg);
+    }
+
+    .campo label {
+      margin-bottom: var(--space-xs);
     }
   }
 </style>

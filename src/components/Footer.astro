@@ -20,43 +20,64 @@ const year = new Date().getFullYear();
         </p>
       </div>
 
-      <nav
-        class="footer-col reveal"
-        aria-label="Navegación del pie de página"
+      <details
+        class="footer-col footer-group reveal"
+        data-footer-acc
+        open
         style="--reveal-delay: var(--stagger-step)"
       >
-        <h2 class="footer-title">Secciones</h2>
-        <ul role="list">
-          {
-            NAV_LINKS.map((link) => (
-              <li>
-                <a class="footer-link" href={link.href}>
-                  {link.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
+        <summary class="footer-summary">
+          <h2 class="footer-title">Secciones</h2>
+          <span class="footer-acc-icon" aria-hidden="true"></span>
+        </summary>
+        <div class="footer-acc-panel">
+          <nav aria-label="Navegación del pie de página">
+            <ul role="list">
+              {
+                NAV_LINKS.map((link) => (
+                  <li>
+                    <a class="footer-link" href={link.href}>
+                      {link.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+        </div>
+      </details>
 
-      <div class="footer-col reveal" style="--reveal-delay: calc(var(--stagger-step) * 2)">
-        <h2 class="footer-title">Contacto</h2>
-        <ul role="list">
-          <li>
-            <a class="footer-link" href={WHATSAPP_URL} target="_blank" rel="noopener">
-              WhatsApp: {CONTACT.whatsappDisplay}
-            </a>
-          </li>
-          <li><a class="footer-link" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
-          <li>{CONTACT.address}</li>
-        </ul>
-      </div>
+      <details
+        class="footer-col footer-group reveal"
+        data-footer-acc
+        open
+        style="--reveal-delay: calc(var(--stagger-step) * 2)"
+      >
+        <summary class="footer-summary">
+          <h2 class="footer-title">Contacto</h2>
+          <span class="footer-acc-icon" aria-hidden="true"></span>
+        </summary>
+        <div class="footer-acc-panel">
+          <ul role="list">
+            <li>
+              <a class="footer-link" href={WHATSAPP_URL} target="_blank" rel="noopener">
+                WhatsApp: {CONTACT.whatsappDisplay}
+              </a>
+            </li>
+            <li><a class="footer-link" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
+            <li>{CONTACT.address}</li>
+          </ul>
+        </div>
+      </details>
 
-      <div class="footer-col reveal" style="--reveal-delay: calc(var(--stagger-step) * 3)">
+      <div
+        class="footer-col footer-col--social reveal"
+        style="--reveal-delay: calc(var(--stagger-step) * 3)"
+      >
         <h2 class="footer-title">Redes</h2>
         <ul role="list" class="footer-social-list">
           <li>
-            <a class="footer-social" href={CONTACT.instagram} rel="noopener">
+            <a class="footer-social" href={CONTACT.instagram} rel="noopener" aria-label="Instagram">
               <span class="footer-social-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                   <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -64,11 +85,11 @@ const year = new Date().getFullYear();
                   <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
                 </svg>
               </span>
-              <span>Instagram</span>
+              <span class="footer-social-label">Instagram</span>
             </a>
           </li>
           <li>
-            <a class="footer-social" href={CONTACT.linkedin} rel="noopener">
+            <a class="footer-social" href={CONTACT.linkedin} rel="noopener" aria-label="LinkedIn">
               <span class="footer-social-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path
@@ -76,7 +97,7 @@ const year = new Date().getFullYear();
                   />
                 </svg>
               </span>
-              <span>LinkedIn</span>
+              <span class="footer-social-label">LinkedIn</span>
             </a>
           </li>
         </ul>
@@ -102,7 +123,7 @@ const year = new Date().getFullYear();
 
   .footer-grid {
     display: grid;
-    /* jerarquía: marca ancha (ancla) + 3 columnas de links angostas.
+    /* jerarquía: marca ancha (ancla) + 3 columnas angostas.
        Scope desktop; el responsive de mobile se revisa aparte. */
     grid-template-columns: 1.6fr 1fr 1fr 1fr;
     gap: var(--space-2xl) var(--space-xl);
@@ -164,6 +185,25 @@ const year = new Date().getFullYear();
     width: 1.5rem;
     height: 2px;
     background: var(--color-sand);
+  }
+
+  /* ---- Acordeón (footer) ----
+     Secciones y Contacto son <details>. En DESKTOP el <summary> se neutraliza
+     para verse y comportarse como el viejo <h2> de columna (siempre abierto,
+     sin disclosure). El colapso vive sólo en la media query de mobile. */
+  .footer-summary {
+    display: block; /* bloque plano, como el viejo encabezado de columna */
+    list-style: none; /* sin triángulo (estándar/Firefox) */
+    cursor: default;
+    pointer-events: none; /* desktop: no se togglea (queda abierto) */
+  }
+
+  .footer-summary::-webkit-details-marker {
+    display: none; /* sin triángulo (WebKit) */
+  }
+
+  .footer-acc-icon {
+    display: none; /* el +/− no existe en desktop */
   }
 
   .footer ul {
@@ -270,4 +310,179 @@ const year = new Date().getFullYear();
     color: var(--color-fog);
     font-size: var(--text-xs);
   }
+
+  /* ============================================================
+     MOBILE (≤47.99em) — el desktop (≥48em) NO se toca.
+     Cierre de marca: marca + descripción, redes como chips
+     cuadrados ícono-solo, y Secciones/Contacto como acordeones.
+     ============================================================ */
+  @media (max-width: 47.99em) {
+    .footer {
+      /* cadencia de reveal más calma: apilados, los bloques entran juntos */
+      --stagger-step: 60ms;
+      /* reserva inferior para que la barra sticky de WhatsApp
+         (StickyContact, ≈4.5rem de alto) no tape el copyright +
+         razón social. 7rem deja ~2rem de aire; + safe-area iOS. */
+      padding-bottom: calc(
+        var(--space-3xl) + var(--space-2xl) + env(safe-area-inset-bottom, 0px)
+      );
+    }
+
+    /* stack de 1 columna + reorden visual: marca → redes → secciones → contacto.
+       El orden del DOM se conserva (para desktop); acá sólo reordena `order`. */
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .footer-brand {
+      order: 1;
+      padding-bottom: var(--space-lg);
+    }
+
+    .footer-brand p {
+      max-width: none;
+    }
+
+    .footer-col--social {
+      order: 2;
+      padding-bottom: var(--space-md);
+    }
+
+    .footer-group {
+      order: 3;
+      /* hairline divisor entre filas del acordeón (y respecto de las redes) */
+      border-top: 1px solid rgb(255 255 255 / 0.1);
+    }
+
+    /* ---- Redes: chips cuadrados, sólo ícono, en fila ---- */
+    /* el título "Redes" se oculta a la vista pero queda para lectores de pantalla */
+    .footer-col--social .footer-title {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      border: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    /* gana al display:grid de `.footer ul` por especificidad */
+    .footer-col--social .footer-social-list {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .footer-social-label {
+      display: none; /* sólo ícono; el nombre accesible lo da aria-label */
+    }
+
+    .footer-col--social .footer-social-icon {
+      width: 2.75rem; /* chip cuadrado 44px = target táctil */
+      height: 2.75rem;
+      border-radius: var(--radius-md);
+    }
+
+    /* ---- Acordeones (Secciones / Contacto) ---- */
+    .footer-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      padding-block: var(--space-md); /* fila táctil ≥44px */
+      cursor: pointer;
+      pointer-events: auto; /* re-habilita el toggle nativo en mobile */
+    }
+
+    /* dentro del summary el título no necesita su margen de columna desktop */
+    .footer-summary .footer-title {
+      margin-bottom: 0;
+    }
+
+    /* +/− construido con pseudo-elementos (afordancia de disclosure, no un ícono de marca) */
+    .footer-acc-icon {
+      position: relative;
+      display: block;
+      flex-shrink: 0;
+      width: 1rem;
+      height: 1rem;
+      color: var(--color-sand-light);
+    }
+
+    .footer-acc-icon::before,
+    .footer-acc-icon::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      background: currentColor;
+      transition: transform var(--speed-base) var(--ease-interactive);
+    }
+
+    .footer-acc-icon::before {
+      width: 100%;
+      height: 1.5px;
+    }
+
+    .footer-acc-icon::after {
+      width: 1.5px;
+      height: 100%;
+    }
+
+    /* abierto: la barra vertical colapsa → el + se vuelve − (movimiento discreto) */
+    .footer-group[open] .footer-acc-icon::after {
+      transform: scaleY(0);
+    }
+
+    /* espacio al pie del panel abierto, antes del siguiente hairline */
+    .footer-acc-panel {
+      padding-bottom: var(--space-lg);
+    }
+
+    /* targets táctiles cómodos (≥44px) + subrayado reanclado bajo el texto */
+    .footer-link {
+      padding-block: var(--space-sm);
+    }
+
+    .footer-link::after {
+      bottom: calc(var(--space-sm) - 2px);
+    }
+
+    /* barra inferior: copyright y razón social apilados a la izquierda */
+    .footer-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-xs);
+      margin-top: var(--space-lg);
+    }
+  }
 </style>
+
+<script>
+  // Acordeón del footer: colapsable SÓLO en mobile. En desktop los <details>
+  // quedan abiertos (se ven como columnas). Sin JS, el atributo `open` del HTML
+  // deja todo el contenido visible en ambos tamaños (degradación correcta).
+  const accs = document.querySelectorAll<HTMLDetailsElement>('[data-footer-acc]');
+
+  if (accs.length > 0) {
+    const mq = window.matchMedia('(max-width: 47.99em)');
+    const sync = () => {
+      accs.forEach((d) => {
+        const summary = d.querySelector('summary');
+        if (mq.matches) {
+          // mobile: acordeón real (colapsado, sumario navegable por teclado)
+          d.removeAttribute('open');
+          summary?.removeAttribute('tabindex');
+        } else {
+          // desktop: abierto y sumario inerte (fuera del tab), como el viejo <h2>
+          d.setAttribute('open', '');
+          summary?.setAttribute('tabindex', '-1');
+        }
+      });
+    };
+    sync();
+    mq.addEventListener('change', sync);
+  }
+</script>
