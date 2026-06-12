@@ -379,13 +379,14 @@ const OBRAS: Obra[] = [
   }
 
   /* ---------- Selector de obras (tabs) ---------- */
-  /* Selector tipo "filtro": los nombres en UNA fila horizontal, subrayado = obra
-     activa. Texto compacto y `nowrap` para que las dos obras entren sin apilarse;
-     si un ancho muy chico no las banca, la fila scrollea en horizontal (no apila). */
+  /* Selector de obras (filtro subrayado).
+     DESKTOP (base): dos líneas — nombre + "ubicación · año" — con subrayado en la
+     activa. MOBILE (ver bloque max-width): se compacta a una línea, sólo el nombre
+     y más chico, para que las dos obras entren sin apilarse. */
   .obra-tabs {
     display: flex;
     flex-wrap: nowrap;
-    gap: var(--space-lg);
+    gap: var(--space-2xl);
     margin-bottom: var(--space-2xl);
     border-bottom: 1px solid var(--color-line);
     overflow-x: auto;
@@ -399,9 +400,11 @@ const OBRAS: Obra[] = [
   .obra-tab {
     position: relative;
     flex: 0 0 auto;
-    padding: 0 0 var(--space-sm);
+    display: grid;
+    gap: 0.15rem;
+    padding: 0 0 var(--space-md);
+    text-align: left;
     color: var(--color-text-muted);
-    white-space: nowrap;
     transition: color var(--speed-base) var(--ease-interactive);
   }
 
@@ -419,12 +422,12 @@ const OBRAS: Obra[] = [
     transition: transform var(--speed-base) var(--ease-interactive);
   }
 
-  .obra-tab:hover {
+  .obra-tab:hover .obra-tab-nombre {
     color: var(--color-ink);
   }
 
-  /* obra activa: texto cobalto + subrayado (mismo color, como la referencia) */
-  .obra-tab[aria-selected='true'] {
+  /* obra activa: nombre cobalto + subrayado del mismo color */
+  .obra-tab[aria-selected='true'] .obra-tab-nombre {
     color: var(--color-cobalt);
   }
 
@@ -434,14 +437,18 @@ const OBRAS: Obra[] = [
 
   .obra-tab-nombre {
     font-family: var(--font-display);
-    font-size: var(--text-sm); /* achicado para que entren las dos en una fila aun en mobile angosto */
+    font-size: var(--text-md);
     line-height: var(--leading-snug);
     color: inherit;
+    transition: color var(--speed-base) var(--ease-interactive);
   }
 
-  /* sólo las letras: ubicación · año viven en la ficha */
+  /* la "descripción" del tab: ubicación · año en versalitas doradas */
   .obra-tab-meta {
-    display: none;
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-sand-text);
   }
 
   /* sin JS no hay tabs operables: se ocultan y se muestran todos los paneles
@@ -804,6 +811,20 @@ const OBRAS: Obra[] = [
       grid-auto-flow: column;
       grid-auto-columns: 1fr;
     }
+
+    /* La principal queda en banner 16:9 (= ratio de la aérea residencial) para
+       que una obra 4:3 como el hotel no se dispare de alto: se recorta con
+       object-fit cover en lugar de crecer. Mobile (carrusel) queda como está. */
+    .obra-foto--principal {
+      aspect-ratio: 16 / 9;
+    }
+    .obra-foto--principal .obra-foto-media,
+    .obra-foto--principal .obra-foto-media img {
+      height: 100%;
+    }
+    .obra-foto--principal img {
+      object-fit: cover;
+    }
   }
 
   /* ---------- Lightbox ---------- */
@@ -942,8 +963,20 @@ const OBRAS: Obra[] = [
      con flechas en el carril oscuro quedan intactos).
      ============================================================ */
   @media (max-width: 47.99em) {
-    /* El selector (subrayado en una fila) ya se define en el bloque base para todos
-       los anchos; con 2 obras entran las dos y, si no, scrollea en horizontal. */
+    /* Selector → se compacta: una sola línea (sin la meta), nombre más chico y
+       menos gap, para que las dos obras entren sin apilarse ni cortarse. */
+    .obra-tabs {
+      gap: var(--space-lg);
+    }
+    .obra-tab {
+      padding-bottom: var(--space-sm);
+    }
+    .obra-tab-nombre {
+      font-size: var(--text-sm);
+    }
+    .obra-tab-meta {
+      display: none;
+    }
 
     /* --- Galería → carrusel horizontal swipeable con peek ---
        (NN/g: swipe + media imagen asomando como signifier fuerte;
