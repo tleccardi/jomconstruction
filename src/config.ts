@@ -21,7 +21,7 @@ export const CONTACT = {
    */
   whatsappNumber: '5491136364817',
   whatsappDisplay: '11 3636-4817',
-  email: 'info@jomconstruction.com',
+  email: 'info@jomconstruction.com.ar',
   phoneDisplay: '[REEMPLAZAR: teléfono fijo (opcional)]',
   address: 'Buenos Aires y todo el país',
   instagram: '[REEMPLAZAR: URL de Instagram (opcional)]',
