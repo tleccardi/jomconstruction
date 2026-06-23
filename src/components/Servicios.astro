@@ -356,15 +356,14 @@ const SERVICIOS: Servicio[] = [
       overflow-x: auto;
       overflow-y: hidden;
       scroll-snap-type: x mandatory;
-      /* full-bleed: rompe el padding del .container para que la última card
-         llegue al borde y el peek use todo el ancho; scroll-padding realinea la
-         primera card con el título de la sección. */
-      margin-inline: calc(var(--container-pad) * -1);
-      padding-inline: var(--container-pad);
+      /* El riel queda DENTRO del padding del .container (igual que el carrusel de
+         fotos de Obras): corta en el límite del contenido, no en el borde físico de
+         la pantalla. Antes hacía full-bleed con margin-inline negativo y la card del
+         peek se pasaba del límite horizontal de la página (sin gutter a la derecha). */
       /* aire vertical: que overflow no recorte el focus-ring ni el lift -6px */
       padding-block: var(--space-sm);
-      scroll-padding-inline: var(--container-pad);
       scrollbar-width: none;
+      overscroll-behavior-x: contain;
       -webkit-overflow-scrolling: touch;
     }
 

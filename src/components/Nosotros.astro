@@ -2,10 +2,12 @@
 import { Image } from 'astro:assets';
 import logo from '../assets/logo-jom.png';
 
-// 2008 es la ÚNICA fuente del dato de trayectoria: se muestra tal cual en el
-// <dl> y los "años de oficio" se derivan de ahí (queda en línea con la métrica
-// "18+ años construyendo" del config). Si el cliente cambia el año, todo sigue.
-const TRAYECTORIA_DESDE = 2008;
+// 2007 es la ÚNICA fuente del dato de trayectoria: se muestra tal cual en el
+// <dl> y los "años de oficio" se derivan de ahí. Si el cliente cambia el año,
+// el count-up se recalcula solo. OJO: la métrica "18+ años construyendo" del
+// config (METRICS) es un valor a mano y NO se deriva de acá — revisar que sigan
+// coherentes si se mueve el año.
+const TRAYECTORIA_DESDE = 2007;
 const aniosDeOficio = new Date().getFullYear() - TRAYECTORIA_DESDE;
 ---
 
@@ -415,6 +417,20 @@ const aniosDeOficio = new Date().getFullYear() - TRAYECTORIA_DESDE;
 
     .nosotros-anios-label {
       font-size: var(--text-sm);
+    }
+
+    /* G · "En el rubro desde" + el año en la MISMA fila (en vez de apilados):
+       en mobile el dato queda como una línea compacta, etiqueta y valor
+       alineados por baseline. En desktop (≥64em) siguen apilados, intactos. */
+    .nosotros-datos > div {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+
+    .nosotros-datos dd {
+      margin: 0;
     }
   }
 
