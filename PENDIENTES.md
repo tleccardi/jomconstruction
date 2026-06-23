@@ -12,9 +12,9 @@ Esta lista los agrupa por prioridad. Buscar el texto exacto en el archivo indica
 
 | Dato | Dónde |
 |------|-------|
-| **Número de WhatsApp** en formato internacional sin `+` ni espacios (ej. `5491122334455`) | `src/config.ts` → `whatsappNumber` |
-| **WhatsApp para mostrar** (ej. `+54 9 11 2233-4455`) | `src/config.ts` → `whatsappDisplay` |
-| **Email de contacto** | `src/config.ts` → `email` |
+| ~~**Número de WhatsApp**~~ ✅ cargado (`5491136364817`) | `src/config.ts` → `whatsappNumber` |
+| ~~**WhatsApp para mostrar**~~ ✅ cargado (`11 3636-4817`) | `src/config.ts` → `whatsappDisplay` |
+| ~~**Email de contacto**~~ ✅ cargado (`info@jomconstruction.com`) | `src/config.ts` → `email` |
 | **Endpoint del formulario**: crear cuenta gratis en [Formspree](https://formspree.io) (o Web3Forms), crear un form y pegar la URL (ej. `https://formspree.io/f/abcd1234`) | `src/config.ts` → `formEndpoint` |
 | **Dominio real del sitio** (afecta SEO, sitemap y Open Graph) | `astro.config.mjs` → `SITE_URL`, `src/config.ts` → `url`, y `public/robots.txt` (línea `Sitemap:`) |
 
@@ -23,10 +23,9 @@ Esta lista los agrupa por prioridad. Buscar el texto exacto en el archivo indica
 | Dato | Dónde |
 |------|-------|
 | **Fotos de obra originales en alta resolución** (≥2400px de ancho). Las actuales llegaron recomprimidas por WhatsApp a ~1110px: alcanzan, pero en pantallas grandes y retina se ven menos nítidas. Pedirlas enviadas como *documento/archivo* por WhatsApp, o por mail/Drive. Al recibirlas: reemplazar los `.jpg` de `src/assets/` y subir los `widths` del hero en `src/components/Hero.astro` a `[640, 960, 1280, 1920]` | `src/assets/obra-*.jpg` |
-| **Zona de cobertura** (aparece en hero, contacto y nosotros) | `src/config.ts` → `address`, `src/components/Hero.astro`, `src/components/Nosotros.astro` |
+| ~~**Zona de cobertura**~~ ✅ cargada como "Buenos Aires y todo el país" (config.address + Nosotros). El hero conserva "Buenos Aires" como base; revisar si se quiere ampliar o sumar "exterior". | `src/config.ts` → `address`, `src/components/Hero.astro`, `src/components/Nosotros.astro` |
 | **Métricas reales**: años de experiencia, obras entregadas, m² construidos, clientes | `src/config.ts` → `METRICS` (los 4 valores) |
-| **Datos de la obra fotografiada**: nombre del proyecto/localidad, m² totales, estado actual | `src/components/Obras.astro` → `DATOS_OBRA` y el título `<h3>` |
-| **3 testimonios reales** con nombre, tipo de obra y localidad | `src/components/Testimonios.astro` → `TESTIMONIOS` |
+| **Datos de las obras**: año/estado/m² de cada obra (hoy provisorios). En particular, **confirmar el año de la planta Glaciar Pesquera, Ushuaia** (cargado `2007` por coincidir en época/equipos con el Hotel Cilene; no se pudo verificar online) | `src/components/Obras.astro` → array `OBRAS` (campo `datos` de cada obra) |
 | **Historia breve de la empresa** (año de inicio, fundadores, trayectoria) | `src/components/Nosotros.astro` (párrafo y lista de datos) |
 
 ## 🟡 Opcionales

@@ -54,9 +54,11 @@ const SERVICIOS: Servicio[] = [
 <section id="servicios" class="section servicios">
   <div class="container">
     <header class="section-head">
-      <p class="kicker">Servicios</p>
-      <h2 class="section-title">Qué construimos</h2>
-      <p class="section-lede">
+      <p class="kicker reveal">Servicios</p>
+      <h2 class="section-title reveal" style="--reveal-delay: calc(var(--stagger-step) * 1)">
+        Qué construimos
+      </h2>
+      <p class="section-lede reveal" style="--reveal-delay: calc(var(--stagger-step) * 2)">
         Ejecutamos obra para terceros: empresas, desarrolladores y particulares. Estos son los
         frentes donde más valor aportamos.
       </p>
@@ -131,6 +133,24 @@ const SERVICIOS: Servicio[] = [
 <style>
   .servicios {
     background: var(--color-white);
+  }
+
+  /* ---------- Kicker: la línea roja se "dibuja" al entrar (mismo gesto que
+     Obras/Proceso/Diferenciadores). El header recupera la entrada .reveal que
+     tienen el resto de las secciones; sin esto Servicios "aparecía de golpe". ---------- */
+  html:not(.no-js) .kicker::before {
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  html:not(.no-js) .kicker.is-visible::before {
+    animation: servicios-kicker-line var(--speed-cinematic) var(--ease-out) 120ms forwards;
+  }
+
+  @keyframes servicios-kicker-line {
+    to {
+      transform: scaleX(1);
+    }
   }
 
   /* La grilla 3×2 vive ahora en .servicios-layout (antes en .servicios-grid) para

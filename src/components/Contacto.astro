@@ -44,10 +44,6 @@ const TIPOS_PROYECTO = [
           <span class="canal-label">WhatsApp</span>
           <span>{CONTACT.whatsappDisplay}</span>
         </li>
-        <li class="canal-dato reveal" style="--reveal-delay: calc(var(--stagger-step) * 6)">
-          <span class="canal-label">Zona de trabajo</span>
-          <span>{CONTACT.address}</span>
-        </li>
       </ul>
     </div>
 
@@ -253,7 +249,7 @@ const TIPOS_PROYECTO = [
     padding: clamp(1.5rem, 4vw, 2.5rem);
     background: var(--color-white);
     border: 1px solid var(--color-line); /* canto crispado incluso en pantallas brillantes */
-    /* terminación superior dorada, IGUAL que Testimonios/Servicios: un borde real
+    /* terminación superior dorada, IGUAL que Servicios: un borde real
        sigue el radio de la card y no asoma en las esquinas (a diferencia de un
        ::before de 3px con radio grande, que dejaba nubcitos dorados arriba). */
     border-top: 2px solid var(--color-sand);
@@ -264,7 +260,7 @@ const TIPOS_PROYECTO = [
   /* La tarjeta entra como bloque, con más recorrido que el .reveal base (co-protagonista).
      El --reveal-delay solo afecta a opacity/transform: el box-shadow del focus-within
      responde al instante. No transformo en focus-within (regla de la casa: no pelear
-     con el transform del .reveal — ver Testimonios/Servicios). */
+     con el transform del .reveal — ver Servicios). */
   .contacto-form.reveal {
     transform: translateY(32px);
     transition:

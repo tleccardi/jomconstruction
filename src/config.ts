@@ -19,11 +19,11 @@ export const CONTACT = {
    * Número de WhatsApp en formato internacional SIN "+" ni espacios.
    * Ej.: 5491122334455
    */
-  whatsappNumber: '[REEMPLAZAR: WhatsApp +54 9 11 XXXX-XXXX, formato 549XXXXXXXXXX]',
-  whatsappDisplay: '[REEMPLAZAR: +54 9 11 XXXX-XXXX]',
-  email: '[REEMPLAZAR: email de contacto]',
+  whatsappNumber: '5491136364817',
+  whatsappDisplay: '11 3636-4817',
+  email: 'info@jomconstruction.com',
   phoneDisplay: '[REEMPLAZAR: teléfono fijo (opcional)]',
-  address: '[REEMPLAZAR: zona de cobertura / dirección, ej. Buenos Aires, Argentina]',
+  address: 'Buenos Aires y todo el país',
   instagram: '[REEMPLAZAR: URL de Instagram (opcional)]',
   linkedin: '[REEMPLAZAR: URL de LinkedIn (opcional)]',
   /** Endpoint del formulario (Formspree/Web3Forms). Ver PENDIENTES.md. */
@@ -43,8 +43,7 @@ export const WHATSAPP_URL = waLink(
 
 /**
  * Cifras PROVISORIAS y ficticias (verosímiles) — las ajusta el cliente.
- * `value` ya viene formateado con separador de miles es-AR; el count-up
- * deriva el target numérico haciendo value.replace(/\./g, '').
+ * `value` ya viene formateado con separador de miles es-AR y se muestra tal cual.
  */
 export const METRICS = [
   { value: '18', suffix: '+', label: 'años construyendo' },

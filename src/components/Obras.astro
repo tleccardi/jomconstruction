@@ -3,10 +3,29 @@ import { Image } from 'astro:assets';
 import fotoPanoramica from '../assets/obra-aerea-panoramica.jpg';
 import fotoEstructuras from '../assets/obra-estructuras.jpg';
 import fotoCenital from '../assets/obra-vista-cenital.jpg';
+import lgEstructuraBomba from '../assets/leon-gallo-estructura-bomba.jpeg';
+import lgEstructura from '../assets/leon-gallo-estructura.jpeg';
+import lgFundacionesBases from '../assets/leon-gallo-fundaciones-bases.jpeg';
+import lgExcavacion from '../assets/leon-gallo-excavacion.jpeg';
+import lgFundacionesMembrana from '../assets/leon-gallo-fundaciones-membrana.jpeg';
 import hotelBahia from '../assets/hotel-cilene-1-bahia.jpeg';
 import hotelExcavacion from '../assets/hotel-cilene-2-excavacion.jpeg';
 import hotelHormigonado from '../assets/hotel-cilene-3-hormigonado.jpeg';
 import hotelHormigonera from '../assets/hotel-cilene-4-hormigonera.jpeg';
+import pgCanal from '../assets/pesquera-glaciar-1-canal.jpeg';
+import pgExcavacion from '../assets/pesquera-glaciar-2-excavacion.jpeg';
+import pgEstructura from '../assets/pesquera-glaciar-3-estructura.jpeg';
+import pgEncofrados from '../assets/pesquera-glaciar-4-encofrados.jpeg';
+import pgHormigonado from '../assets/pesquera-glaciar-5-hormigonado.jpeg';
+import pgBomba from '../assets/pesquera-glaciar-6-bomba.jpeg';
+import pgLosaNevada from '../assets/pesquera-glaciar-7-losa-nevada.jpeg';
+import pgMetalicaMar from '../assets/pesquera-glaciar-8-metalica-mar.jpeg';
+import pgMetalicaIzado from '../assets/pesquera-glaciar-9-metalica-izado.jpeg';
+import pgMetalicaInterior from '../assets/pesquera-glaciar-10-metalica-interior.jpeg';
+import pgColumnas from '../assets/pesquera-glaciar-11-columnas.jpeg';
+import pgDeckPueblo from '../assets/pesquera-glaciar-12-deck-pueblo.jpeg';
+import pgArmadura from '../assets/pesquera-glaciar-13-armadura.jpeg';
+import pgTormenta from '../assets/pesquera-glaciar-14-tormenta-nieve.jpeg';
 
 // ============================================================
 // DATA: una entrada por obra. Para sumar obras a futuro basta
@@ -47,6 +66,8 @@ const OBRAS: Obra[] = [
       { label: 'Año', value: '2026', destacado: true },
       { label: 'Estado', value: 'En ejecución — entrega 2027', estado: true },
     ],
+    // 8 fotos: tomas aéreas del conjunto + la torre en altura + las fundaciones
+    // de las próximas etapas. El mosaico destaca 6; el resto va al lightbox ("+N").
     fotos: [
       {
         src: fotoPanoramica,
@@ -54,14 +75,39 @@ const OBRAS: Obra[] = [
         caption: 'Vista aérea del conjunto — edificios en etapa de estructura',
       },
       {
+        src: lgEstructuraBomba,
+        alt: 'Edificio de varias plantas en estructura de hormigón armado mientras un camión bomba hormigona el último nivel, con armaduras de hierro y el barrio de San Justo alrededor',
+        caption: 'Hormigonado en altura: la bomba alcanzando el último nivel de la torre',
+      },
+      {
         src: fotoEstructuras,
         alt: 'Edificios en construcción con estructuras de hormigón armado y mampostería, junto al sector de fundaciones',
         caption: 'Estructuras de hormigón armado y fundaciones de las próximas etapas',
       },
       {
+        src: lgEstructura,
+        alt: 'Edificio de viviendas de varios niveles en estructura de hormigón armado bajo un cielo despejado, con operarios y encofrados en primer plano',
+        caption: 'La torre en estructura de hormigón armado, etapa avanzada',
+      },
+      {
         src: fotoCenital,
         alt: 'Vista cenital de la obra: tres edificios en construcción y las plateas de fundación del resto del predio',
         caption: 'Vista cenital del predio completo y plateas de fundación',
+      },
+      {
+        src: lgFundacionesBases,
+        alt: 'Encofrado de madera para la base de una columna sobre el hormigón de fundación, con armaduras de hierro en espera y el entorno urbano de San Justo al fondo',
+        caption: 'Encofrado de bases y fundaciones sobre el hormigón fresco',
+      },
+      {
+        src: lgExcavacion,
+        alt: 'Operario de pie en una excavación profunda de fundaciones revestida con membrana de impermeabilización, en el predio urbano de San Justo',
+        caption: 'Excavación de fundaciones revestida con membrana',
+      },
+      {
+        src: lgFundacionesMembrana,
+        alt: 'Zanjas de fundación excavadas y cubiertas con membrana de impermeabilización, con un camión volcador y un operario, en el predio de San Justo',
+        caption: 'Fundaciones impermeabilizadas y movimiento de suelos',
       },
     ],
   },
@@ -101,6 +147,95 @@ const OBRAS: Obra[] = [
       },
     ],
   },
+  {
+    id: 'pesquera-glaciar',
+    nombreCorto: 'Glaciar Pesquera',
+    meta: 'Ushuaia · 2007',
+    titulo: 'Planta Glaciar Pesquera — Ushuaia',
+    descripcion:
+      'Planta de procesamiento y frigorífico para Glaciar Pesquera, sobre la costa del canal Beagle en Ushuaia. JOM ejecutó la obra desde el movimiento de suelos y las fundaciones hasta la estructura de hormigón armado, las losas y el montaje de la estructura metálica de las naves, trabajando a metros del mar y del puerto, en pleno clima fueguino.',
+    // Año PROVISORIO (2007, misma época que el Hotel Cilene) — confirmar con el cliente.
+    datos: [
+      { label: 'Tipo de obra', value: 'Obra nueva — planta pesquera & frigorífico' },
+      { label: 'Ubicación', value: 'Ushuaia, Tierra del Fuego' },
+      { label: 'Año', value: '2007', destacado: true },
+      { label: 'Estado', value: 'Finalizada', finalizada: true },
+    ],
+    // 14 fotos en dos etapas (obra civil + estructura metálica). El mosaico
+    // destaca 6 (izaje y nevada incluidas); el resto se ve en el lightbox vía "+N".
+    fotos: [
+      {
+        src: pgCanal,
+        alt: 'Vista elevada de la planta en construcción sobre el canal Beagle: operarios terminando una losa de hormigón sobre los encofrados, con catamaranes en el puerto de Ushuaia y los galpones de la pesquera al fondo',
+        caption: 'La planta en construcción sobre el canal Beagle, junto al puerto de Ushuaia',
+      },
+      {
+        src: pgMetalicaIzado,
+        alt: 'Una grúa iza una cabriada de acero para montarla sobre los pórticos de la nave, con los operarios guiándola desde la base de hormigón y el canal Beagle al atardecer de fondo',
+        caption: 'Izaje de una cabriada de acero sobre el canal Beagle',
+      },
+      {
+        src: pgTormenta,
+        alt: 'Operarios trabajando sobre la losa durante una intensa nevada, empujando una zorra entre las esperas de hierro, cubiertos de nieve en pleno temporal fueguino',
+        caption: 'El equipo en plena nevada, trabajando con temporal sobre la losa',
+      },
+      {
+        src: pgExcavacion,
+        alt: 'Hormigonado de las fundaciones en una excavación profunda: un camión grúa baja el balde de hormigón mientras los operarios trabajan entre las armaduras, con el monte nevado de fondo',
+        caption: 'Fundaciones: hormigonado en la excavación, con la montaña fueguina detrás',
+      },
+      {
+        src: pgBomba,
+        alt: 'Camión bomba de hormigón en primer plano y una grúa elevando el balde sobre la estructura, con los catamaranes del puerto y los galpones de la pesquera sobre el canal Beagle',
+        caption: 'Bomba y grúa hormigonando, frente al puerto y los galpones de la pesquera',
+      },
+      {
+        src: pgMetalicaMar,
+        alt: 'Operarios montando la estructura metálica de la nave: pórticos de acero blanco sobre la base de hormigón, con el canal Beagle y un bote pesquero de fondo',
+        caption: 'Montaje de la estructura metálica sobre la base de hormigón',
+      },
+      {
+        src: pgEstructura,
+        alt: 'Vista en altura de la estructura: muros de hormigón encofrados y la malla de hierro de la losa, con operarios trabajando sobre el nivel superior',
+        caption: 'Estructura de hormigón armado — encofrados y armadura de la losa',
+      },
+      {
+        src: pgColumnas,
+        alt: 'Estructura en sus primeras etapas: tabiques de hormigón con las columnas de hierro en espera y operarios sobre el nivel, con el canal Beagle y los cerros nevados de fondo',
+        caption: 'Tabiques y columnas en espera, frente al canal Beagle',
+      },
+      {
+        src: pgHormigonado,
+        alt: 'Operarios hormigonando una columna desde el balde de una grúa, sobre los encofrados de madera, con los cerros nevados de Ushuaia de fondo',
+        caption: 'Hormigonado de columnas sobre los encofrados, al pie de los cerros nevados',
+      },
+      {
+        src: pgEncofrados,
+        alt: 'Muros de hormigón encofrados elevándose junto a la costa, con un camión grúa de JOM bajando el balde de hormigón y el canal Beagle de fondo',
+        caption: 'Muros encofrados al borde del canal, con la grúa de JOM en plena tarea',
+      },
+      {
+        src: pgDeckPueblo,
+        alt: 'Vista elevada de la losa con operarios trabajando y, al fondo, el pueblo de Ushuaia, una embarcación botándose con grúa y el casco de un barco varado sobre la costa',
+        caption: 'La losa en obra, con el pueblo y la costa de Ushuaia de fondo',
+      },
+      {
+        src: pgArmadura,
+        alt: 'Detalle de las armaduras de hierro de las vigas y encadenados montadas sobre la losa, listas para hormigonar, con el pueblo de Ushuaia al fondo',
+        caption: 'Armaduras de hierro de las vigas, listas para hormigonar',
+      },
+      {
+        src: pgLosaNevada,
+        alt: 'Losa de hormigón terminada y cubierta de nieve, con las esperas de hierro de la próxima etapa, frente al edificio existente y los cerros nevados de Ushuaia',
+        caption: 'La losa terminada bajo la nieve, lista para la etapa siguiente',
+      },
+      {
+        src: pgMetalicaInterior,
+        alt: 'Vista interior de la nave en montaje, entre los pórticos de acero blanco, con la base de hormigón y el canal Beagle de fondo',
+        caption: 'Interior de la nave durante el montaje de la estructura metálica',
+      },
+    ],
+  },
 ];
 ---
 
@@ -113,8 +248,8 @@ const OBRAS: Obra[] = [
       </h2>
       <p class="section-lede reveal" style="--reveal-delay: calc(var(--stagger-step) * 2)">
         Sin renders ni fotos de archivo: documentamos lo que construimos. Elegí una obra para
-        recorrerla en detalle, de un desarrollo residencial en Buenos Aires a un hotel &amp; spa en
-        Tierra del Fuego.
+        recorrerla en detalle, de un desarrollo residencial en Buenos Aires a obras de gran porte
+        en Tierra del Fuego.
       </p>
     </header>
 
@@ -146,11 +281,32 @@ const OBRAS: Obra[] = [
 
     {
       OBRAS.map((obra, oi) => {
-        // sizes de las miniaturas según cuántas entran en la fila (desktop)
+        // Galería "mosaico" cuando hay muchas fotos (≥6): la principal ocupa un
+        // bloque 2×2 y otras 5 completan una grilla 3×3 (9 celdas). Con menos
+        // fotos se usa el layout clásico (principal + fila de miniaturas), intacto.
+        const mosaico = obra.fotos.length >= 6;
+        // El mosaico muestra como máximo 6 fotos (1 principal + 5 miniaturas).
+        // Si hay más, la última miniatura lleva un "+N" que abre el lightbox con
+        // TODAS (patrón galería tipo Airbnb: selección curada + ver todas).
+        const MOSAICO_VISIBLE = 6;
+        const thumbsTodas = obra.fotos.slice(1);
+        const thumbsVisibles = mosaico
+          ? thumbsTodas.slice(0, MOSAICO_VISIBLE - 1)
+          : thumbsTodas;
+        const fotosOcultas = thumbsTodas.length - thumbsVisibles.length;
+        // sizes de las miniaturas: en mosaico cada una ocupa ~1/3 del ancho;
+        // en el layout clásico se reparten la fila según cuántas haya.
         const thumbCount = Math.max(obra.fotos.length - 1, 1);
         const thumbPx = Math.round(1104 / thumbCount);
         const thumbVw = Math.round(100 / thumbCount);
-        const thumbSizes = `(min-width: 72em) ${thumbPx}px, (min-width: 48em) ${thumbVw}vw, calc(100vw - 2.5rem)`;
+        const thumbSizes = mosaico
+          ? '(min-width: 72em) 368px, (min-width: 48em) 33vw, calc(100vw - 2.5rem)'
+          : `(min-width: 72em) ${thumbPx}px, (min-width: 48em) ${thumbVw}vw, calc(100vw - 2.5rem)`;
+        // la principal: ancho completo en clásico, ~2/3 en el mosaico
+        const heroPx = mosaico ? 760 : 1104;
+        const heroSizes = mosaico
+          ? '(min-width: 72em) 760px, (min-width: 48em) 66vw, calc(100vw - 2.5rem)'
+          : '(min-width: 72em) 1104px, calc(100vw - 2.5rem)';
         return (
           <article
             class="obra obra-panel"
@@ -159,7 +315,7 @@ const OBRAS: Obra[] = [
             aria-labelledby={`tab-${obra.id}`}
             hidden={oi !== 0}
           >
-            <div class="obra-galeria">
+            <div class:list={['obra-galeria', { 'obra-galeria--mosaico': mosaico }]}>
               <button
                 type="button"
                 class="obra-foto obra-foto--principal reveal"
@@ -169,15 +325,15 @@ const OBRAS: Obra[] = [
                 aria-haspopup="dialog"
                 aria-label={`Ampliar foto: ${obra.fotos[0]!.caption}`}
               >
-                {/* width acotado: el render desktop ronda los 1104px */}
+                {/* width acotado al render real: ~1104px en clásico, ~760px en mosaico */}
                 <span class="obra-foto-media">
                   <Image
                     src={obra.fotos[0]!.src}
                     alt={obra.fotos[0]!.alt}
                     layout="constrained"
-                    width={1104}
+                    width={heroPx}
                     quality={78}
-                    sizes="(min-width: 72em) 1104px, calc(100vw - 2.5rem)"
+                    sizes={heroSizes}
                   />
                 </span>
                 <span class="obra-foto-caption" aria-hidden="true">
@@ -198,42 +354,59 @@ const OBRAS: Obra[] = [
               </button>
 
               <div class="obra-thumbs">
-                {obra.fotos.slice(1).map((foto, i) => (
-                  <button
-                    type="button"
-                    class="obra-foto reveal"
-                    data-lightbox-open={i + 1}
-                    data-obra={oi}
-                    data-obra-nombre={obra.titulo}
-                    style={`--reveal-delay: calc(var(--stagger-step) * ${i + 1})`}
-                    aria-haspopup="dialog"
-                    aria-label={`Ampliar foto: ${foto.caption}`}
-                  >
-                    <Image
-                      src={foto.src}
-                      alt={foto.alt}
-                      layout="constrained"
-                      width={720}
-                      quality={75}
-                      sizes={thumbSizes}
-                    />
-                    <span class="obra-foto-caption" aria-hidden="true">
-                      {foto.caption}
-                    </span>
-                    <span class="obra-foto-zoom" aria-hidden="true">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                      >
-                        <circle cx="11" cy="11" r="7" />
-                        <path d="m21 21-4.3-4.3M11 8v6M8 11h6" />
-                      </svg>
-                    </span>
-                  </button>
-                ))}
+                {thumbsVisibles.map((foto, i) => {
+                  // la última miniatura visible lleva el "+N" si quedan fotos ocultas
+                  const esMas = fotosOcultas > 0 && i === thumbsVisibles.length - 1;
+                  return (
+                    <button
+                      type="button"
+                      class:list={['obra-foto', 'reveal', { 'obra-foto--mas': esMas }]}
+                      data-lightbox-open={i + 1}
+                      data-obra={oi}
+                      data-obra-nombre={obra.titulo}
+                      style={`--reveal-delay: calc(var(--stagger-step) * ${i + 1})`}
+                      aria-haspopup="dialog"
+                      aria-label={
+                        esMas
+                          ? `Ver todas las fotos de la obra (${obra.fotos.length})`
+                          : `Ampliar foto: ${foto.caption}`
+                      }
+                    >
+                      <Image
+                        src={foto.src}
+                        alt={foto.alt}
+                        layout="constrained"
+                        width={720}
+                        quality={75}
+                        sizes={thumbSizes}
+                      />
+                      {esMas ? (
+                        <span class="obra-foto-mas" aria-hidden="true">
+                          <span class="obra-foto-mas-num">+{fotosOcultas}</span>
+                          <span class="obra-foto-mas-txt">fotos</span>
+                        </span>
+                      ) : (
+                        <>
+                          <span class="obra-foto-caption" aria-hidden="true">
+                            {foto.caption}
+                          </span>
+                          <span class="obra-foto-zoom" aria-hidden="true">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                            >
+                              <circle cx="11" cy="11" r="7" />
+                              <path d="m21 21-4.3-4.3M11 8v6M8 11h6" />
+                            </svg>
+                          </span>
+                        </>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -639,6 +812,39 @@ const OBRAS: Obra[] = [
     transform: scale(1.08);
   }
 
+  /* overlay "+N" en la última miniatura: scrim oscuro permanente con el conteo
+     de fotos restantes; al click abre el lightbox con todas (ver script). */
+  .obra-foto-mas {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xs);
+    background: rgb(5 19 65 / 0.6);
+    color: var(--color-white);
+    transition: background-color var(--speed-base) var(--ease-out);
+  }
+
+  .obra-foto--mas:hover .obra-foto-mas,
+  .obra-foto--mas:focus-visible .obra-foto-mas {
+    background: rgb(5 19 65 / 0.72);
+  }
+
+  .obra-foto-mas-num {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1;
+  }
+
+  .obra-foto-mas-txt {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
   /* parallax sutil de la foto protagonista (progressive enhancement, sin JS).
      Acotado a ≥48em: en mobile la galería es un carrusel horizontal y el
      parallax vertical de la principal pierde sentido (ver bloque mobile). */
@@ -823,6 +1029,41 @@ const OBRAS: Obra[] = [
       height: 100%;
     }
     .obra-foto--principal img {
+      object-fit: cover;
+    }
+  }
+
+  /* ---------- Galería "mosaico" (obras con muchas fotos, ≥5) ----------
+     Patrón featured-mosaic: la principal ocupa un bloque 2×2 y las 5 restantes
+     completan una grilla 3×3 sin huecos. Conserva la jerarquía de hero de las
+     otras obras y evita una fila de miniaturas diminutas; todas las fotos
+     siguen abriendo el lightbox de a una. Solo ≥48em (en mobile, carrusel). */
+  @media (min-width: 48em) {
+    .obra-galeria--mosaico {
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 1fr;
+      /* el alto del bloque deriva del ancho: celdas ~4:3 (pocas cropean fuerte) */
+      aspect-ratio: 4 / 3;
+    }
+    /* las miniaturas dejan de ser su propia grilla y fluyen en la del mosaico */
+    .obra-galeria--mosaico .obra-thumbs {
+      display: contents;
+    }
+    /* la principal toma el cuadrante 2×2; anula el banner 16:9 del layout clásico */
+    .obra-galeria--mosaico .obra-foto--principal {
+      grid-column: span 2;
+      grid-row: span 2;
+      aspect-ratio: auto;
+    }
+    /* cada foto llena su celda con recorte parejo */
+    .obra-galeria--mosaico .obra-foto {
+      aspect-ratio: auto;
+      height: 100%;
+    }
+    .obra-galeria--mosaico .obra-foto-media,
+    .obra-galeria--mosaico .obra-foto-media img,
+    .obra-galeria--mosaico .obra-foto img {
+      height: 100%;
       object-fit: cover;
     }
   }

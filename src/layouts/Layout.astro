@@ -16,6 +16,8 @@ const {
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og-cover.jpg', Astro.site);
+// Texto alternativo de la imagen social (completa OG/Twitter sin inventar datos del cliente)
+const ogImageAlt = 'JOM Construction — empresa constructora: obra nueva, desarrollos y refacciones';
 
 // Datos estructurados: constructora local (schema.org/GeneralContractor)
 const schema = {
@@ -27,11 +29,17 @@ const schema = {
   image: ogImage.href,
   logo: new URL('/icon-512.png', Astro.site).href,
   email: CONTACT.email,
-  telephone: CONTACT.whatsappDisplay,
+  // E.164 (con código de país) a partir del WhatsApp: schema.org/telephone se
+  // interpreta mejor con el prefijo internacional que con el formato local de display.
+  telephone: `+${CONTACT.whatsappNumber}`,
   address: {
     '@type': 'PostalAddress',
     addressCountry: 'AR',
-    addressLocality: CONTACT.address,
+    // Localidad base real (la que ya figura en el kicker del hero), no la frase de
+    // cobertura: schema.org/addressLocality espera una ciudad. La cobertura nacional
+    // ("todo el país") vive en areaServed, no acá. CONTACT.address sigue usándose
+    // como texto de display en Nosotros/Footer.
+    addressLocality: 'Buenos Aires',
   },
   areaServed: 'Argentina',
   knowsAbout: [
@@ -69,11 +77,13 @@ const schema = {
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:locale" content={SITE.locale} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <!-- Fuentes auto-hospedadas vía Fonts API: preload solo de la serif del H1 (LCP) -->
     <Font cssVariable="--font-marcellus" preload />

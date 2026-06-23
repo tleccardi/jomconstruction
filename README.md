@@ -41,7 +41,6 @@ npm run preview    # servir el build de producción localmente
 │   │   ├── Obras.astro         # case study con lightbox (<dialog>)
 │   │   ├── Proceso.astro       # 4 pasos + compromisos
 │   │   ├── Diferenciadores.astro
-│   │   ├── Testimonios.astro   # placeholders
 │   │   ├── Nosotros.astro
 │   │   ├── Contacto.astro      # formulario (Formspree) + canales
 │   │   ├── Footer.astro

@@ -1,13 +1,15 @@
 ---
 import { getImage } from 'astro:assets';
-import heroImg from '../assets/hero.jpeg';
+import videoPoster from '../assets/hero-video-poster.jpg';
 import { WHATSAPP_URL } from '../config';
 
-// Poster optimizado del video: es el frame inmediato (cubre hasta que arranca la
-// reproducción) y el fallback fijo bajo prefers-reduced-motion. Reusa la imagen
-// de obra existente vía el pipeline de Astro, sin duplicar el asset en /public.
+// Poster = primer frame REAL del video (extraído con ffmpeg de public/video.mp4).
+// Así, mientras el video carga —y como fallback fijo bajo prefers-reduced-motion /
+// Save-Data / red 2g, cuando no se reproduce— se ve exactamente el cuadro inicial
+// del video: no hay salto entre una imagen distinta y el arranque de la
+// reproducción. Astro lo sirve como webp optimizado.
 const poster = await getImage({
-  src: heroImg,
+  src: videoPoster,
   width: 1600,
   quality: 70,
   format: 'webp',
@@ -83,9 +85,9 @@ const poster = await getImage({
 
   {/* Scrim de marca sobre el video: el contraste cambia frame a frame, así que
       el texto no se apoya en un overlay plano sino en capas de cobalto-noche
-      (peso a la izquierda, donde va la columna + anclaje inferior bajo CTAs/
-      ficha). La grilla "plano técnico" tenue hila con MetricsBar/Nosotros y
-      evita el "video + degradado negro" genérico. Decorativo. */}
+      livianas (peso a la izquierda, donde va la columna + anclaje inferior bajo
+      CTAs/ficha) que dejan ver el video y evitan el "video + degradado negro"
+      genérico. Decorativo. */}
   <div class="hero-scrim" aria-hidden="true"></div>
 
   <div class="container hero-grid">
@@ -162,39 +164,26 @@ const poster = await getImage({
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    /* tres capas de cobalto-noche (no negro: mantiene la temperatura de marca):
-       1) anclaje inferior para CTAs/ficha, 2) peso a la izquierda para la
-       columna de texto, 3) sombra superior bajo el header fijo. */
+    /* tres capas de cobalto-noche (no negro: mantiene la temperatura de marca),
+       deliberadamente livianas para que el video se vea: 1) anclaje inferior para
+       CTAs/ficha, 2) peso a la izquierda para la columna de texto que se desvanece
+       a transparente hacia la derecha (deja respirar el video), 3) sombra superior
+       bajo el header fijo. */
     background:
       linear-gradient(
         0deg,
-        rgb(5 19 65 / 0.86) 0%,
-        rgb(5 19 65 / 0.18) 34%,
-        transparent 54%
+        rgb(5 19 65 / 0.7) 0%,
+        rgb(5 19 65 / 0.12) 32%,
+        transparent 52%
       ),
       linear-gradient(
         100deg,
-        rgb(5 19 65 / 0.92) 0%,
-        rgb(5 19 65 / 0.64) 40%,
-        rgb(5 19 65 / 0.34) 70%,
-        rgb(5 19 65 / 0.5) 100%
+        rgb(5 19 65 / 0.72) 0%,
+        rgb(5 19 65 / 0.4) 38%,
+        rgb(5 19 65 / 0.12) 64%,
+        transparent 88%
       ),
-      linear-gradient(180deg, rgb(5 19 65 / 0.5) 0%, transparent 20%);
-  }
-
-  /* grilla "plano técnico": líneas doradas apenas perceptibles, desvanecidas con
-     una máscara radial hacia los bordes para que no se lea como tabla (mismo
-     gesto que MetricsBar). Sesgada a la izquierda, donde está el texto. */
-  .hero-scrim::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgb(227 220 176 / 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(227 220 176 / 0.04) 1px, transparent 1px);
-    background-size: 2.5rem 2.5rem;
-    -webkit-mask-image: radial-gradient(130% 120% at 30% 40%, #000 30%, transparent 82%);
-    mask-image: radial-gradient(130% 120% at 30% 40%, #000 30%, transparent 82%);
+      linear-gradient(180deg, rgb(5 19 65 / 0.4) 0%, transparent 16%);
   }
 
   /* grano sutil: textura tangible + mata el banding de los degradados del scrim */
@@ -218,6 +207,15 @@ const poster = await getImage({
   /* columna acotada: el texto no se estira a todo el ancho sobre el video */
   .hero-copy {
     max-width: 52rem;
+  }
+
+  /* seguro de legibilidad: con el scrim más liviano (deja ver más video), los
+     textos sin sombra propia se apoyan en una sombra sutil cobalto-noche para
+     sostener el contraste aunque pase un frame claro del video detrás. */
+  .hero-kicker,
+  .hero-sub,
+  .hero-ficha {
+    text-shadow: 0 1px 12px rgb(5 19 65 / 0.55);
   }
 
   /* ---------- Kicker ---------- */
@@ -349,6 +347,9 @@ const poster = await getImage({
     gap: var(--space-sm) var(--space-xl);
     margin-top: var(--space-xl);
     padding-top: var(--space-lg);
+    /* sin el sangrado por defecto del <ul>: los checks arrancan a ras del borde
+       izquierdo, en línea con kicker/título/sub/CTAs (la columna del hero). */
+    padding-inline-start: 0;
     list-style: none;
     font-size: var(--text-sm);
     color: rgb(255 255 255 / 0.88);
@@ -436,13 +437,6 @@ const poster = await getImage({
         rgb(5 19 65 / 0.72) 74%,
         rgb(5 19 65 / 0.92) 100%
       );
-    }
-
-    /* Recentrar la máscara de la grilla técnica a la columna (en desktop está
-       sesgada al 30% donde iba el texto). */
-    .hero-scrim::before {
-      -webkit-mask-image: radial-gradient(120% 85% at 50% 42%, #000 32%, transparent 84%);
-      mask-image: radial-gradient(120% 85% at 50% 42%, #000 32%, transparent 84%);
     }
 
     /* Seguro de legibilidad para los textos sin sombra propia (el h1 ya trae la
